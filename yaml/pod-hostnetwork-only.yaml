@@ -1,0 +1,21 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork-only.yaml 
+## Access: kubectl -n [namespace] exec -it bf-hostnetwork -- bash
+## Remove: kubectl -n [namespace] delete -f pod-hostnetwork-only.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bf-hostnetwork
+  labels:
+    app: bf-hostnetwork
+spec:
+  hostNetwork: true
+  containers:
+  - image: ubuntu
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: IfNotPresent
+    name: bf-hostnetwork
+  restartPolicy: Always

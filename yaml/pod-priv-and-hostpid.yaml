@@ -1,0 +1,21 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-priv-and-hostpid.yaml 
+## Access: kubectl -n [namespace] exec -it bf-nsenter -- bash
+## Remove: kubectl -n [namespace] delete -f pod-priv-and-hostpid.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bf-nsenter
+  labels: 
+    app: bf-nsenter
+spec:
+  hostPID: true
+  containers:
+  - name: bf-nsenter
+    image: ubuntu
+#command: [ "/bin/bash", "-c", "--" ]
+    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--"", "bash"]
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true

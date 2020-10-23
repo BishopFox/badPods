@@ -1,0 +1,19 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-priv-only.yaml 
+## Access: kubectl -n [namespace] exec -it bf-privpod -- bash
+## Remove: kubectl -n [namespace] delete -f pod-priv-only.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bf-privpod
+  labels: 
+    app: bf-privpod
+spec:
+  containers:
+  - name: bf-privpod
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true

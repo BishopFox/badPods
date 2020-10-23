@@ -1,0 +1,21 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-hostpid-only.yaml 
+## Access: kubectl -n [namespace] exec -it bf-hostpid -- bash
+## Remove: kubectl -n [namespace] delete -f pod-hostpid-only.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bf-hostpid
+  labels:
+    app: bf-hostpid
+spec:
+  hostPID: true
+  containers:
+  - image: ubuntu
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: IfNotPresent
+    name: bf-hostpid
+  restartPolicy: Always
