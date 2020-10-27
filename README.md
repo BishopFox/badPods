@@ -134,17 +134,32 @@ The important things here are:
 [pod-hostnetwork-only.yaml](yaml/pod-hostnetwork-only.yaml)
 
 
-```bash
-# Option 1: Create pod from local yaml 
-kubectl apply -f pod-hostnetwork-only.yaml  [-n namespace] 
-# Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostnetwork-only.yaml [-n namespace] 
+### Create pod
+Option 1: Create pod from local yaml 
 
-# Exec into pod 
+```bash
+kubectl apply -f pod-hostnetwork-only.yaml  [-n namespace] 
+```
+
+Option 2: Create pod from github hosted yaml
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostnetwork-only.yaml [-n namespace] 
+```
+
+### Exec into pod 
+
+```bash
 kubectl -n [namespace] exec -it bf-hostnetwork -- bash
-# Install tcpdump and sniff traffic 
+```
+
+Install tcpdump and sniff traffic 
+```bash
 apt update && apt install tcpdump 
-# Or investigate local services
+```
+
+Or investigate local services
+```bash
 curl https://localhost:1234/metrics
 ```
 
@@ -152,22 +167,33 @@ curl https://localhost:1234/metrics
 ## hostIPC pod - You can create a pod with only hostIPC
 
 If you only have `hostIPC=true`, you most likely can't do much. What you should do is use the ipcs command inside your hostIPC container to see if there are any ipc resources (shared memory segments, message queues, or semephores). If you find one, you will likely need to create a program that can read them. 
-Reference: https://opensource.com/article/20/1/inter-process-communication-linux
 
 [pod-hostipc-only.yaml](yaml/pod-hostipc-only.yaml)
 
+### Create pod
+Option 1: Create pod from local yaml 
 ```bash
-# Option 1: Create pod from local yaml 
 kubectl apply -f pod-hostipc-only.yaml  [-n namespace] 
-# Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostipc-only.yaml [-n namespace] 
+```
 
-# Exec into pod 
+Option 2: Create pod from github hosted yaml
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostipc-only.yaml [-n namespace] 
+```
+
+### Exec into pod 
+```bash
 kubectl -n [namespace] exec -it bf-hostipc -- bash
-# Look for any use of inter= process communication on the host 
+```
+Look for any use of inter= process communication on the host 
+
+```bash
 ipcs -a
 ```
 
+
+Reference: https://opensource.com/article/20/1/inter-process-communication-linux
 
 
 # Remove pods
