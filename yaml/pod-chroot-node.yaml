@@ -1,21 +1,21 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-chroot-node.yaml 
-## Access: kubectl -n [namespace] exec -it bf-chroot-node -- bash
+## Access: kubectl -n [namespace] exec -it pod-chroot-node -- bash
 ## Remove: kubectl -n [namespace] delete -f pod-chroot-node.yaml 
 ## Credit: https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: bf-chroot-node
+  name: pod-chroot-node
   labels:
-    app: bf-chroot-node
+    app: chroot-node
 spec:
   hostNetwork: true
   hostPID: true
   hostIPC: true
   containers:
-  - name: bf-chroot-node
+  - name: chroot-node
     image: busybox
     securityContext:
       privileged: true
@@ -24,6 +24,8 @@ spec:
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
+  # If you put the name of the master node below and uncomment this line, you can ensure your pod gets scheduled on the master node ()
+  #nodeName: k8s-master
   volumes:
   - name: noderoot
     hostPath:
