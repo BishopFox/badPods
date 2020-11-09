@@ -1,21 +1,21 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-chroot-node.yaml 
-## Access: kubectl -n [namespace] exec -it pod-chroot-node -- bash
-## Remove: kubectl -n [namespace] delete -f pod-chroot-node.yaml 
-## Credit: https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
+## Deploy: kubectl -n [namespace] apply -f pod-everything-allowed.yaml 
+## Access: kubectl -n [namespace] exec -it pod-everything-allowed -- bash
+## Remove: kubectl -n [namespace] delete -f pod-everything-allowed.yaml 
+## Credit: Adapted from https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-chroot-node
+  name: pod-everything-allowed
   labels:
-    app: chroot-node
+    app: everything-allowed
 spec:
   hostNetwork: true
   hostPID: true
   hostIPC: true
   containers:
-  - name: chroot-node
+  - name: everything-allowed
     image: busybox
     securityContext:
       privileged: true
