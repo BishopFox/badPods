@@ -9,7 +9,7 @@ If you only have `privileged=true`, you can still get RCE on the host, and ultim
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-priv-only.yaml   
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/priv-only/pod-priv-only.yaml  
 ```
 
 ### Exec into pod 
