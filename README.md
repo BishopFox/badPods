@@ -23,10 +23,10 @@ Allowed Specification | What's the worst that can happen? | How?
 [Unrestricted hostmount (/)](yaml/hostpath-only/README.md) | Same as above | While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform the same types of privesc paths outlined above. Hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
 [hostpid](yaml/hostpid-only/README.md) | Unlikely but possible path to cluster compromise <br> | You can access any secrets visible via ps -aux.  Look for passwords, tokens, keys and use them to privesc within the cluster, to services supported by the cluster, or to services that applications in the cluster are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin.   You can also kill any process on the node (DOS) 
 [hostnetwork](yaml/hostnetwork-only/README.md) | Potential path to cluster compromise | Sniff unencrypted traffic on any interface and potentially find service account tokens or other sensitive information <br> Communicate with services that only listen on loopback, etc.
-[hostipc](yaml/hostipc-only/README.md) | Not seen often - but potential limited compromise |  If any process on the host, or any processes within a pod is using the host's interprocess communication mechanisms, (Shared memory, Semaphore arrays, Message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues even if you can read something in the queue, reading it is a descructive action that will remove it from the queue, so beware. 
+[hostipc](yaml/hostipc-only/README.md) | Not seen often - but potential limited compromise |  If any process on the host, or any processes within a pod is using the host's interprocess communication mechanisms, (Shared memory, Semaphore arrays, Message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware. 
 
 
-Caveat: There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
+**Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
 
 
 # Example Usage
@@ -42,13 +42,19 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 
 ### Exec into pod 
 ```bash 
-kubectl -n [namespace] exec -it pod-hostpid-only -- bash
+kubectl exec -it pod-hostpid-only [-n namespace] -- bash
 ```
 ### Post exploitation
 ```bash
-# View all processes running on the host and look for passwords, tokens, keys, etc.
+# View all processes running on the host and look for passwords, tokens, keys, etc. 
+# Check out that clear text password in the ps output below! 
+
 ps -aux
-# You can also kill any process, but don't do that in production :)
+...omitted for brevity...
+root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c while true; do ./my-program --grafana-uername=admin --grafana-password=admin; sleep 10;done
+...omitted for brevity...
+
+# Also, you can also kill any process, but don't do that in production :)
 ```
 # Remove pod
-kubectl -n [namespace] delete -f pod-hostpid-only.yaml
+kubectl  delete -f pod-hostpid-only.yaml [-n namespace]
