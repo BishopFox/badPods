@@ -37,6 +37,7 @@ Allowed Specification | What's the worst that can happen? | How?
 ```bash
 # Clone repo
 git clone https://github.com/BishopFox/badPods
+
 # Create all pods (or at least try to create them)
 kubectl apply -f yaml --recursive [-n namespace]
 
