@@ -7,10 +7,10 @@ If you only have `hostIPC=true`, you most likely can't do much. What you should 
 ### Create pod
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-hostipc-only.yaml  [-n namespace] 
+kubectl apply -f pod-hostipc-only.yaml   
 
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc-only/pod-hostipc-only.yaml [-n namespace] 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc-only/pod-hostipc-only.yaml  
 ```
 
 ### Exec into pod 

