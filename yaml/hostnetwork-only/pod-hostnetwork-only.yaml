@@ -1,14 +1,14 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork-only.yaml 
-## Access: kubectl -n [namespace] exec -it bf-hostnetwork -- bash
+## Access: kubectl -n [namespace] exec -it pod-hostnetwork -- bash
 ## Remove: kubectl -n [namespace] delete -f pod-hostnetwork-only.yaml
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: bf-hostnetwork
+  name: pod-hostnetwork
   labels:
-    app: bf-hostnetwork
+    app: hostnetwork
 spec:
   hostNetwork: true
   containers:
@@ -17,5 +17,7 @@ spec:
       - "sleep"
       - "604800"
     imagePullPolicy: IfNotPresent
-    name: bf-hostnetwork
+    name: hostnetwork
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
   restartPolicy: Always

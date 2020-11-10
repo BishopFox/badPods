@@ -1,14 +1,14 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-hostpid-only.yaml 
-## Access: kubectl -n [namespace] exec -it bf-hostpid -- bash
+## Access: kubectl -n [namespace] exec -it pod-hostpid -- bash
 ## Remove: kubectl -n [namespace] delete -f pod-hostpid-only.yaml
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: bf-hostpid
+  name: pod-hostpid
   labels:
-    app: bf-hostpid
+    app: hostpid
 spec:
   hostPID: true
   containers:
@@ -17,5 +17,7 @@ spec:
       - "sleep"
       - "604800"
     imagePullPolicy: IfNotPresent
-    name: bf-hostpid
+    name: hostpid
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
   restartPolicy: Always

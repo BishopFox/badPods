@@ -1,19 +1,21 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-priv-only.yaml 
-## Access: kubectl -n [namespace] exec -it bf-privpod -- bash
+## Access: kubectl -n [namespace] exec -it pod-priv-only -- bash
 ## Remove: kubectl -n [namespace] delete -f pod-priv-only.yaml
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: bf-privpod
+  name: pod-priv-only
   labels: 
-    app: bf-privpod
+    app: priv-only
 spec:
   containers:
-  - name: bf-privpod
+  - name: priv-only
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master

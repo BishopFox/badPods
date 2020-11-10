@@ -1,23 +1,25 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-hostpath-only.yaml 
-## Access: kubectl -n [namespace] exec -it bf-hostpath -- bash
+## Access: kubectl -n [namespace] exec -it pod-hostpath -- bash
 ## Remove: kubectl -n [namespace] delete -f pod-hostpath-only.yaml
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: bf-hostpath
+  name: pod-hostpath
   labels:
-    app: bf-hostpath
+    app: hostpath
 spec:
   containers:
-  - name: bf-hostpath
+  - name: hostpath
     image: busybox
     volumeMounts:
     - mountPath: /host
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
   volumes:
   - name: noderoot
     hostPath:
