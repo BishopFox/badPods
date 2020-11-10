@@ -35,8 +35,11 @@ Allowed Specification | What's the worst that can happen? | How?
 ## Create all pods in this repo
 
 ```bash
+# Clone repo
 git clone https://github.com/BishopFox/badPods
+# Create all pods (or at least try to create them)
 kubectl apply -f yaml --recursive [-n namespace]
+
 pod/pod-everything-allowed created
 pod/pod-hostipc created
 pod/pod-hostnetwork created
