@@ -1,4 +1,4 @@
-## hostNetwork pod - You can create a pod with only hostNetwork
+## You can create a pod with only hostNetwork
 
 If you only have `hostNetwork=true`, you can't get RCE on the host directly, but if your cross your fingers you might still find a path to cluster admin. 
 The important things here are: 

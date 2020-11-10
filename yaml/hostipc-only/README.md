@@ -1,4 +1,4 @@
-## hostIPC pod - You can create a pod with only hostIPC
+## You can create a pod with only hostIPC
 
 If you only have `hostIPC=true`, you most likely can't do much. What you should do is use the ipcs command inside your hostIPC container to see if there are any ipc resources (shared memory segments, message queues, or semephores). If you find one, you will likely need to create a program that can read them. 
 

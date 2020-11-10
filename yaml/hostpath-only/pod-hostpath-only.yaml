@@ -18,6 +18,8 @@ spec:
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
   volumes:
   - name: noderoot
     hostPath:

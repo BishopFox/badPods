@@ -17,3 +17,5 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master

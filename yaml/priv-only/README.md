@@ -1,4 +1,4 @@
-## Privonly pod - You can create a pod with only privileged: true
+## You can create a pod with only privileged: true
 
 If you only have `privileged=true`, you can still get RCE on the host, and ultimately cluster-admin, but the path is more tedious. The exploit below escapes the container and allows you to run one command at a time. From there, you can launch a reverse shell.  
 

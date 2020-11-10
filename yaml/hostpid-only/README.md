@@ -1,6 +1,6 @@
-## hostPIDonly pod - You can create a pod with only hostPID
+## You can create a pod with only hostPID
 
-If you only have `hostPID=true`, you most likely won't get RCE on the host, but you might find sensitive application secrets that belong to pods in other namespaces. This can be use to gain unauthorized access to applications and services in other namespaces or outside the cluster, and can potentially be used to further comprise the cluster. 
+You are exploiting the fact that there are no polices preventing the creation of pod with access to the node's filesystem. You are going to create a pod and gain full read/write access to the filesystem of the node the pod is running on. 
 
 [pod-hostpid-only.yaml](pod-hostpid-only.yaml)
 

@@ -16,7 +16,7 @@ spec:
   hostIPC: true
   containers:
   - name: everything-allowed
-    image: busybox
+    image: ubuntu
     securityContext:
       privileged: true
     volumeMounts:
@@ -24,7 +24,7 @@ spec:
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
-  # If you put the name of the master node below and uncomment this line, you can ensure your pod gets scheduled on the master node ()
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
   volumes:
   - name: noderoot

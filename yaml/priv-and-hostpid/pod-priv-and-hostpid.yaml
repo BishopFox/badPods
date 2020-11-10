@@ -14,8 +14,10 @@ spec:
   containers:
   - name: priv-and-hostpid
     image: ubuntu
-#command: [ "/bin/bash", "-c", "--" ]
-    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--"", "bash"]
+    command: [ "/bin/bash", "-c", "--" ]    
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
