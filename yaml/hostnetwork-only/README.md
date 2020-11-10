@@ -32,8 +32,7 @@ apt update && apt install tcpdump
 
 # You now have a few options for next steps: 
 
-# See if the kubelet RO port is enabled and sniff the traffic
-# See if kubelet read only port (10255/tcp is open on the nodes IP or the docker host IP)
+# See if kubelet read only port (10255/tcp) is open on the nodes IP or the docker host IP
 
 nc -zv 10.0.0.162 10255
 Connection to 10.0.0.162 10255 port [tcp/*] succeeded!
