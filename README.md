@@ -29,8 +29,26 @@ Allowed Specification | What's the worst that can happen? | How?
 **Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
 
 
-# Example Usage
+### Usage
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
+
+## Create all pods in this repo
+
+```bash
+git clone https://github.com/BishopFox/badPods
+kubectl apply -f yaml --recursive [-n namespace]
+pod/pod-everything-allowed created
+pod/pod-hostipc created
+pod/pod-hostnetwork created
+pod/pod-hostpath created
+pod/pod-hostpid created
+pod/pod-priv-and-hostpid created
+pod/pod-priv-only created
+
+```
+
+## Example with post exploitation notes: hostpid-only pod
+
 
 ### Create a pod
 
