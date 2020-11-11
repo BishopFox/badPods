@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostipc--revshell
+  name: pod-hostipc-revshell
   labels:
     app: hostipc-revshell
 spec:
