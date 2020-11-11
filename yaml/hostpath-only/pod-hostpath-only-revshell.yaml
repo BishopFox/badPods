@@ -6,12 +6,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostpath
+  name: pod-hostpath-revshell
   labels:
-    app: hostpath
+    app: hostpath-revshell
 spec:
   containers:
-  - name: hostpath
+  - name: hostpath-revshell
     image: busybox
     volumeMounts:
     - mountPath: /host

