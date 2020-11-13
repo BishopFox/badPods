@@ -13,7 +13,7 @@ In order to be successful in this attack path, you'll need the following:
 1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 
-# Pods
+## Pods you can exec into
 
 Notes | type| yaml | readme
 -- | -- | -- | --
