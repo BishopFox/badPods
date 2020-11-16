@@ -46,7 +46,7 @@ hostIPC only - reverse shell | pod | [yaml](yaml/hostipc-only/README.md) | [read
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-Once you create the pod, you can exec into it and you will have root access on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the master node (not possible in a cloud managed environment). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds, you can create mirror pods in any namespace, and you can access any secret mounted within any pod on the node you are on, and then it to gain access to other namespaces or to create new cluster role bindings. 
+The pod you create mounts the host's filesystem to the pod. You then exec your pod and chroot to the directory where you mounted the host's filesystem and have root on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the master node (not possible in most cloud hosted k8s environment). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds, you can create mirror pods in any namespace, and you can access any secret mounted within any pod on the node you are on, and then use it to gain access to other namespaces or to create new cluster role bindings. 
  
 ## HostPID and Privileged
 [hostPID + privileged](yaml/priv-and-hostpid/README.md) 
@@ -55,7 +55,7 @@ Once you create the pod, you can exec into it and you will have root access on t
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-Same as above 
+In this scenario, the only thing that changes is now you gain root access to the host. Rather than chrooting to the host's filesystem first, you can use nsenter to run bash in the host's PID 1 namespace, giving you a root shell on the node running your pod. Once you are root on the host, the privesc paths are all the same as described above. 
 
 ## Privileged only
 [privileged=true](yaml/priv-only/README.md) 
@@ -74,7 +74,7 @@ While can eventually get an interactive shell on the node like in the cases abov
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform the same types of privesc paths outlined above. Hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
+While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform most of the same types of privesc paths outlined above. Hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
 
 
 ## hostPid only
