@@ -17,6 +17,7 @@ In order to be successful in this attack path, you'll need the following:
 
 Notes | yaml | readme
 -- | -- | --
+Nothing allowed | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [readme](yaml/nothing-allowed/README.md)
 Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
 Privileged and hostPid | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
 Privileged only | [yaml](yaml/priv-only/pod-priv-only.yaml) | [readme](yaml/priv-only/README.md)
@@ -28,12 +29,13 @@ hostIPC only | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/h
 
 Notes | yaml | readme
 -- | -- | --
-Everything allowed - reverse shell| [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
-Privileged and hostPid - reverse shell | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only - reverse shell| [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
-hostPid only - reverse shell  | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
-hostNetwork only - reverse shell | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
-hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
+Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
+Nothing allowed |  [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml) | [readme](yaml/nothing-allowed/README.md)
+Privileged and hostPid | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
+Privileged only | [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
+hostPid only | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
+hostNetwork only | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
+hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
 
  
 
