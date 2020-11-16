@@ -1,6 +1,6 @@
 # badPods
 
-A collection of easy to use pod yamls with different elevated privileges. The goal is to help you quickly understand the impact of allowing specific security sensitive pod specifications by giving you the tools to demonstrate exploitation.
+A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications.
 
 ## Background
 Occasionally, containers within pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications, but it is not always clear what the real-world security implications of allowing certain attributes is. 
