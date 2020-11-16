@@ -52,7 +52,7 @@ Once you create the pod, you can exec into it and you will have root access on t
 [hostPID + privileged](yaml/priv-and-hostpid/README.md) 
 
 ### What's the worst that can happen?
-Same as above 
+Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
 Same as above 
@@ -61,7 +61,7 @@ Same as above
 [privileged=true](yaml/priv-only/README.md) 
 
 ### What's the worst that can happen?
-Same as above 
+Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
 While can eventually get an interactive shell on the node like in the cases above, you start with non-interactive command execution and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
@@ -71,7 +71,7 @@ While can eventually get an interactive shell on the node like in the cases abov
 [Unrestricted hostmount (/)](yaml/hostpath-only/README.md)
 
 ### What's the worst that can happen?
-Same as above 
+Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
 While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform the same types of privesc paths outlined above. Hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
@@ -81,7 +81,7 @@ While you don't have access to host process or network namespaces, having access
 [hostpid](yaml/hostpid-only/README.md)
 
 ### What's the worst that can happen?
-Unlikely but possible path to cluster compromise <br> 
+Unlikely but possible path to cluster compromise 
 
 ### How?
 You can run `ps -aux` on the host. Look for any process that includes passwords, tokens, or keys, and use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin.   You can also kill any process on the node (DOS).  
@@ -155,4 +155,4 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-
 
 
 # Acknowledgements 
-Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for sharing so much knowledge about Kubernetes security. 
+Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for publicly sharing so much knowledge about Kubernetes security. 
