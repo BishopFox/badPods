@@ -3,7 +3,7 @@
 A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications.
 
 ## Background
-Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications: Pod Security Policies or with admission controllers like OPA Gatekeeper. However, it is not always clear to an administrator what the real-world security implication of allowing a certain attributes is, and quite often, pod creation polices are not as locked down as they should be. 
+Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using Pod Security Policies or with admission controllers like OPA Gatekeeper. However, the real-world security implication of allowing a certain attributes is not always understood, and quite often, pod creation polices are not as locked down as they should be. 
 
 ## Prerequisites
 In order to be successful in this attack path, you'll need the following: 
@@ -15,25 +15,25 @@ In order to be successful in this attack path, you'll need the following:
 
 ## Pods you can exec into
 
-Notes | type| yaml | readme
--- | -- | -- | --
-Everything allowed| pod | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
-Privileged and hostPid | pod | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only | pod | [yaml](yaml/priv-only/pod-priv-only.yaml) | [readme](yaml/priv-only/README.md)
-hostPid only | pod | [yaml](yaml/hostpid-only/pod-hostpid-only.yaml) | [readme](yaml/hostpid-only/README.md)
-hostNetwork only | pod | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only.yaml) | [readme](yaml/hostnetwork-only/README.md)
-hostIPC only | pod | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/hostipc-only/README.md)
+Notes | yaml | readme
+-- | -- | --
+Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
+Privileged and hostPid | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
+Privileged only | [yaml](yaml/priv-only/pod-priv-only.yaml) | [readme](yaml/priv-only/README.md)
+hostPid only | [yaml](yaml/hostpid-only/pod-hostpid-only.yaml) | [readme](yaml/hostpid-only/README.md)
+hostNetwork only | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only.yaml) | [readme](yaml/hostnetwork-only/README.md)
+hostIPC only | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/hostipc-only/README.md)
 
 ## Reverse shell versions of each pod
 
 Notes | type| yaml | readme
 -- | -- | -- | --
-Everything allowed - reverse shell| pod | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
-Privileged and hostPid - reverse shell | pod | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only - reverse shell| pod | [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
-hostPid only - reverse shell | pod | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
-hostNetwork only - reverse shell | pod | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
-hostIPC only - reverse shell | pod | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
+Everything allowed - reverse shell| [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
+Privileged and hostPid - reverse shell | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
+Privileged only - reverse shell| [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
+hostPid only - reverse shell  | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
+hostNetwork only - reverse shell | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
+hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
 
  
 
