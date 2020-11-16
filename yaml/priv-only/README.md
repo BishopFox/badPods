@@ -8,8 +8,6 @@ If you only have `privileged=true`, you can still get RCE on the host, and ultim
 ### Create a pod you can exec into
 [pod-priv-only.yaml](pod-priv-only.yaml)
 
-#### Create a pod
-
 #### Option 1: Create pod from local yaml 
 ```bash
 kubectl apply -f pod-priv-only.yaml   
