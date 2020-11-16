@@ -40,7 +40,6 @@ hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](ya
 # Impact - What's the worst that can happen?
 
 ## Nothing allowed
-[nothing-allowed](yaml/nothing-allowed/README.md) 
 
 ### What's the worst that can happen?
 Multiple potential paths to full cluster compromise (all resources in all namespaces)
@@ -52,11 +51,14 @@ Before we get into how to exploit specific specifications that are enabled, I wa
 * If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
 * Your pod will be able to see a different view of the network services running within the cluster than you likely can from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
+### More details and exploitation examples 
+[yaml/nothing-allowed/README.md](yaml/nothing-allowed/README.md) 
+
+
 So, with some of those privesc paths out of the way, **for the next examples let's assume we are talking about additional escalation paths** that are specific to the enabled specifications.
 
 
 ## Everything allowed
-[everything-allowed](yaml/everything-allowed/README.md) 
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -64,11 +66,13 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 ### How?
 The pod you create mounts the host's filesystem to the pod. You then exec your pod and chroot to the directory where you mounted the host's filesystem and have root on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the master node (not possible in most cloud hosted k8s environment). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds, you can create mirror pods in any namespace, and you can access any secret mounted within any pod on the node you are on, and then use it to gain access to other namespaces or to create new cluster role bindings. 
 
+### More details and exploitation examples 
+[yaml/everything-allowed/README.md](yaml/everything-allowed/README.md) 
+
 Reference:
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
  
 ## HostPID and Privileged
-[hostPID + privileged](yaml/priv-and-hostpid/README.md) 
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -76,12 +80,15 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 ### How?
 In this scenario, the only thing that changes is now you gain root access to the host. Rather than chrooting to the host's filesystem first, you can use nsenter to run bash in the host's PID 1 namespace, giving you a root shell on the node running your pod. Once you are root on the host, the privesc paths are all the same as described above. 
 
+### More details and exploitation examples 
+[yaml/priv-and-hostpid/README.md](yaml/priv-and-hostpid/README.md) 
+
+
 References: 
 * https://twitter.com/mauilion/status/1129468485480751104
 * https://github.com/kvaps/kubectl-node-shell
 
 ## Privileged only
-[privileged=true](yaml/priv-only/README.md) 
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -89,13 +96,15 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 ### How?
 While can eventually get an interactive shell on the node like in the cases above, you start with non-interactive command execution and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
 
+### More details and exploitation examples 
+[yaml/priv-only/README.md](yaml/priv-only/README.md) 
+
 References: 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
 
 
 ## hostPath only
-[Unrestricted hostmount (/)](yaml/hostpath-only/README.md)
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -103,9 +112,11 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 ### How?
 While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform most of the same types of privesc paths outlined above. Hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
 
+### More details and exploitation examples 
+[yaml/hostpath-only/README.md](yaml/hostpath-only/README.md)
+
 
 ## hostPid only
-[hostpid](yaml/hostpid-only/README.md)
 
 ### What's the worst that can happen?
 Unlikely but possible path to cluster compromise 
@@ -123,16 +134,22 @@ Potential path to cluster compromise
 ### How?
 Sniff unencrypted traffic on any interface on the host and potentially find service account tokens or other sensitive information that is transmitted over unencrypted channels. <br> You can also reach services that only listen on the host's loopback interface or are otherwise blocked by nework polices. These services might turn into a fruitful privesc path. 
 
+### More details and exploitation examples 
+[yaml/hostpid-only/README.md](yaml/hostpid-only/README.md)
+
+
+
 
 ## hostIPC only
-[hostipc](yaml/hostipc-only/README.md) 
-
 
 ### What's the worst that can happen?
 Not seen often - but potential limited compromise 
 
 ### How?
 If any process on the host, or any processes within a pod is using the host's interprocess communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware. 
+
+### More details and exploitation examples 
+[yaml/hostipc-only/README.md](yaml/hostipc-only/README.md) 
 
 
 **Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
