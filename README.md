@@ -27,7 +27,7 @@ hostIPC only | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/h
 ## Reverse shell versions of each pod
 
 Notes | yaml | readme
--- | --  --
+-- | -- | --
 Everything allowed - reverse shell| [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
 Privileged and hostPid - reverse shell | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
 Privileged only - reverse shell| [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
