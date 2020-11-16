@@ -1,6 +1,6 @@
 # badPods
 
-A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications.
+A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications. The focus here is attacks that require the creation of pods. 
 
 ## Background
 Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using Pod Security Policies or with admission controllers like OPA Gatekeeper. However, the real-world security implication of allowing a certain attributes is not always understood, and quite often, pod creation polices are not as locked down as they should be. 
@@ -45,14 +45,17 @@ hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](ya
 Multiple potential paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-Before we get into how to exploit specific specifications that are enabled, I wanted to cover the baseline case. If you can create a pod, even without any security specific specifications like hostPID or privileged, there are still quite a few privesc paths available. I'll just list some of the most common ones here
-* If cloud hosted, try to access the cloud metadata service. You might get access to the security token associated with the node, or even just a token assigned to that pod. This can be your path to escalate within the cluster, within the cloud environment, or both. 
-* If either the apiserver or the kubelets have anonymous access set to true, and there are no network policy controls preventing it, you can interact with them directly without authentication. 
-* If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
-* Your pod will be able to see a different view of the network services running within the cluster than you likely can from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
+There are plenty of attack paths that are available even if you can only without any security specific specifications like hostPID or privileged enabled. I'll just list some of the most common ones here:
+* **Cloud metadata** - If cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node, or even just a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or both. 
+* **Overly permissive service account** - If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+* **Anonymous-auth** - If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
+* **Traditional vulnerability hunting** -Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the host you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
 ### Usage and exploitation examples 
 [yaml/nothing-allowed/README.md](yaml/nothing-allowed/README.md) 
+
+References: 
+* https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
 
 
 So, with some of those privesc paths out of the way, **for the next examples let's assume we are talking about additional escalation paths** that are specific to the enabled specifications.
