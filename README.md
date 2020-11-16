@@ -46,9 +46,9 @@ hostIPC only - reverse shell | [yaml](yaml/hostipc-only/README.md) | [readme](ya
 Multiple potential paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-Before I get into how to exploit specific specifications that are enabled, I wanted to cover the baseline case. If you can create a pod in a namespace, there are quite a few privesc paths available to you. I'll just list some of the most common ones here
-* If cloud hosted, try to access the cloud metadata service. You might get access to a cloud security token associated with the IAM role(s) assigned to the node), as well as access outside the cluster (i.e. buckets, databases, write access to IAM, etc.) 
-* If the apiserver or kubelet's have anonymous access set to true, and there are no network policy controls, you can interact with them directly. 
+Before we get into how to exploit specific specifications that are enabled, I wanted to cover the baseline case. If you can create a pod, even without any security specific specifications like hostPID or privileged, there are still quite a few privesc paths available. I'll just list some of the most common ones here
+* If cloud hosted, try to access the cloud metadata service. You might get access to the security token associated with the node, or even just a token assigned to that pod. This can be your path to escalate within the cluster, within the cloud environment, or both. 
+* If either the apiserver or the kubelets have anonymous access set to true, and there are no network policy controls preventing it, you can interact with them directly without authentication. 
 * If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
 * Your pod will be able to see a different view of the network services running within the cluster than you likely can from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
