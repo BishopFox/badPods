@@ -3,7 +3,7 @@
 A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications.
 
 ## Background
-Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications, but it is not always clear what the real-world security implications of allowing certain attributes is. 
+Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications: Pod Security Policies or with admission controllers like OPA Gatekeeper. However, it is not always clear to an administrator what the real-world security implication of allowing a certain attributes is, and quite often, pod creation polices are not as locked down as they should be. 
 
 ## Prerequisites
 In order to be successful in this attack path, you'll need the following: 
