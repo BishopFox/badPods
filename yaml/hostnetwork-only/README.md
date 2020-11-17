@@ -7,7 +7,7 @@ The important things here are:
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -45,7 +45,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/h
 kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
 [pod-hostnetwork-only-revshell.yaml](pod-hostnetwork-only-revshell.yaml)
 
 #### Set up listener
