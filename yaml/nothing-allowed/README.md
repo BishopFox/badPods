@@ -10,17 +10,15 @@ The pod security policy or admission controller has blocked access to all of the
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only
+  name: pod-nothing-allowed
   labels: 
-    app: priv-only
+    app: nothing-allowed
 spec:
   containers:
-  - name: priv-only
+  - name: nothing-allowed
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
-    securityContext:
-      privileged: true
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
 ```
