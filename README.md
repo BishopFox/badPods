@@ -40,7 +40,8 @@ hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/
 
 # Impact - What's the worst that can happen?
 
-## Nothing allowed
+## Nothing allowed 
+❌privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
 
 ### What's the worst that can happen?
 Multiple potential paths to full cluster compromise (all resources in all namespaces)
@@ -63,6 +64,8 @@ So, with some of those privesc paths out of the way, **for the next examples let
 
 
 ## Everything allowed
+✅privileged ✅hostPID ✅hostPath ✅hostNetwork ✅hostIPC
+
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -75,8 +78,11 @@ The pod you create mounts the host's filesystem to the pod. You then exec your p
 
 Reference:
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
+
  
 ## HostPID and Privileged
+✅privileged ✅hostPID ❌hostPath ❌hostNetwork ❌hostIPC
+
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -90,9 +96,11 @@ In this scenario, the only thing that changes is now you gain root access to the
 
 References: 
 * https://twitter.com/mauilion/status/1129468485480751104
+* [The Path Less Traveled: Abusing Kubernetes Defaults](https://www.youtube.com/watch?v=HmoVSmTIOxM) & [corresponding repo](https://github.com/mauilion/blackhat-2019)
 * https://github.com/kvaps/kubectl-node-shell
 
 ## Privileged only
+✅privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -109,6 +117,8 @@ References:
 
 
 ## hostPath only
+❌privileged ❌hostPID ✅hostPath ❌hostNetwork ❌hostIPC
+
 
 ### What's the worst that can happen?
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
@@ -119,8 +129,13 @@ While you don't have access to host process or network namespaces, having access
 ### Usage and exploitation examples 
 [yaml/hostpath-only/README.md](yaml/hostpath-only/README.md)
 
+Reference: 
+* [The Path Less Traveled: Abusing Kubernetes Defaults](https://www.youtube.com/watch?v=HmoVSmTIOxM) & [corresponding repo](https://github.com/mauilion/blackhat-2019)
+
 
 ## hostPid only
+❌privileged ✅hostPID ❌hostPath ❌hostNetwork ❌hostIPC
+
 
 ### What's the worst that can happen?
 Unlikely but possible path to cluster compromise 
@@ -133,6 +148,8 @@ You can run `ps -aux` on the host. Look for any process that includes passwords,
 
 
 ## hostNetwork only
+❌privileged ❌hostPID ❌hostPath ✅hostNetwork ❌hostIPC
+
 
 ### What's the worst that can happen?
 Potential path to cluster compromise 
@@ -147,6 +164,8 @@ Sniff unencrypted traffic on any interface on the host and potentially find serv
 
 
 ## hostIPC only
+❌privileged ❌hostPID ❌hostPath ❌hostNetwork ✅hostIPC
+
 
 ### What's the worst that can happen?
 Not seen often - but potential limited compromise 
