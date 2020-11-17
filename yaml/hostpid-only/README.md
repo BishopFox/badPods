@@ -10,19 +10,21 @@ You are exploiting the fact that there are no polices preventing the creation of
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only
-  labels: 
-    app: priv-only
+  name: pod-hostpid
+  labels:
+    app: hostpid
 spec:
+  hostPID: true
   containers:
-  - name: priv-only
-    image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-    securityContext:
-      privileged: true
-  # Force scheduling of your pod on a master mode by uncommenting the next line and changing the nodeName to that of a master node
+  - image: ubuntu
+    command:
+      - "sleep"
+      - "604800"
+    imagePullPolicy: IfNotPresent
+    name: hostpid
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
+  restartPolicy: Always
   ```
 [pod-priv-only.yaml](pod-priv-only.yaml)
 
