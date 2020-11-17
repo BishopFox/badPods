@@ -8,7 +8,7 @@ kind: Pod
 metadata:
   name: pod-hostpid-revshell
   labels:
-    app: hostpid-revshell
+    app: pentest
 spec:
   hostPID: true
   containers:
@@ -19,4 +19,3 @@ spec:
     name: hostpid-revshell
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
-  restartPolicy: Always

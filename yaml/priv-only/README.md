@@ -160,7 +160,7 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 
 # Demonstrate Impact
 
-If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test.
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
 
 
 Reference(s): 

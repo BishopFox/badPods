@@ -12,7 +12,7 @@ kind: Pod
 metadata:
   name: pod-nothing-allowed
   labels: 
-    app: nothing-allowed
+    app: pentest
 spec:
   containers:
   - name: nothing-allowed
@@ -46,7 +46,7 @@ kind: Pod
 metadata:
   name: pod-nothing-allowed-revshell
   labels: 
-    app: nothing-allowed-revshell
+    app: pentest
 spec:
   containers:
   - name: nothing-allowed-revshell

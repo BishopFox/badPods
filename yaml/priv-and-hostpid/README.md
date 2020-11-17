@@ -162,7 +162,7 @@ Attacks that apply to all pods, even without any special permissions
 
 # Demonstrate Impact
 
-If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the pentration test. 
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
 
 Reference(s): 
 * https://twitter.com/mauilion/status/1129468485480751104

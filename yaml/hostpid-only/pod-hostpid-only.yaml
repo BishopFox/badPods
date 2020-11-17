@@ -8,16 +8,13 @@ kind: Pod
 metadata:
   name: pod-hostpid
   labels:
-    app: hostpid
+    app: pentest
 spec:
   hostPID: true
   containers:
   - image: ubuntu
-    command:
-      - "sleep"
-      - "604800"
-    imagePullPolicy: IfNotPresent
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
     name: hostpid
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
-  restartPolicy: Always

@@ -8,7 +8,7 @@ kind: Pod
 metadata:
   name: pod-hostpath-revshell
   labels:
-    app: hostpath-revshell
+    app: pentest
 spec:
   containers:
   - name: hostpath-revshell

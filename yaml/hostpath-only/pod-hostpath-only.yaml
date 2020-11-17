@@ -8,7 +8,7 @@ kind: Pod
 metadata:
   name: pod-hostpath
   labels:
-    app: hostpath
+    app: pentest
 spec:
   containers:
   - name: hostpath

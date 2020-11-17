@@ -8,7 +8,7 @@ kind: Pod
 metadata:
   name: pod-priv-and-hostpid-revshell
   labels: 
-    app: priv-and-hostpid-revshell
+    app: pentest
 spec:
   hostPID: true
   containers:

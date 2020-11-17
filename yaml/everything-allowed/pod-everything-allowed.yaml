@@ -9,7 +9,7 @@ kind: Pod
 metadata:
   name: pod-everything-allowed
   labels:
-    app: everything-allowed
+    app: pentest
 spec:
   hostNetwork: true
   hostPID: true
