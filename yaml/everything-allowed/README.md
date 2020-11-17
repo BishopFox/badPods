@@ -117,10 +117,16 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 # Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 ```
 
-Some other ideas:
+#### Some other ideas:
 * Add your public key to node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access other nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
+
+#### Attacks that apply to all pods, even without any special permissions
+* Cloud metadata service
+* `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
+* Kubernetes exploits
+* Hunting for vulnerable application/services in the cluster
 
 # Demonstrate Impact
 
