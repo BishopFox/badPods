@@ -87,37 +87,42 @@ Connection received on 10.0.0.162 42035
 ```
 
 # Post Exploitation 
+
+#### Install tcpdump and sniff traffic 
+Note: If you can't install tools to your pod (no internet access), you will have to change the image in your pod yaml to something that already includes tcpdump, like https://hub.docker.com/r/corfr/tcpdump
+
 ```bash
-# Install tcpdump and sniff traffic 
-# Note: If you can't install tools to your pod (no internet access), you will have to change the image in your pod yaml to something that already includes tcpdump, like https://hub.docker.com/r/corfr/tcpdump
-
 apt update && apt install tcpdump 
+```
+You now have a few options for next steps: 
 
-# You now have a few options for next steps: 
-
-# See if kubelet read only port (10255/tcp) is open on the nodes IP or the docker host IP
-
+See if kubelet read only port (10255/tcp) is open on the nodes IP or the docker host IP
+```bash
 nc -zv 10.0.0.162 10255
 Connection to 10.0.0.162 10255 port [tcp/*] succeeded!
 nc -zv 172.17.0.1 10255
 Connection to 172.17.0.1 10255 port [tcp/*] succeeded!
+```
 
-# If the read only port is open, run tcpdump recording the output to a file for a few minutes
+If the read only port is open, run tcpdump recording the output to a file for a few minutes
 
-#######################
-#Warning: Sniffing on an interface with a lot of traffic can cause the interface to DROP traffic, which is not what you want in an production environment. I suggest picking one port at a time for your packet captures (e.g., 10255, 80, 8080, 3000 25, 23)
-#Warning: Always run tcpdump with the -n flag. This turns off name resolution, and if you don't, the name resolution will bring the capture, and potentially the host, to its knees. 
-#########################
+**Warning:** Sniffing on an interface with a lot of traffic can cause the interface to DROP traffic, which is not what you want in an production environment. I suggest picking one port at a time for your packet captures (e.g., 10255, 80, 8080, 3000 25, 23)
+**Warning:** Always run tcpdump with the -n flag. This turns off name resolution, and if you don't, the name resolution will bring the capture, and potentially the host, to its knees. 
+
+```bash
 tcpdump -ni [host or docker interface name] -s0 -w kubelet-ro.cap port 10255
+```
+Stop it, and read the file with tcpdump and use the -A flag to only show the printable characters
 
-#Stop it, and read the file with tcpdump and use the -A flag to only show the printable characters
-
+```bash
 tcpdump -ro kubelet-ro.cap -s0 -A
+```
 
-#Cross your fingers and look for secrets.  If you are lucky, you might even get a jwt token. If you are really lucky, that token might be associated with a service account in kube-system.
+Cross your fingers and look for secrets.  If you are lucky, you might even get a jwt token. If you are really lucky, that token might be associated with a service account in kube-system.
 
 
 # Another option entirely: investigate local services
+```bash
 curl https://localhost:1234/metrics
 ```
 
