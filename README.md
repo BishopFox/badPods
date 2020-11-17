@@ -145,7 +145,7 @@ Reference:
 Unlikely but possible path to cluster compromise 
 
 ### How?
-* Run `ps -aux` on the host which will show you all the proceses running on the host, including proccesses running within each pod. Look for any process that includes passwords, tokens, or keys in the `ps` output. Pipe the `ps` output to `more` or `less` to make sure the full output is word wrapped. If you are lucky, you will find credentials and you'll be able to use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin. You can also kill any process on the node (DOS), but I would advise against it!  
+Run `ps -aux` on the host which will show you all the proceses running on the host, including proccesses running within each pod. Look for any process that includes passwords, tokens, or keys in the `ps` output. Pipe the `ps` output to `more` or `less` to make sure the full output is word wrapped. If you are lucky, you will find credentials and you'll be able to use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin. You can also kill any process on the node (DOS), but I would advise against it!  
 
 ### Usage and exploitation examples 
 [yaml/hostpid-only/README.md](yaml/hostpid-only/README.md)
@@ -180,7 +180,7 @@ If any process on the host or any processes within a pod is using the host's int
 ### More details and exploitation examples 
 [yaml/hostipc-only/README.md](yaml/hostipc-only/README.md) 
 
-## Usage
+# Usage
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
 
 ### Clone the repo
