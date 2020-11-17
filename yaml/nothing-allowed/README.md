@@ -6,6 +6,24 @@ The pod security policy or admission controller has blocked access to all of the
 # Pod Creation
 
 ### Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-only
+  labels: 
+    app: priv-only
+spec:
+  containers:
+  - name: priv-only
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+```
 [pod-nothing-allowed.yaml](pod-nothing-allowed.yaml)
 
 #### Option 1: Create pod from local yaml 
