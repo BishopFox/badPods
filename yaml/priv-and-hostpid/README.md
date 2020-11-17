@@ -5,6 +5,26 @@ If you have `privileged=true` and `hostPID` available to you, you can use the `n
 # Pod Creation
 
 ### Create a pod you can exec into
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-and-hostpid
+  labels: 
+    app: priv-and-hostpid
+spec:
+  hostPID: true
+  containers:
+  - name: priv-and-hostpid
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]    
+    args: [ "while true; do sleep 30; done;" ]
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
+  ```
 [pod-priv-and-hostpid.yaml](pod-priv-and-hostpid.yaml)
 
 #### Option 1: Create pod from local yaml 
