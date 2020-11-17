@@ -124,18 +124,18 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 # Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 ```
 
-If cloud hosted, look at the metadata service and checkout user-data, and the IAM permissions. If an IAM role has been assigned to the node, use that to see wht access you hav in the cloud environment. 
-
-```bash
-curl http://169.254.169.254/latest/user-data 
-curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME]
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/insce-accounts/default/token
-```
-
-Some other ideas:
+#### Some other ideas:
 * Add your public key to node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access other nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
+
+
+#### Attacks that apply to all pods, even without any special permissions
+* Cloud metadata service
+* `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
+* Kubernetes exploits
+* Hunting for vulnerable application/services in the cluster
+
 
 # Demonstrate Impact
 
