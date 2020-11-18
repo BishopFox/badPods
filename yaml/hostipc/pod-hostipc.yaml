@@ -1,19 +1,20 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-nothing-allowed.yaml 
-## Access: kubectl -n [namespace] exec -it pod-nothing-allowed -- bash
-## Remove: kubectl -n [namespace] delete pod-nothing-allowed
+## Deploy: kubectl -n [namespace] apply -f pod-hostipc.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostipc -- bash
+## Remove: kubectl -n [namespace] delete pod-hostipc
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-nothing-allowed
-  labels: 
+  name: pod-hostipc
+  labels:
     app: pentest
 spec:
+  hostIPC: true
   containers:
-  - name: nothing-allowed
-    image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]
+  - image: ubuntu
+    command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
+    name: hostipc
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node

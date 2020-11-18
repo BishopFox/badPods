@@ -1,8 +1,7 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-everything-allowed.yaml 
 ## Access: kubectl -n [namespace] exec -it pod-everything-allowed -- bash
-## Remove: kubectl -n [namespace] delete -f pod-everything-allowed.yaml 
-## Credit: Adapted from https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
+## Remove: kubectl -n [namespace] delete pod-everything-allowed
 ###########################################################
 apiVersion: v1
 kind: Pod

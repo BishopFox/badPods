@@ -1,17 +1,17 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-priv-only.yaml 
-## Access: kubectl -n [namespace] exec -it pod-priv-only -- bash
-## Remove: kubectl -n [namespace] delete -f pod-priv-only.yaml
+## Deploy: kubectl -n [namespace] apply -f pod-priv.yaml 
+## Access: kubectl -n [namespace] exec -it pod-priv -- bash
+## Remove: kubectl -n [namespace] delete pod-priv
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only
+  name: pod-priv
   labels: 
     app: pentest
 spec:
   containers:
-  - name: priv-only
+  - name: priv
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]

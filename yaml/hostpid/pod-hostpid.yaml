@@ -1,7 +1,7 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostpid-only.yaml 
+## Deploy: kubectl -n [namespace] apply -f pod-hostpid.yaml 
 ## Access: kubectl -n [namespace] exec -it pod-hostpid -- bash
-## Remove: kubectl -n [namespace] delete -f pod-hostpid-only.yaml
+## Remove: kubectl -n [namespace] delete pod-hostpid
 ###########################################################
 apiVersion: v1
 kind: Pod
