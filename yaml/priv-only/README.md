@@ -1,6 +1,6 @@
 ## You can create a pod with only privileged: true
 
-If you only have `privileged=true`, you can still get RCE on the host, and ultimately cluster-admin, but the path is more tedious. The exploit below escapes the container and allows you to run one command at a time. From there, you can launch a reverse shell.  
+If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
 
 # Pod Creation
 
