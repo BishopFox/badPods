@@ -8,7 +8,7 @@ kind: Pod
 metadata:
   name: pod-priv-only-revshell
   labels: 
-    app: priv-only-revshell
+    app: pentest
 spec:
   containers:
   - name: priv-only-revshell
@@ -18,5 +18,5 @@ spec:
 
     securityContext:
       privileged: true
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node

