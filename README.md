@@ -38,7 +38,7 @@ hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/
 
 
 # Impact - What's the worst that can happen?
-**Caveat:** There are many kubernetes specific security controls available to administrators that can reduce the impact of pods created with the following privileges. As is always the case with penetration testing, your milage may vary.
+**Caveat:** There are many defense in depth security controls available to kubernetes administrators that can reduce the impact, or completley thwart certain attack paths. As is always the case with penetration testing, your milage may vary.  
 
 ## Nothing allowed 
 ❌privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
