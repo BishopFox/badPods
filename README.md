@@ -62,6 +62,7 @@ Multiple potential paths to full cluster compromise (all resources in all namesp
 
 References: 
 * https://securekubernetes.com/
+* https://madhuakula.com/kubernetes-goat/
 * https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
 * https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/
 * https://github.com/tabbysable/POC-2020-8558
