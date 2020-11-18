@@ -60,7 +60,7 @@ Multiple potential paths to full cluster compromise (all resources in all namesp
 ### Usage and exploitation examples 
 [yaml/nothing-allowed/README.md](yaml/nothing-allowed/README.md) 
 
-References: 
+### Reference(s): 
 * https://securekubernetes.com/
 * https://madhuakula.com/kubernetes-goat/
 * https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
@@ -81,7 +81,7 @@ The pod you create mounts the host's filesystem to the pod. You then exec into y
 ### Usage and exploitation examples 
 [yaml/everything-allowed/README.md](yaml/everything-allowed/README.md) 
 
-Reference:
+### Reference(s): 
 * https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/
 
  
@@ -99,7 +99,7 @@ In this scenario, the only thing that changes from the everything-allowed pod is
 [yaml/priv-and-hostpid/README.md](yaml/priv-and-hostpid/README.md) 
 
 
-References: 
+### Reference(s): 
 * https://twitter.com/mauilion/status/1129468485480751104
 * [The Path Less Traveled: Abusing Kubernetes Defaults](https://www.youtube.com/watch?v=HmoVSmTIOxM) & [corresponding repo](https://github.com/mauilion/blackhat-2019)
 * https://github.com/kvaps/kubectl-node-shell
@@ -116,7 +116,7 @@ While you can eventually get an interactive shell on the node like in the cases 
 ### Usage and exploitation examples 
 [yaml/priv-only/README.md](yaml/priv-only/README.md) 
 
-References: 
+### Reference(s): 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
 
@@ -134,7 +134,7 @@ While you don't have access to host process or network namespaces, having access
 ### Usage and exploitation examples 
 [yaml/hostpath-only/README.md](yaml/hostpath-only/README.md)
 
-Reference: 
+### Reference(s): 
 * [The Path Less Traveled: Abusing Kubernetes Defaults](https://www.youtube.com/watch?v=HmoVSmTIOxM) & [corresponding repo](https://github.com/mauilion/blackhat-2019)
 
 
