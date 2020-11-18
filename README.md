@@ -111,7 +111,7 @@ In this scenario, the only thing that changes from the everything-allowed pod is
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-If you only have `privileged=true`, you can eventually get an interactive shell on the node like in the cases above, you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
+If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
 
 ### Usage and exploitation examples 
 [yaml/priv-only/README.md](yaml/priv-only/README.md) 
