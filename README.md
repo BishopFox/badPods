@@ -61,7 +61,10 @@ Multiple potential paths to full cluster compromise (all resources in all namesp
 [yaml/nothing-allowed/README.md](yaml/nothing-allowed/README.md) 
 
 References: 
+* https://securekubernetes.com/
 * https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
+* https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/
+* https://github.com/tabbysable/POC-2020-8558
 
 
 ## Everything allowed
