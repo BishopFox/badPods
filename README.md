@@ -44,7 +44,7 @@ hostIPC only | [yaml](yaml/hostipc-only/README.md) | [readme](yaml/hostipc-only/
 ❌privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
 
 There are plenty of attack paths that are available even if you don't have access to any of the host's namespaces. That's not the focus of this repository, but I'll include a few privesc paths below. 
-**You can assume that these paths are potentially available to you in all of the other examples listed below this one.** 
+**These paths are potentially available to you in all of the other examples listed below this one.** 
 
 ### What's the worst that can happen?
 Multiple potential paths to full cluster compromise (all resources in all namespaces)
