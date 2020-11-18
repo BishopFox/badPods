@@ -1,6 +1,6 @@
 # badPods
 
-A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications. The focus here is attacks that require the creation of pods. 
+A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications. The focus here is attacks that require the creation of pods, or the case where you have landed on a pod with with access to one or more of the hosts namespaces. 
 
 ## Background
 Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using Pod Security Policies or with admission controllers like OPA Gatekeeper. However, the real-world security implication of allowing a certain attributes is not always understood, and quite often, pod creation polices are not as locked down as they should be. 
