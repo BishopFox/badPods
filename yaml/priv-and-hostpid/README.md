@@ -150,12 +150,12 @@ curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME
 curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/[account]/default/token
 ```
 
-Some other ideas:
+### Some other ideas:
 * Add your public key to node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access other nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there
 
-Attacks that apply to all pods, even without any special permissions
+### Attacks that apply to all pods, even without any special permissions
 * Cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
@@ -165,6 +165,6 @@ Attacks that apply to all pods, even without any special permissions
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
 
-Reference(s): 
+# Reference(s): 
 * https://twitter.com/mauilion/status/1129468485480751104
 * https://github.com/kvaps/kubectl-node-shell

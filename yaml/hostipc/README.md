@@ -82,10 +82,6 @@ Connection received on 10.0.0.162 42035
 ipcs -a
 ```
 
-Reference: https://opensource.com/article/20/1/inter-process-communication-linux
-
-
-
 #### Attacks that apply to all pods, even without any special permissions
 * Cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
@@ -93,5 +89,7 @@ Reference: https://opensource.com/article/20/1/inter-process-communication-linux
 * Hunting for vulnerable application/services in the cluster
 
 # Demonstrate Impact
-
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
+
+# Reference(s): 
+* https://opensource.com/article/20/1/inter-process-communication-linux

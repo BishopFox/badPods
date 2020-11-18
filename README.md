@@ -5,6 +5,9 @@ A collection of yamls that create pods with different elevated privileges. Quick
 ## Background
 Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using Pod Security Policies or with admission controllers like OPA Gatekeeper. However, the real-world security implication of allowing a certain attributes is not always understood, and quite often, pod creation polices are not as locked down as they should be. 
 
+## Purpose
+There are amazing resources detailing some of the most impactful ways to spin up a pod that can help you completely compromise a cluster. I've tried to that research in this repo and to give appropriate credit. However, there is not much offensive security research much that covers what to do if you just one some level of privileged access. What if the pod security policy allows just hostNetwork, just hostPID, or just hostIPC? What can you do in each case? I hope this repository helps you answer that question. 
+
 ## Prerequisites
 In order to be successful in this attack path, you'll need the following: 
 

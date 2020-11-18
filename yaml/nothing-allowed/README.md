@@ -89,3 +89,14 @@ curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadat
 * **Anonymous-auth** - If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
 * **Exploits** - Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
 * **Traditional vulnerability hunting** -Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
+
+
+
+
+# Reference(s): 
+
+* https://securekubernetes.com/
+* https://madhuakula.com/kubernetes-goat/
+* https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
+* https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/
+* https://github.com/tabbysable/POC-2020-8558
