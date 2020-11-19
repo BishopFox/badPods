@@ -81,18 +81,17 @@ Connection received on 10.0.0.162 42035
 
 
 # Post exploitation
-```bash
-# View all processes running on the host and look for passwords, tokens, keys, etc. 
-# Check out that clear text password in the ps output below! 
 
+#### View all processes running on the host and look for passwords, tokens, keys, etc. 
+```bash
 ps -aux
 ...omitted for brevity...
 root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c while true; do ./my-program --grafana-uername=admin --grafana-password=admin; sleep 10;done
 ...omitted for brevity...
-
-# Also, you can also kill any process, but don't do that in production :)
 ```
+Check out that clear text password in the ps output below! 
 
+#### Also, you can also kill any process, but don't do that in production :)
 
 #### Attacks that apply to all pods, even without any special permissions
 * Cloud metadata service
