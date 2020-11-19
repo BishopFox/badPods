@@ -15,29 +15,17 @@ In order to be successful in this attack path, you'll need the following:
 1. Permission to create pods in at least one namespace. If you can exec into them that makes life easier.  
 1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
-## Pods you can exec into
+## The badPods line-up
 
-Notes | yaml | readme
--- | -- | --
-Nothing allowed | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [readme](yaml/nothing-allowed/README.md)
-Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [readme](yaml/everything-allowed/README.md)
-Privileged and hostPid | [yaml](yaml/priv-and-hostpid/README.md) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only | [yaml](yaml/priv/pod-priv.yaml) | [readme](yaml/priv/README.md)
-hostPid only | [yaml](yaml/hostpid/pod-hostpid.yaml) | [readme](yaml/hostpid/README.md)
-hostNetwork only | [yaml](yaml/hostnetwork/pod-hostnetwork.yaml) | [readme](yaml/hostnetwork/README.md)
-hostIPC only | [yaml](yaml/hostipc/pod-hostipc.yaml) | [readme](yaml/hostipc/README.md)
-
-## Reverse shell versions of each pod
-
-Notes | yaml | readme
--- | -- | --
-Nothing allowed |  [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml) | [readme](yaml/nothing-allowed/README.md)
-Everything allowed | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml) |  [readme](yaml/everything-allowed/README.md)
-Privileged and hostPid | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml) | [readme](yaml/priv-and-hostpid/README.md)
-Privileged only | [yaml](yaml/priv/pod-priv-revshell.yaml) | [readme](yaml/priv/README.md)
-hostPid only | [yaml](yaml/hostipc/pod-hostipc-revshell.yaml) | [readme](yaml/hostpid/README.md)
-hostNetwork only | [yaml](yaml/hostnetwork/pod-hostnetwork-revshell.yaml) | [readme](yaml/hostnetwork/README.md)
-hostIPC only | [yaml](yaml/hostipc/README.md) | [readme](yaml/hostipc/README.md)
+Notes | readme | yaml | revshell yaml
+-- | -- | -- | --
+Nothing allowed | [readme](yaml/nothing-allowed/README.md) | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml)
+Everything allowed | [readme](yaml/everything-allowed/README.md) | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml)
+Privileged and hostPid | [readme](yaml/priv-and-hostpid/README.md) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml)
+Privileged only | [readme](yaml/priv/README.md) | [yaml](yaml/priv/pod-priv.yaml) | [yaml](yaml/priv/pod-priv-revshell.yaml)
+hostPid only | [readme](yaml/hostpid/README.md) | [yaml](yaml/hostpid/pod-hostpid.yaml) | [yaml](yaml/hostpid/pod-hostpid-revshell.yaml)  
+hostNetwork only | [readme](yaml/hostnetwork/README.md) | [yaml](yaml/hostnetwork/pod-hostnetwork.yaml) | [yaml](yaml/hostnetwork/pod-hostnetwork-revshell.yaml)
+hostIPC only | [readme](yaml/hostipc/README.md) | [yaml](yaml/hostipc/pod-hostipc.yaml) | [yaml](yaml/hostipc/pod-hostipc-revshell.yaml)
 
 
 # Impact - What's the worst that can happen?
