@@ -30,7 +30,7 @@ hostIPC only | [readme](yaml/hostipc/README.md) | [yaml](yaml/hostipc/pod-hostip
 
 
 # Impact - What's the worst that can happen?
-**Caveat:** There are many defense in depth security controls available to kubernetes administrators that can reduce the impact, or completley thwart certain attack paths. As is always the case with penetration testing, your milage may vary.  
+**Caveat:** There are many defense in depth security controls available to kubernetes administrators that can reduce the impact, or completely thwart certain attack paths. As is always the case with penetration testing, your milage may vary.  
 
 ## Nothing allowed 
 ❌privileged ❌hostPID ❌hostPath ❌hostNetwork ❌hostIPC
