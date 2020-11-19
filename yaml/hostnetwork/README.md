@@ -113,7 +113,7 @@ tcpdump -ro kubelet-ro.cap -s0 -A | grep Bearer
 Cross your fingers and look for secrets.  If you are lucky, you might even get a jwt token. If you are really lucky, that token might be associated with a service account in `kube-system`.
 
 
-# Another path: Investigate local services
+#### Another path: Investigate local services
 ```bash
 curl https://localhost:1234/metrics
 ```
