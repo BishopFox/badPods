@@ -16,8 +16,9 @@ In order to be successful in this attack path, you'll need the following:
 1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 ## The badPods line-up
+In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case so a version of each pod is included that will call back to your listener as soon as the pod is created. 
 
-Notes | readme | yaml | revshell yaml
+Notes | readme | pod | revshell
 -- | -- | -- | --
 Nothing allowed | [readme](yaml/nothing-allowed/README.md) | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml)
 Everything allowed | [readme](yaml/everything-allowed/README.md) | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml)
