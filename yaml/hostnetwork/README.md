@@ -1,9 +1,9 @@
 ## You can create a pod with only hostNetwork
 
 If you only have `hostNetwork=true`, you can't get RCE on the host directly, but if your cross your fingers you might still find a path to cluster admin. 
-The important things here are: 
-* You can sniff traffic on any of the host's network interfaces, and maybe find some kubernetes tokens or application specific passwords, keys, etc. to other services in the cluster.  
-* You can communicate with network services on the host that are only listening on localhost/loopback. Services you would not be able to touch without `hostNetowrk=true`
+There are two potential escalation paths:  
+* **Sniff traffic** - You can use tcpdump to sniff unencrypted traffic on any interface on the host. You might get lucky and find service account tokens or other sensitive information that is transmitted over unencrypted channels.
+* **Access services bound to localhost** - You can also reach services that only listen on the host’s loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privesc path.
 
 # Pod Creation
 
