@@ -152,9 +152,10 @@ Run `ps -aux` on the host which will show you all the process running on the hos
 Potential path to cluster compromise 
 
 ### How?
-This opens up two potential escalation paths: 
-* **Sniff traffic** - You can use tcpdump or wireshark to sniff unencrypted traffic on any interface on the host. You might get lucky and find service account tokens or other sensitive information that is transmitted over unencrypted channels.  
-* **Access services bound to localhost**  You can also reach services that only listen on the host's loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privesc path. 
+If you only have `hostNetwork=true`, you can't get RCE on the host directly, but if your cross your fingers you might still find a path to cluster admin. This opens up two potential escalation paths: 
+
+* **Sniff traffic** - You can use tcpdump to sniff unencrypted traffic on any interface on the host. You might get lucky and find service account tokens or other sensitive information that is transmitted over unencrypted channels.
+* **Access services bound to localhost** - You can also reach services that only listen on the host’s loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privesc path.
 
 ### Usage and exploitation examples 
 [yaml/hostnetwork/README.md](yaml/hostnetwork/README.md) 
