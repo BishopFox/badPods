@@ -103,7 +103,9 @@ In this scenario, the only thing that changes from the everything-allowed pod is
 Multiple likely paths to full cluster compromise (all resources in all namespaces)
 
 ### How?
-If you only have `privileged=true`, you can eventually get an interactive shell on the node, but you start with non-interactive command execution as root and you'll have to upgrade it if you want interactive access. The privesc paths are the same as above.
+If you only have `privileged=true`, you can get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC undock.sh to execute one command a time, or you can use [Brandon Edwards and Nick Freeman’s version] which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module [docker privileged container escape](https://www.rapid7.com/db/modules/exploit/linux/local/docker_privileged_container_escape/) which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
+Whichever option you choose, the Kubernetes privesc paths as the same as the everything-allowed and hostPID and privileged pod. 
+
 
 ### Usage and exploitation examples 
 [yaml/priv/README.md](yaml/priv/README.md) 
@@ -111,6 +113,9 @@ If you only have `privileged=true`, you can eventually get an interactive shell 
 ### Reference(s): 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/
+* [A Compendium of Container Escapes](https://www.youtube.com/watch?v=BQlqita2D2s)
+* https://www.rapid7.com/db/modules/exploit/linux/local/docker_privileged_container_escape/ 
+
 
 
 ## hostPath only
