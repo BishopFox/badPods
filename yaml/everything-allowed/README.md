@@ -107,6 +107,8 @@ If you are lucky, you will find a cluster-admin config with full access to every
 
 ```bash
 find / -name kubeconfig
+```
+```
 /var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/merged/var/lib/kube-proxy/kubeconfig
 /var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/diff/var/lib/kube-proxy/kubeconfig
 /var/lib/node-problem-detector/kubeconfig
