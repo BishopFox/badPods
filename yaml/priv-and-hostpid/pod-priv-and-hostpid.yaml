@@ -14,8 +14,8 @@ spec:
   containers:
   - name: priv-and-hostpid
     image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]    
-    args: [ "while true; do sleep 30; done;" ]
+    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
+    tty: true
     securityContext:
       privileged: true
     #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always

