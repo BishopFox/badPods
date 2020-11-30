@@ -1,6 +1,6 @@
 ###########################################################
 ## Deploy: kubectl -n [namespace] apply -f pod-everything-allowed.yaml 
-## Access: kubectl -n [namespace] exec -it pod-everything-allowed -- bash
+## Access: kubectl -n [namespace] exec -it pod-everything-allowed -- chroot /host
 ## Remove: kubectl -n [namespace] delete pod-everything-allowed
 ###########################################################
 apiVersion: v1

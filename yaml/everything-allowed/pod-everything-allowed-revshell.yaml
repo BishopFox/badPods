@@ -1,6 +1,6 @@
 ###########################################################
+## Set up Listener: nc -nvlp [PORT]
 ## Deploy: kubectl -n [namespace] apply -f pod-everything-allowed-revshell.yaml 
-## Access: kubectl -n [namespace] exec -it pod-everything-allowed-revshell -- bash
 ## Remove: kubectl -n [namespace] delete pod-everything-allowed-revshell
 ###########################################################
 apiVersion: v1
