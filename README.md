@@ -23,6 +23,7 @@ Notes | readme | pod | revshell
 Everything allowed | [readme](yaml/everything-allowed/) | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml)
 Privileged and hostPid | [readme](yaml/priv-and-hostpid/) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml)
 Privileged only | [readme](yaml/priv/) | [yaml](yaml/priv/pod-priv.yaml) | [yaml](yaml/priv/pod-priv-revshell.yaml)
+hostPath only | [readme](yaml/hostPath/) | [yaml](yaml/hostPath/pod-hostPath.yaml) | [yaml](yaml/hostPath/pod-hostPath-revshell.yaml)  
 hostPid only | [readme](yaml/hostpid/) | [yaml](yaml/hostpid/pod-hostpid.yaml) | [yaml](yaml/hostpid/pod-hostpid-revshell.yaml)  
 hostNetwork only | [readme](yaml/hostnetwork/) | [yaml](yaml/hostnetwork/pod-hostnetwork.yaml) | [yaml](yaml/hostnetwork/pod-hostnetwork-revshell.yaml)
 hostIPC only | [readme](yaml/hostipc/) | [yaml](yaml/hostipc/pod-hostipc.yaml) | [yaml](yaml/hostipc/pod-hostipc-revshell.yaml)
