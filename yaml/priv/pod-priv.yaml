@@ -17,4 +17,4 @@ spec:
     args: [ "while true; do sleep 30; done;" ]
     securityContext:
       privileged: true
-    #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
