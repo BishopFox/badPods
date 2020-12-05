@@ -1,23 +1,18 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f everything-allowed-exec-pod.yaml 
-## Access: kubectl -n [namespace] exec -it everything-allowed-exec-pod -- chroot /host
-## Remove: kubectl -n [namespace] delete everything-allowed-exec-pod
+## Deploy: kubectl -n [namespace] apply -f hostpath-exec-pod.yaml 
+## Access: kubectl -n [namespace] exec -it hostpath-exec-pod -- chroot /host
+## Remove: kubectl -n [namespace] delete hostpath-exec-pod
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: everything-allowed-exec-pod
+  name: hostpath-exec-pod
   labels:
     app: pentest
 spec:
-  hostNetwork: true
-  hostPID: true
-  hostIPC: true
   containers:
-  - name: everything-allowed-pod
+  - name: hostpath-pod
     image: ubuntu
-    securityContext:
-      privileged: true
     volumeMounts:
     - mountPath: /host
       name: noderoot

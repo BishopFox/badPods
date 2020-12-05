@@ -7,7 +7,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: hostipc
+  name: hostipc-exec-cronjob
   labels:
     app: pentest
 spec:
@@ -19,7 +19,7 @@ spec:
         spec:
           hostIPC: true
           containers:
-          - name: hostipc
+          - name: hostipc-exec-cronjob
             image: ubuntu
             command: [ "/bin/sh", "-c", "--" ]
             args: [ "while true; do sleep 30; done;" ]

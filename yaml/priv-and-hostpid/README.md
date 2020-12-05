@@ -52,15 +52,13 @@ nsenter --target 1 --mount --uts --ipc --net --pid -- bash
 apiVersion: v1
 kind: Pod
 metadata:
-  name: everything-allowed-revshell
+  name: priv-and-hostpid-revshell
   labels:
     app: pentest
 spec:
-  hostNetwork: true
   hostPID: true
-  hostIPC: true
   containers:
-  - name: everything-allowed-revshell
+  - name: priv-and-hostpid-revshell
     image: busybox
     securityContext:
       privileged: true

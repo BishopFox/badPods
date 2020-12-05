@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: everything-allowed-exec-replicationcontroller
+  name: hostpath-exec-replicationcontroller
   labels:
     app: pentest
     type: replicationcontroller
@@ -16,14 +16,9 @@ spec:
         app: pentest
         type: replicationcontroller
     spec:
-      hostNetwork: true
-      hostPID: true
-      hostIPC: true
       containers:
-      - name: everything-allowed-exec-replicationcontroller
+      - name: hostpath-exec-replicationcontroller
         image: ubuntu
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /host
           name: noderoot

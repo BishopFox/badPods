@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: everything-allowed-exec-deployment
+  name: hostpath-exec-deployment
   labels:
     app: pentest
     type: deployment
@@ -17,14 +17,9 @@ spec:
         app: pentest
         type: deployment
     spec:
-      hostNetwork: true
-      hostPID: true
-      hostIPC: true
       containers:
-      - name: everything-allowed-exec-deployment
+      - name: hostpath-exec-deployment
         image: ubuntu
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /host
           name: noderoot

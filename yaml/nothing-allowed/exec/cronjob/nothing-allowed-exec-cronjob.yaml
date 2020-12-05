@@ -1,13 +1,13 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f everything-allowed-exec.yaml 
-## Access: kubectl -n [namespace] exec -it everything-allowed-exec -- chroot /host
-## Remove: kubectl -n [namespace] delete everything-allowed-exec
+## Deploy: kubectl -n [namespace] apply -f nothing-allowed-exec.yaml 
+## Access: kubectl -n [namespace] exec -it nothing-allowed-exec -- chroot /host
+## Remove: kubectl -n [namespace] delete nothing-allowed-exec
 ###########################################################
 
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: everything-allowed
+  name: nothing-allowed-exec-cronjob
   labels:
     app: pentest
 spec:
@@ -17,22 +17,10 @@ spec:
     spec:
       template:
         spec:
-          hostNetwork: true
-          hostPID: true
-          hostIPC: true
           containers:
-          - name: everything-allowed
+          - name: nothing-allowed-exec-cronjob
             image: ubuntu
-            securityContext:
-              privileged: true
-            volumeMounts:
-            - mountPath: /host
-              name: noderoot
             command: [ "/bin/sh", "-c", "--" ]
             args: [ "while true; do sleep 30; done;" ]
           #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
-          volumes:
-          - name: noderoot
-            hostPath:
-              path: /
           restartPolicy: OnFailure

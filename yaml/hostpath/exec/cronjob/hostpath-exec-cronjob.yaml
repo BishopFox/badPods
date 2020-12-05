@@ -1,13 +1,13 @@
 ###########################################################
-## Deploy: kubectl -n [namespace] apply -f everything-allowed-exec.yaml 
-## Access: kubectl -n [namespace] exec -it everything-allowed-exec -- chroot /host
-## Remove: kubectl -n [namespace] delete everything-allowed-exec
+## Deploy: kubectl -n [namespace] apply -f hostpath-exec.yaml 
+## Access: kubectl -n [namespace] exec -it hostpath-exec -- chroot /host
+## Remove: kubectl -n [namespace] delete hostpath-exec
 ###########################################################
 
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: everything-allowed
+  name: hostpath-exec-cronjob
   labels:
     app: pentest
 spec:
@@ -17,14 +17,9 @@ spec:
     spec:
       template:
         spec:
-          hostNetwork: true
-          hostPID: true
-          hostIPC: true
           containers:
-          - name: everything-allowed
+          - name: hostpath-exec-cronjob
             image: ubuntu
-            securityContext:
-              privileged: true
             volumeMounts:
             - mountPath: /host
               name: noderoot

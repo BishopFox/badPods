@@ -1,20 +1,16 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: everything-allowed-exec-job
+  name: hostpath-exec-job
   labels:
     app: pentest
+    type: job
 spec:
   template:
     spec:
-      hostNetwork: true
-      hostPID: true
-      hostIPC: true
       containers:
-      - name: everything-allowed-exec-job
+      - name: hostpath-exec-job
         image: ubuntu
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /host
           name: noderoot

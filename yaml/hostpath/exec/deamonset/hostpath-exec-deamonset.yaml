@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: everything-allowed-exec-deamonset
+  name: hostpath-exec-deamonset
   labels:
     app: pentest
     type: deamonset
@@ -16,14 +16,9 @@ spec:
         app: pentest
         type: deamonset
     spec:
-      hostNetwork: true
-      hostPID: true
-      hostIPC: true
       containers:
-      - name: everything-allowed-exec-deamonset
+      - name: hostpath-exec-deamonset
         image: ubuntu
-        securityContext:
-          privileged: true
         volumeMounts:
         - mountPath: /host
           name: noderoot

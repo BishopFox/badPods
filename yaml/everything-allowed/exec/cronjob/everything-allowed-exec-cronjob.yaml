@@ -7,9 +7,10 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: everything-allowed
+  name: everything-allowed-exec-cronjob
   labels:
     app: pentest
+    type: cronjob
 spec:
   schedule: "*/1 * * * *"
   concurrencyPolicy: Forbid
@@ -21,7 +22,7 @@ spec:
           hostPID: true
           hostIPC: true
           containers:
-          - name: everything-allowed
+          - name: everything-allowed-exec-cronjob
             image: ubuntu
             securityContext:
               privileged: true
