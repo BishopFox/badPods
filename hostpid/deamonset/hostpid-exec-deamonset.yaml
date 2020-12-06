@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hostpid-exec-deamonset
+  labels:
+    app: pentest
+    type: deamonset
+spec:
+  selector:
+    matchLabels:
+      app: pentest
+      type: deamonset
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: deamonset
+    spec:
+      hostPID: true
+      containers:
+      - name: hostpid-exec-deamonset
+        image: ubuntu
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      

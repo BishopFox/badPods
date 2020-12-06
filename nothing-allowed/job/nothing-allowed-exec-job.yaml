@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nothing-allowed-exec-job
+  labels:
+    app: pentest
+    type: job
+spec:
+  template:
+    spec:
+      containers:
+      - name: nothing-allowed-exec-job
+        image: ubuntu
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      restartPolicy: OnFailure

