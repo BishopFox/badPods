@@ -1,14 +1,9 @@
 # badPods
 
-A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod specifications. 
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing common security sensitive pod attributes. 
 
-## Background
-Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/), or third-party admission controllers like [OPA Gatekeeper](https://github.com/open-policy-agent/gatekeeper). 
-
-However, even though the controls exist to define and enforce policy, the real-world security implication of allowing each specific attribute is not always understood, and quite often, pod creation is not as locked down as it should be.
-
-## Purpose
-What if you can create a pod with just `hostNetwork`, just `hostPID`, just `hostIPC`, just `hostPath`, or just `privileged`? What can you do in each case? This repository aims to help you answer those questions by providing some easy to use manifests and actionable steps to achieve those goals. 
+## Background 
+Check out blog post here
 
 ## Prerequisites
 In order to be successful in this attack path, you'll need the following: 
@@ -21,16 +16,16 @@ In order to be successful in this attack path, you'll need the following:
 
 ## The badPods line-up
 
-Notes | readme | pod | revshell
--- | -- | -- | --
-Everything allowed | [readme](manifests/everything-allowed/) | [manifest](manifests/everything-allowed/everything-allowed.yaml) | [manifest](manifests/everything-allowed/everything-allowed-revshell.yaml)
-Privileged and hostPid | [readme](manifests/priv-and-hostpid/) | [manifest](manifests/priv-and-hostpid/pod-priv-and-hostpid.yaml) | [manifest](manifests/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml)
-Privileged only | [readme](manifests/priv/) | [manifest](manifests/priv/pod-priv.yaml) | [manifest](manifests/priv/pod-priv-revshell.yaml)
-hostPath only | [readme](manifests/hostpath/) | [manifest](manifests/hostpath/hostpath-exec.yaml) | [manifest](manifests/hostpath/hostpath-revshell.yaml)  
-hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/hostpid.yaml) | [manifest](manifests/hostpid/hostpid-revshell.yaml)  
-hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/hostnetwork-exec.yaml) | [manifest](manifests/hostnetwork/hostnetwork-revshell.yaml)
-hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/hostipc-exec.yaml) | [manifest](manifests/hostipc/hostipc-revshell.yaml)
-Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/nothing-allowed.yaml) | [manifest](manifests/nothing-allowed/nothing-allowed-revshell.yaml)
+Type | Usage and Post Exploitation | Pod Manifest
+-- | -- | -- 
+Everything allowed | [readme](manifests/everything-allowed/) | [manifest](manifests/everything-allowed/everything-allowed.yaml) 
+Privileged and hostPid | [readme](manifests/priv-and-hostpid/) | [manifest](manifests/priv-and-hostpid/pod-priv-and-hostpid.yaml) 
+Privileged only | [readme](manifests/priv/) | [manifest](manifests/priv/pod-priv.yaml) 
+hostPath only | [readme](manifests/hostpath/) | [manifest](manifests/hostpath/hostpath-exec.yaml) 
+hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/hostpid.yaml) 
+hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/hostnetwork-exec.yaml) 
+hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/hostipc-exec.yaml) 
+Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/nothing-allowed.yaml) 
 
 # Impact - What's the worst that can happen?
 Check out blog post here
