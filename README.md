@@ -3,7 +3,7 @@
 A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod specifications. 
 
 ## Background
-Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using the built-in Kubernetes controller called [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/), or third-party admission controllers like the popular [OPA Gatekeeper](https://github.com/open-policy-agent/gatekeeper). 
+Occasionally pods need access to privileged resources on the host, so the Kubernetes pod spec allows for it. However, this level of access should be granted with extreme caution. Administrators have ways to prevent the creation of pods with these security sensitive pod specifications using [PodSecurityPolicy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/), or third-party admission controllers like [OPA Gatekeeper](https://github.com/open-policy-agent/gatekeeper). 
 
 However, even though the controls exist to define and enforce policy, the real-world security implication of allowing each specific attribute is not always understood, and quite often, pod creation is not as locked down as it should be.
 
