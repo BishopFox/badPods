@@ -118,34 +118,34 @@ HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-a
 ```
 ### Create a cronjob of the hostNetwork Pod
 ```bash
-seth@dev:/projects/badPods$ kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
+$ kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
 cronjob.batch/hostnetwork-exec-cronjob created
 ```
 Find the created pod
 ```bash
-seth@dev:/projects/badPods$ kubectl get pods | grep cronjob
+$ kubectl get pods | grep cronjob
 NAME                                        READY   STATUS    RESTARTS   AGE
 hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
 ```
 Exec into pod
 ```bash
-seth@dev:/mnt/hgfs/projects/badPods$ kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
+$ kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
 ```
 
 ### Create a deployment 
 ```bash
-seth@dev:/projects/badPods$ kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
+$ kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
 deployment.apps/priv-and-hostpid-exec-deployment created
 ```
 Find the created pod
 ```bash
-seth@dev:/projects/badPods$ kubectl get pods | grep deployment
+$ kubectl get pods | grep deployment
 priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9   1/1     Running   0          56s
 priv-and-hostpid-exec-deployment-65dbfbf947-tghqh   1/1     Running   0          56s
 ```
 Exec into pod
 ```bash
-seth@dev:/projects/badPods$ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
+$ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ```
 
 # Contributing
