@@ -35,13 +35,6 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 Check out blog post here
 
 # Organization
-
-## There are 8 ways to create a Pod
-There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods. As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". I've included manifests that will create each of my badPods as each of the 8 different resource types. 
-
-## Reverse shells
-In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case, so a version of each manifest is included that will call back to your listener as soon as the pod is created. 
-
 ```bash
 ├── manifests
 │   ├── everything-allowed
@@ -89,6 +82,11 @@ In most situations, if you have permission to create pods, you also have permiss
 ...omitted for brevity...
 ```
 
+## There are 8 ways to create a Pod
+There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods. As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". I've included manifests that will create each of my badPods as each of the 8 different resource types. 
+
+## Reverse shells
+In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case, so a version of each manifest is included that will call back to your listener as soon as the pod is created. 
 
 
 
