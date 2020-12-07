@@ -15,7 +15,7 @@ In order to be successful in this attack path, you'll need the following:
 1. Permission to create one of the following resource types in at least one namespace: 
    * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
 1. Access to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
-1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
+1. A pod security policy (or other pod admission controller's logic) that llows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 ## The badPods line-up
 
@@ -36,16 +36,11 @@ Check out blog post here
 
 # Organization
 
-### There are 8 ways to create a Pod
-There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods.
+## There are 8 ways to create a Pod
+There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods. As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". I've included manifests that will create each of my badPods as each of the 8 different resource types. 
 
-As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". 
-
-I've included manifests that will create each of my badPods as each of the 8 different resource types. 
-### Reverse shells
-
+## Reverse shells
 In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case, so a version of each manifest is included that will call back to your listener as soon as the pod is created. 
-
 
 ```bash
 ├── manifests
