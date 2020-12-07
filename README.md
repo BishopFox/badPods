@@ -12,29 +12,12 @@ What if you can create a pod with just `hostNetwork`, just `hostPID`, just `host
 In order to be successful in this attack path, you'll need the following: 
 
 1. Access to a cluster 
-1. Permission to create one of the following resource types in at least one namespace.  
-   * CronJob
-   * DeamonSet
-   * Deployment
-   * Job
-   * Pod
-   * ReplicaSet
-   * ReplicationController
-   * StatefulSet
+1. Permission to create one of the following resource types in at least one namespace: 
+   * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
 1. Access to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
 1. A pod security policy (or other pod admission controller's logic) that allows pods to be created with one or more security sensitive attributes, or no pod security policy / pod admission controller at all
 
 ## The badPods line-up
-
-### There are 8 ways to create a Pod
-There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods.
-
-As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". 
-
-I've included manifests that will create each of my badPods as each of the 8 different resource types. 
-### Reverse shells
-
-In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case, so a version of each manifest is included that will call back to your listener as soon as the pod is created. 
 
 Notes | readme | pod | revshell
 -- | -- | -- | --
@@ -50,6 +33,69 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 
 # Impact - What's the worst that can happen?
 Check out blog post here
+
+# Organization
+
+### There are 8 ways to create a Pod
+There might be a situation where you are not authorized to create pods, but you can create another resource type that will spin up the pods.
+
+As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in his talk [Compromising Kubernetes Cluster by Exploiting RBAC Permissions](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf), "There are 8 ways to create a Pod". 
+
+I've included manifests that will create each of my badPods as each of the 8 different resource types. 
+### Reverse shells
+
+In most situations, if you have permission to create pods, you also have permission to `exec` into them. However, that is not always the case, so a version of each manifest is included that will call back to your listener as soon as the pod is created. 
+
+
+```bash
+├── manifests
+│   ├── everything-allowed
+│   │   ├── cronjob
+│   │   │   ├── everything-allowed-exec-cronjob.yaml
+│   │   │   └── everything-allowed-revshell-cronjob.yaml
+│   │   ├── deamonset
+│   │   │   ├── everything-allowed-exec-deamonset.yaml
+│   │   │   └── everything-allowed-revshell-deamonset.yaml
+│   │   ├── deployment
+│   │   │   ├── everything-allowed-exec-deployment.yaml
+│   │   │   └── everything-allowed-revshell-deployment.yaml
+│   │   ├── job
+│   │   │   ├── everything-allowed-exec-job.yaml
+│   │   │   └── everything-allowed-revshell-job.yaml
+│   │   ├── pod
+│   │   │   ├── everything-allowed-exec-pod.yaml
+│   │   │   └── everything-allowed-revshell-pod.yaml
+│   │   ├── README.md
+│   │   ├── replicaset
+│   │   │   ├── everything-allowed-exec-replicaset.yaml
+│   │   │   └── everything-allowed-revshell-replicaset.yaml
+│   │   ├── replicationcontroller
+│   │   │   ├── everything-allowed-exec-replicationcontroller.yaml
+│   │   │   └── everything-allowed-revshell-replicationcontroller.yaml
+│   │   └── statefulset
+│   │       ├── everything-allowed-exec-statefulset.yaml
+│   │       └── everything-allowed-revshell-statefulset.yaml
+│   ├── hostipc
+│   │   ├── cronjob
+│   │   │   ├── hostipc-exec-cronjob.yaml
+│   │   │   └── hostipc-revshell-cronjob.yaml
+│   │   ├── deamonset
+│   │   │   ├── hostipc-exec-deamonset.yaml
+│   │   │   └── hostipc-revshell-deamonset.yaml
+│   │   ├── deployment
+│   │   │   ├── hostipc-exec-deployment.yaml
+│   │   │   └── hostipc-revshell-deployment.yaml
+│   │   ├── job
+│   │   │   ├── hostipc-exec-job.yaml
+│   │   │   └── hostipc-revshell-job.yaml
+│   │   ├── pod
+│   │   │   ├── hostipc-exec-pod.yaml
+│   │   │   └── hostipc-revshell-pod.yaml
+...omitted for brevity...
+```
+
+
+
 
 # Usage
  Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Within each badPod type, there are manifests that will create the 8 different resource types that in turn create pods. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
