@@ -7,7 +7,7 @@ Check out blog post here
 
 ## Prerequisites
 1. Access to a cluster 
-1. RBAC Permission to create one of the following resource types in at least one namespace: 
+1. RBAC permission to create one of the following resource types in at least one namespace: 
    * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
 1. RBAC permission to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
 1. No pod security policy enforcement, or a policy that allows pods to be created with one or more security sensitive attributes
