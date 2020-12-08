@@ -6,8 +6,6 @@ A collection of manifests that create pods with different elevated privileges. Q
 Check out blog post here
 
 ## Prerequisites
-In order to be successful in this attack path, you'll need the following: 
-
 1. Access to a cluster 
 1. RBAC Permission to create one of the following resource types in at least one namespace: 
    * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
