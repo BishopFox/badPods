@@ -1,6 +1,6 @@
 # badPods
 
-A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing common security sensitive pod attributes. 
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes. 
 
 ## Background 
 Check out blog post here
