@@ -1,8 +1,3 @@
-###########################################################
-## Deploy: kubectl -n [namespace] apply -f nothing-allowed-revshell-pod.yaml 
-## Access: kubectl -n [namespace] exec -it nothing-allowed-revshell-pod -- chroot /host
-## Remove: kubectl -n [namespace] delete nothing-allowed-revshell-pod
-###########################################################
 apiVersion: v1
 kind: Pod
 metadata:

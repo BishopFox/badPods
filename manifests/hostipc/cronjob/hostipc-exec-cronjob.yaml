@@ -1,9 +1,3 @@
-###########################################################
-## Deploy: kubectl apply -f hostipc-exec.yaml 
-## Access: kubectl exec -it hostipc-exec -- chroot /host
-## Remove: kubectl delete hostipc-exec
-###########################################################
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

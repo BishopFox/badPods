@@ -1,8 +1,3 @@
-###########################################################
-## Deploy: kubectl -n [namespace] apply -f hostpath-exec-pod.yaml 
-## Access: kubectl -n [namespace] exec -it hostpath-exec-pod -- bash
-## Remove: kubectl -n [namespace] delete hostpath-exec-pod
-###########################################################
 apiVersion: v1
 kind: Pod
 metadata:

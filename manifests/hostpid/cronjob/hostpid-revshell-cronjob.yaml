@@ -1,9 +1,3 @@
-###########################################################
-## Deploy: kubectl -n [namespace] apply -f hostpid-exec.yaml 
-## Access: kubectl -n [namespace] exec -it hostpid-exec -- chroot /host
-## Remove: kubectl -n [namespace] delete hostpid-exec
-###########################################################
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

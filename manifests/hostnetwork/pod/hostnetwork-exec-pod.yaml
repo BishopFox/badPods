@@ -1,8 +1,3 @@
-###########################################################
-## Deploy: kubectl apply -f hostnetwork-exec-pod.yaml 
-## Access: kubectl exec -it hostnetwork-exec-pod -- chroot /host
-## Remove: kubectl delete hostnetwork-exec-pod
-###########################################################
 apiVersion: v1
 kind: Pod
 metadata:

@@ -1,9 +1,3 @@
-###########################################################
-## Deploy:   kubectl apply -f everything-allowed-exec-replicaset.yaml
-## Find Pod: kubectl get pods | grep everything-allowed-exec-replicaset 
-## Access:   kubectl exec -it everything-allowed-exec-replicaset-ID -- chroot /host bash
-## Remove:   kubectl delete replicaset everything-allowed-exec-replicaset
-###########################################################
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:

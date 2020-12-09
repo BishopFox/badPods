@@ -1,9 +1,3 @@
-###########################################################
-## Deploy: kubectl apply -f hostpath-exec.yaml 
-## Access: kubectl exec -it hostpath-exec -- chroot /host
-## Remove: kubectl delete hostpath-exec
-###########################################################
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

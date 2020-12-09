@@ -1,9 +1,3 @@
-###########################################################
-## Deploy: kubectl apply -f hostnetwork-exec.yaml 
-## Access: kubectl exec -it hostnetwork-exec -- chroot /host
-## Remove: kubectl delete hostnetwork-exec
-###########################################################
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

@@ -1,9 +1,3 @@
-###########################################################
-## Deploy: kubectl apply -f priv-and-hostpid-exec.yaml 
-## Access: kubectl exec -it priv-and-hostpid-exec -- chroot /host
-## Remove: kubectl delete priv-and-hostpid-exec
-###########################################################
-
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
