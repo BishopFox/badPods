@@ -19,8 +19,6 @@ Exec into pod
 ```bash
 kubectl exec -it pod-priv-and-hostpid -- bash
 ```
-
-## Or, create a reverse shell pod
 ## Reverse shell pod
 
 Set up listener

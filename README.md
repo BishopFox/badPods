@@ -29,7 +29,7 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 Check out blog post here
 
 # Organization
-* 128 manifests
+* 128 self-contained, ready to use manifests
    * 8 badPods (hostpid, hostnetwork, everything-allowed, etc.)
    * 8 resource types (pod, deployment, replicaset, statefulset, etc.)
    * 2 ways to access (exec & reverse shell)
@@ -202,7 +202,7 @@ Connection received on 10.0.0.162 42035
 ```
 
 # Contributing
-Have you run into a situation where there was a restritive policy, but you were still able to gain elevated access with only a subset of privileges or capabilites? If so, please consider sharing the yaml and the privesc steps, and we'll add it as a new badPod type. 
+Have you run into a situation where there was a restrictive policy, but you were still able to gain elevated access with only a subset of privileges or capabilities? If so, please consider sharing the yaml and the privesc steps, and we'll add it as a new badPod type. 
 
 # Acknowledgements 
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), and [Eviatar Gerzi](https://twitter.com/g3rzi) for publicly sharing so much knowledge about Kubernetes offensive security. 

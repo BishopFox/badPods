@@ -1,5 +1,5 @@
 # Bad Pod #4: Unrestricted hostPath 
-# You can create a pod with only a hostpath mount, but it is unrestricted 
+
 In this case, even if you don’t have access to host’s process or network namespaces, if the administrators have not limited what you can mount, you can mount / on the host into your pod, giving you read/write on the host’s filesystem. This allows you to execute most of the same privilege escalation paths outlined above. There are so many paths available that Ian Coldwater and Duffie Cooley gave an awesome Blackhat 2019 talk about it titled The Path Less Traveled: Abusing Kubernetes Defaults! 
 
 Here are some privileged escalation paths that apply anytime you have access to a Kubernetes node’s filesystem:
@@ -41,7 +41,7 @@ Connection received on 10.0.0.162 42035
 
 # Post exploitation
 
-# You now have read/write access to the nodes's filesystem, mounted in /host within your pod
+You now have read/write access to the nodes's filesystem, mounted in /host within your pod
 ```bash
 cd /host
 ```

@@ -1,25 +1,20 @@
 ###########################################################
-## Deploy: kubectl apply -f hostpath-exec-pod.yaml 
-## Access: kubectl exec -it hostpath-exec-pod -- chroot /host
-## Remove: kubectl delete hostpath-exec-pod
+## Deploy: kubectl apply -f hostnetwork-exec-pod.yaml 
+## Access: kubectl exec -it hostnetwork-exec-pod -- chroot /host
+## Remove: kubectl delete hostnetwork-exec-pod
 ###########################################################
 apiVersion: v1
 kind: Pod
 metadata:
-  name: hostpath-exec-pod
+  name: hostnetwork-exec--pod
   labels:
     app: pentest
 spec:
+  hostNetwork: true
   containers:
-  - name: hostpath-pod
+  - name: hostnetwork-pod
     image: ubuntu
-    volumeMounts:
-    - mountPath: /host
-      name: noderoot
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]
   #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
-  volumes:
-  - name: noderoot
-    hostPath:
-      path: /
+  
