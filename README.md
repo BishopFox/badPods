@@ -90,8 +90,6 @@ cd badPods
 [Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it))
 [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod))
 
-### Create a reverse shell using the privileged pod
-
 
 ### Create all eight badPods (if the admission controller allows it)
 ```bash
