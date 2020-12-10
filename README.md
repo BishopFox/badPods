@@ -29,11 +29,10 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 Check out blog post here
 
 # Organization
-* 128 self-contained, ready to use manifests
+* 128 self-contained, ready to use manifests. Why so many?
    * 8 badPods (hostpid, hostnetwork, everything-allowed, etc.)
-   * 8 resource types (pod, deployment, replicaset, statefulset, etc.)
-   * 2 ways to access (exec & reverse shell)
-
+   * 8 resource types that can create pods (pod, deployment, replicaset, statefulset, etc.)
+   * 2 ways to access the created pods (exec & reverse shell)
 
 ```bash
 ├── manifests
@@ -73,7 +72,7 @@ Check out blog post here
 ```
 
 ### "There are Eight ways to create a Pod"
-As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might be a situation where you are not authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
+As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might not be authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
 
 ### Reverse shells
 While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that will call back to your listener as soon as the pod is created. 
@@ -86,6 +85,13 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 git clone https://github.com/BishopFox/badPods
 cd badPods
 ```
+## Examples
+
+[Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it))
+[Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod))
+
+### Create a reverse shell using the privileged pod
+
 
 ### Create all eight badPods (if the admission controller allows it)
 ```bash
