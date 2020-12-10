@@ -83,14 +83,14 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 ## High level approach
 
 #### Option 1: Methodical approach
-1. Evaluate RBAC to determine what resource types you can create
-1. Evaluate admission control policy to determine which of the badPods you will be able to create
-1. Based on what is allowed, use the specific badPod type and resource type and create your pod
-1. Find the README for the badPod type(s) and evaluate post exploitatino steps
+1. **Evaluate RBAC** to determine what resource types you can create
+1. **Evaluate admission control policy** to determine which of the badPods you will be able to create
+1. Based on what is allowed, use the specific badPod type and resource type and **create your resources**
+1. Evaluate **post exploitation** steps outlined in the README for that type
 
 #### Option 2: Shotgun approach
 1. Just start applying different manifests and see what works
-1. Find the README for the badPod type(s) and evaluate post exploitatino steps
+1. For any resource type that worked, evaluate **post exploitation** steps outlined in the README for that type
 
 
 ## Common Usage Examples
