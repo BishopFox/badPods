@@ -78,16 +78,28 @@ As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [E
 While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that will call back to your listener as soon as the pod is created. 
 
 # Usage
-Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. Each subdirectory has it's own usage information which includes tailored post-exploitation ideas and steps.  
+Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. 
 
-### Clone the repo
-```bash
-git clone https://github.com/BishopFox/badPods
-cd badPods
-```
-## Examples
+## High level approach
 
-[Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it))
+#### Option 1: Methodical approach
+* **Step 1**: Evaluate RBAC to determine what resource types you can create
+* **Step 2**: Evaluate applied admission control policy (PSP or external admission conroller) determine which of the badPods you will be able to get passed admission control
+* **Step 3**: Based on what is allowed, use the specific badPod type and resource type and create your pod
+* **Step 4**: Find the README for the badPod type(s) and evaluate post exploitatino steps
+
+#### Option 2: Throw things at the wall and see what sticks
+* **Step 1**: Just start trying to create lots of different things and see what works
+* **Step 2**: Find the README for the badPod type(s) and evaluate post exploitatino steps
+
+
+## Usage Examples
+
+* [Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it)
+* [Create all eight revsere shell badPods(#Create-all-eight-revsere-shell-badPods)
+* [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
+
+
 [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod))
 
 
