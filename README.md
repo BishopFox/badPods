@@ -95,7 +95,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 ## Common Usage Examples
 
-* [Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it))
+* [Create all eight badPods](#Create-all-eight-badPods-if-the-admission-controller-allows-it)
 * [Create all eight revsere shell badPods](#Create-all-eight-revsere-shell-badPods)
 * [Create all eight resource types using the everything-allowed pod](#Create-all-eight-resource-types-using-the-everything-allowed-pod)
 * [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
