@@ -89,18 +89,18 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 * **Step 4**: Find the README for the badPod type(s) and evaluate post exploitatino steps
 
 #### Option 2: Throw things at the wall and see what sticks
-* **Step 1**: Just start trying to create lots of different things and see what works
+* **Step 1**: Just start applying different manifests and see what works
 * **Step 2**: Find the README for the badPod type(s) and evaluate post exploitatino steps
 
 
-## Usage Examples
+## Common Usage Examples
 
-* [Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it)
-* [Create all eight revsere shell badPods(#Create-all-eight-revsere-shell-badPods)
+* [Create all eight badPods](#Create-all-eight-badPods-(if-the-admission-controller-allows-it))
+* [Create all eight revsere shell badPods](#Create-all-eight-revsere-shell-badPods)
 * [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
-
-
-[Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod))
+* [Create a deployment with the priv-and-hostpid pod](#Create-a-deployment-with-the-priv-and-hostpid-pod)
+* [Create all eight resource types using the everything-allowed pod](#Create-all-eight-resource-types-using-the-everything-allowed-pod)
+* [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod)
 
 
 ### Create all eight badPods (if the admission controller allows it)
