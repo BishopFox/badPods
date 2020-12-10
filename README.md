@@ -84,7 +84,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 #### Option 1: Methodical approach
 1. **Evaluate RBAC** - Determine what resource types you can create
-1. **Evalujate Admission Policy** - Determine which of the badPods you will be able to create
+1. **Evaluate Admission Policy** - Determine which of the badPods you will be able to create
 1. **Create Resources** - Based on what is allowed, use the specific badPod type and resource type and create your resources
 1. **Post Exploitation** - Evaluate post exploitation steps outlined in the README for that type
 
