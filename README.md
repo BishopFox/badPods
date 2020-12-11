@@ -87,11 +87,27 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 1. **Evaluate Admission Policy** - Determine which of the badPods you will be able to create
 1. **Create Resources** - Based on what is allowed, use the specific badPod type and resource type and create your resources
 1. **Post Exploitation** - Evaluate post exploitation steps outlined in the README for that type
+   * [Everything allowed](manifests/everything-allowed/) 
+   * [Privileged and hostPid](manifests/priv-and-hostpid/)
+   * [Privileged only](manifests/priv/)
+   * [hostPath only](manifests/hostpath/)
+   * [hostPid only](manifests/hostpid/)
+   * [hostNetwork only](manifests/hostnetwork/)
+   * [hostIPC](manifests/hostipc/)
+   * [Nothing allowed](manifests/nothing-allowed/)
+
 
 #### Option 2: Shotgun approach
 1. **Create Resources** - Just start applying different manifests and see what works
 1. **Post Exploitation** - For any created pods, evaluate post exploitation steps outlined in the README for that type
-
+   * [Everything allowed](manifests/everything-allowed/) 
+   * [Privileged and hostPid](manifests/priv-and-hostpid/)
+   * [Privileged only](manifests/priv/)
+   * [hostPath only](manifests/hostpath/)
+   * [hostPid only](manifests/hostpid/)
+   * [hostNetwork only](manifests/hostnetwork/)
+   * [hostIPC](manifests/hostipc/)
+   * [Nothing allowed](manifests/nothing-allowed/)
 
 ## Usage Examples
 
