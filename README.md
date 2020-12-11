@@ -111,7 +111,8 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 ## Usage Examples
 
-* [Create all eight badPods](#Create-all-eight-badPods-if-the-admission-controller-allows-it)
+* [Create all eight badPods from cloned local repo](#Create-all-eight-badPods-from-cloned-local-repo)
+* [Create all eight badPods from github](#Create-all-eight-badPods-from-Github)
 * [Create all eight revsere shell badPods](#Create-all-eight-revsere-shell-badPods)
 * [Create all eight resource types using the everything-allowed pod](#Create-all-eight-resource-types-using-the-everything-allowed-pod)
 * [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
@@ -119,7 +120,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 * [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod)
 
 
-### Create all eight badPods (if the admission controller allows it)
+### Create all eight badPods from cloned local repo
 ```
 kubectl apply -f ./manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl apply -f ./manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
@@ -130,6 +131,19 @@ kubectl apply -f ./manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml
 kubectl apply -f ./manifests/hostipc/pod/hostipc-exec-pod.yaml
 kubectl apply -f ./manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
 ```
+
+### Create all eight badPods from Github
+```
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-exec-pod-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpath/pod/hostpath-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/pod/hostpid-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/pod/hostipc-exec-pod.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
+```
+
 ### Create all eight revsere shell badPods
 To avoid having to edit each pod with your host and port, you can environment variables and the `envsubst` command. Remember to spin up all of your listeners first!
 
