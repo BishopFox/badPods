@@ -40,9 +40,9 @@ Check out blog post here
 │   │   ├── cronjob
 │   │   │   ├── everything-allowed-exec-cronjob.yaml
 │   │   │   └── everything-allowed-revshell-cronjob.yaml
-│   │   ├── deamonset
-│   │   │   ├── everything-allowed-exec-deamonset.yaml
-│   │   │   └── everything-allowed-revshell-deamonset.yaml
+│   │   ├── daemonset
+│   │   │   ├── everything-allowed-exec-daemonset.yaml
+│   │   │   └── everything-allowed-revshell-daemonset.yaml
 │   │   ├── deployment
 │   │   │   ├── everything-allowed-exec-deployment.yaml
 │   │   │   └── everything-allowed-revshell-deployment.yaml
@@ -65,9 +65,9 @@ Check out blog post here
 │   │   ├── cronjob
 │   │   │   ├── hostipc-exec-cronjob.yaml
 │   │   │   └── hostipc-revshell-cronjob.yaml
-│   │   ├── deamonset
-│   │   │   ├── hostipc-exec-deamonset.yaml
-│   │   │   └── hostipc-revshell-deamonset.yaml
+│   │   ├── daemonset
+│   │   │   ├── hostipc-exec-daemonset.yaml
+│   │   │   └── hostipc-revshell-daemonset.yaml
 ...omitted for brevity...
 ```
 
@@ -196,7 +196,7 @@ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
 
 cronjob.batch/everything-allowed-exec-cronjob created
-daemonset.apps/everything-allowed-exec-deamonset created
+daemonset.apps/everything-allowed-exec-daemonset created
 deployment.apps/everything-allowed-exec-deployment created
 job.batch/everything-allowed-exec-job created
 pod/everything-allowed-exec-pod created
@@ -211,7 +211,7 @@ View all of the created pods
 kubectl get pods
 
 NAME                                                  READY   STATUS    RESTARTS   AGE
-everything-allowed-exec-deamonset-qbrdb               1/1     Running   0          52s
+everything-allowed-exec-daemonset-qbrdb               1/1     Running   0          52s
 everything-allowed-exec-deployment-6cd7685786-rp65h   1/1     Running   0          51s
 everything-allowed-exec-deployment-6cd7685786-m66bl   1/1     Running   0          51s
 everything-allowed-exec-job-fhsbt                     1/1     Running   0          50s

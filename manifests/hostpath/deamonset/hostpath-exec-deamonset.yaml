@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: hostpath-exec-deamonset
+  name: hostpath-exec-daemonset
   labels:
     app: pentest
-    type: deamonset
+    type: daemonset
 spec:
   selector:
     matchLabels:
       app: pentest
-      type: deamonset
+      type: daemonset
   template:
     metadata:
       labels:
         app: pentest
-        type: deamonset
+        type: daemonset
     spec:
       containers:
-      - name: hostpath-exec-deamonset
+      - name: hostpath-exec-daemonset
         image: ubuntu
         volumeMounts:
         - mountPath: /host

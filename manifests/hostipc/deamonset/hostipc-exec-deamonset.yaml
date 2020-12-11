@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: hostipc-exec-deamonset
+  name: hostipc-exec-daemonset
   labels:
     app: pentest
-    type: deamonset
+    type: daemonset
 spec:
   selector:
     matchLabels:
       app: pentest
-      type: deamonset
+      type: daemonset
   template:
     metadata:
       labels:
         app: pentest
-        type: deamonset
+        type: daemonset
     spec:
       hostIPC: true
       containers:
-      - name: hostipc-exec-deamonset
+      - name: hostipc-exec-daemonset
         image: ubuntu
         command: [ "/bin/sh", "-c", "--" ]
         args: [ "while true; do sleep 30; done;" ]
