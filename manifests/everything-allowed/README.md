@@ -6,8 +6,8 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 
 ## Table of Contents
 * [Pod Creation & Access](#Pod-Creation-&-Access)
-   * [Exec Pods: Create one or more of these resource types and exec into the pod](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
-   * [Reverse Shell Pods: Create one or more of these resources and catch reverse shell](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
+   * [Exec Pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
+   * [Reverse Shell Pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
    * [Deleting Resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
    * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
@@ -100,10 +100,29 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 
 # Post exploitation
 
-You now have root access to the node. Your pod was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth trying to see if you can run the same badPod on the master node.  
+You now have root access to the node. 
 
-Before you go any further, you should try to 
+#### Can you run your pod on a control-plane node
+The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
 
+Get nodes
+```
+kubectl get nodes
+NAME                STATUS   ROLES    AGE   VERSION
+k8s-control-plane   Ready    master   93d   v1.19.1
+k8s-worker          Ready    <none>   93d   v1.19.1
+```
+
+Pick your manifest, uncomment and update the nodeName field with the naame of the master node
+```
+nodeName: k8s-control-plane
+```
+Create your pod
+```
+kubectl apply -f manifests/everything-allowed/job/everything-allowed-exec-job.yaml
+```
+
+TODO - show how to get secrets from etcd
 
 
 Here are some next steps: 
