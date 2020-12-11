@@ -4,7 +4,7 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 * **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
 * **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
 
-Table of Contents
+## Table of Contents
 * [Pod Creation & Access](#Pod-Creation-&-Access)
    * [Create one or more of these resource types and exec into the pod](#Create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
    * [Create one or more of these resources and catch reverse shell](#Create-one-or-more-of-these-resources-and-catch-reverse-shell)
