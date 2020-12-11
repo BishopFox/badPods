@@ -10,7 +10,7 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
    * [Reverse Shell Pods: Create one or more of these resources and catch reverse shell](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
    * [Deleting Resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
-   * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfig's-in-the-host-filesystem) 
+   * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
    * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
    * [Some other ideas](#Some-other-ideas)
    * [Attacks that apply to all pods, even without any special permissions](#Attacks-that-apply-to-all-pods-even-without-any-special-permissions)
