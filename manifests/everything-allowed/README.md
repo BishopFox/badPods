@@ -100,7 +100,13 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 
 # Post exploitation
 
-You now have root access to the node. Here are some next steps: 
+You now have root access to the node. Your pod was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth trying to see if you can run the same badPod on the master node.  
+
+Before you go any further, you should try to 
+
+
+
+Here are some next steps: 
 
 #### Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
