@@ -93,7 +93,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
    * [hostPath only](manifests/hostpath/)
    * [hostPid only](manifests/hostpid/)
    * [hostNetwork only](manifests/hostnetwork/)
-   * [hostIPC](manifests/hostipc/)
+   * [hostIPC only](manifests/hostipc/)
    * [Nothing allowed](manifests/nothing-allowed/)
 
 
@@ -106,7 +106,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
    * [hostPath only](manifests/hostpath/)
    * [hostPid only](manifests/hostpid/)
    * [hostNetwork only](manifests/hostnetwork/)
-   * [hostIPC](manifests/hostipc/)
+   * [hostIPC only](manifests/hostipc/)
    * [Nothing allowed](manifests/nothing-allowed/)
 
 ## Usage Examples
