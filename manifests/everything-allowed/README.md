@@ -1,9 +1,5 @@
 # Bad Pod #1: Everything allowed
 
-The pod you create mounts the host’s filesystem to the pod. You’ll have the best luck if you can schedule your pod on a control-plane node using the nodeName selector in your manifest. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
-* **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
-* **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
-
 ## Table of Contents
 * [Pod Creation & Access](#Pod-Creation-&-Access)
    * [Exec Pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
@@ -107,9 +103,11 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 
 # Post exploitation
 
-You now have root access to the node. 
+The pod you create mounts the host’s filesystem to the pod. You’ll have the best luck if you can schedule your pod on a control-plane node using the nodeName selector in your manifest. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
+* **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
+* **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
 
-#### Can you run your pod on a control-plane node
+## Can you run your pod on a control-plane node
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
 
 Get nodes
@@ -134,7 +132,7 @@ TODO - show how to get secrets from etcd
 
 Here are some next steps: 
 
-#### Look for kubeconfig's in the host filesystem 
+## Look for kubeconfig's in the host filesystem 
 If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
 
 ```bash
@@ -153,7 +151,7 @@ find / -name kubeconfig
 /mnt/stateful_partition/var/lib/kube-proxy/kubeconfig
 ```
 
-#### Grab all tokens from all pods on the system
+## Grab all tokens from all pods on the system
 Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
 
 ```bash
@@ -177,12 +175,12 @@ kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
 # Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 ```
 
-#### Some other ideas:
+## Some other ideas:
 * Add your public key authorized_keys on the node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
-#### Attacks that apply to all pods, even without any special permissions
+## Attacks that apply to all pods, even without any special permissions
 * Cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
