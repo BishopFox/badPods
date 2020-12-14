@@ -92,7 +92,7 @@ Connection received on 10.0.0.162 42035
 ```
 
 ## Deleting resources
-You can delete a resource using it's manifest, or by name: 
+You can delete a resource using it's manifest, or by name. Here are some examples: 
 ```
 kubectl delete [type] [resourcename]
 kubectl delete -f manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
