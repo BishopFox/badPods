@@ -214,6 +214,8 @@ Your goal is to find a way to get access to all resources in all namspaces.
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
+To see these in more detail, head over to [nothing-allowed](../nothing-allowed) 
+
 # Demonstrate impact
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
