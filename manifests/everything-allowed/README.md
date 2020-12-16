@@ -214,7 +214,7 @@ Your goal is to find a way to get access to all resources in all namspaces.
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
-To see these in more detail, head over to [nothing-allowed](../nothing-allowed) 
+To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed) 
 
 # Demonstrate impact
 
