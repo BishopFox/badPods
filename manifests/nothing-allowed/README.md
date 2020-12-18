@@ -56,7 +56,7 @@ curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadat
 * **Exploits** - Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
 * **Traditional vulnerability hunting** -Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
-[This write-up of a CTF challenge](https://keramas.github.io/2020/08/10/Recon-Village-CTF-at-DC28.html) created by Madhu Akula demonstrates a pretty common post exploitation pattern
+   [This write-up of a CTF challenge](https://keramas.github.io/2020/08/10/Recon-Village-CTF-at-DC28.html) created by Madhu Akula demonstrates a pretty common post exploitation pattern
 
 
 
