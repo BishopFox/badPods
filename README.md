@@ -12,9 +12,8 @@ Check out blog post here
 * [Organization](#Organization)
 * [Usage](#Usage)
    * [High level approach](#High-level-approach)
-   * [Usage Examples](#Usage-Examples)
+   * [Usage examples](#Usage-examples)
    * [Acknowledgements](#Acknowledgements)
-
 
 ## Prerequisites
 1. Access to a cluster 
@@ -79,8 +78,10 @@ Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/no
 ...omitted for brevity...
 ```
 
-### "There are Eight ways to create a Pod"
+### "There are eight ways to create a pod"
 As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [Eight Ways to Create a Pod](https://www.cyberark.com/resources/threat-research-blog/eight-ways-to-create-a-pod), there are 8 different controllers that create a pod, or a set of pods.  You might not be authorized to create pods, but you can create another resource type that will create one or more pods. For each badPod type, there are manifests that correspond to all eight resource types. 
+
+But wait, it gets worse! In addition to the eight current Kubernetes controllers that can create pods, there are third party controllers that can also create pods if they are applied to the cluster. Keep an eye out for them by looking at `kubectl api-resources`. 
 
 ### Reverse shells
 While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that will call back to your listener as soon as the pod is created. 
