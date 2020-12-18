@@ -16,14 +16,14 @@ Check out blog post here
 
 Type | Usage and Post Exploitation | Pod Manifest
 -- | -- | -- 
-Everything allowed | [readme](manifests/everything-allowed/) | [manifest](manifests/everything-allowed/everything-allowed.yaml) 
-Privileged and hostPid | [readme](manifests/priv-and-hostpid/) | [manifest](manifests/priv-and-hostpid/pod-priv-and-hostpid.yaml) 
-Privileged only | [readme](manifests/priv/) | [manifest](manifests/priv/pod-priv.yaml) 
-hostPath only | [readme](manifests/hostpath/) | [manifest](manifests/hostpath/hostpath-exec.yaml) 
-hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/hostpid.yaml) 
-hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/hostnetwork-exec.yaml) 
-hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/hostipc-exec.yaml) 
-Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/nothing-allowed.yaml) 
+Everything allowed | [readme](manifests/everything-allowed/) | [manifest](manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml) 
+Privileged and hostPid | [readme](manifests/priv-and-hostpid/) | [manifest](manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml) 
+Privileged only | [readme](manifests/priv/) | [manifest](manifests/priv/pod/priv-exec-pod.yaml) 
+hostPath only | [readme](manifests/hostpath/) | [manifest](manifests/hostpath/pod/hostpath-exec-exec-pod.yaml) 
+hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/pod/hostpid-exec-pod.yaml) 
+hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
+hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
+Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml) 
 
 # Impact - What's the worst that can happen?
 Check out blog post here
