@@ -5,6 +5,17 @@ A collection of manifests that create pods with different elevated privileges. Q
 ## Background 
 Check out blog post here
 
+## Table of Contents
+
+* [Prerequisites](#Prerequisites)
+* [The badPods line-up](#The-badPods-line-up)
+* [Organization](#Organization)
+* [Usage](#Usage)
+   * [High level approach](#High-level-approach)
+   * [Usage Examples](#Usage-Examples)
+   * [Acknowledgements](#Acknowledgements)
+
+
 ## Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
@@ -24,9 +35,6 @@ hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/pod/h
 hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
 hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
 Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml) 
-
-# Impact - What's the worst that can happen?
-Check out blog post here
 
 # Organization
 * 128 self-contained, ready to use manifests. Why so many?
