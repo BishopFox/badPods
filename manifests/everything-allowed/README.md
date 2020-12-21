@@ -12,7 +12,7 @@ The everything-allowed pod mounts the host’s filesystem to the pod, and gives 
     - [Read secrets from etcd](#read-secrets-from-etcd)
   - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
   - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
-  - [Some other ideas:](#some-other-ideas)
+  - [Some other ideas](#some-other-ideas)
   - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 - [Demonstrate impact](#demonstrate-impact)
 - [References and further reading:](#references-and-further-reading)
