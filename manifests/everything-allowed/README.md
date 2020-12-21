@@ -1,21 +1,23 @@
 # Bad Pod #1: Everything allowed
 
-The everything-allowed pod mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilites. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
+The everything-allowed pod mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilities. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 
 ## Table of Contents
-* [Pod creation & access](#Pod-Creation-&-Access)
-   * [Exec pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
-   * [Reverse shell pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
-   * [Deleting resources](#Deleting-Resources)
-* [Post exploitation](#Post-exploitation)
-   * [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
-     * [Read secrets from etcd](#Read-secrets-from-etcd)
-   * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
-   * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
-   * [Some other ideas](#Some-other-ideas)
-   * [Attacks that apply to all pods, even without any special permissions](#Attacks-that-apply-to-all-pods-even-without-any-special-permissions)
-* [Demonstrate impact](#Demonstrate-impact)
-* [References and further reading](#References-and-further-reading)
+- [Bad Pod #1: Everything allowed](#bad-pod-1-everything-allowed)
+  - [Table of Contents](#table-of-contents)
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post exploitation](#post-exploitation)
+  - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+    - [Read secrets from etcd](#read-secrets-from-etcd)
+  - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
+  - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
+  - [Some other ideas:](#some-other-ideas)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
 
 # Pod creation & access
 
@@ -98,7 +100,7 @@ Connection received on 10.0.0.162 42035
 ## Deleting resources
 You can delete a resource using it's manifest, or by name. Here are some examples: 
 ```
-kubectl delete [type] [resourcename]
+kubectl delete [type] [resource-name]
 kubectl delete -f manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl delete -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl delete pod everything-allowed-exec-pod
@@ -108,7 +110,7 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 # Post exploitation
 
 ## Can you run your pod on a control-plane node
-The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
+The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kubernetes clusters like GKE and EKS - they hide the control-plane. 
 
 Get nodes
 ```
@@ -130,7 +132,7 @@ kubectl apply -f manifests/everything-allowed/job/everything-allowed-exec-job.ya
 ### Read secrets from etcd
 If you can run your pod on a control-plane node using the `nodeName` selector in the pod spec, you might have easy access to the `etcd` database, which contains all of the configuration for the cluster, including all secrets. 
 
-Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegent solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
+Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegant solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
 
 **Check to see if `etcd` is running on the control-plane node and see where the database is (This is on a `kubeadm` created cluster)**
 ```
@@ -231,7 +233,7 @@ You are looking for a way to access to all resources in all namspaces.
 
 **To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed)** 
 
-* Cloud metadata service
+* Access the cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
