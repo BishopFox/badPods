@@ -7,8 +7,16 @@ Check out blog post here
 
 ## Table of Contents
 
-* [Prerequisites](#Prerequisites)
 * [The badPods line-up](#The-badPods-line-up)
+* [Prerequisites](#Prerequisites)
+* [Organization](#Organization)
+* [Usage](#Usage)
+   * [High level approach](#High-level-approach)
+   * [Usage examples](#Usage-examples)
+   * [Acknowledgements](#Acknowledgements)
+   
+## The badPods line-up
+
   * Bad Pod #1: Everything allowed - [Usage and Post Exploitation](manifests/everything-allowed/) | [Pod manifest](manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml) 
   * Bad Pod #2: Privileged and hostPid - [Usage and Post Exploitation](manifests/priv-and-hostpid/) | [Pod manifest](manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml) 
   * Bad Pod #3: Privileged only - [Usage and Post Exploitation](manifests/priv/) | [Pod manifest](manifests/priv/pod/priv-exec-pod.yaml) 
@@ -16,13 +24,8 @@ Check out blog post here
   * Bad Pod #5: hostPid only - [Usage and Post Exploitation](manifests/hostpid/) | [Pod manifest](manifests/hostpid/pod/hostpid-exec-pod.yaml) 
   * Bad Pod #6: hostNetwork only - [Usage and Post Exploitation](manifests/hostnetwork/) | [Pod manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
   * Bad Pod #7: hostIPC only - [Usage and Post Exploitation](manifests/hostipc/) | [Pod manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
-  * Bad Pod #8: Nothing allowed - [Usage and Post Exploitation](manifests/nothing-allowed/) | [Pod manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml) 
-* [Organization](#Organization)
-* [Usage](#Usage)
-   * [High level approach](#High-level-approach)
-   * [Usage examples](#Usage-examples)
-   * [Acknowledgements](#Acknowledgements)
-   
+  * Bad Pod #8: Nothing allowed - [Usage and Post Exploitation](manifests/nothing-allowed/) | [Pod manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml)
+
 
 ## Prerequisites
 1. Access to a cluster 
@@ -31,19 +34,8 @@ Check out blog post here
 1. RBAC permission to exec into pods or a network policy that allows a reverse shell from a pod to reach you. 
 1. No pod security policy enforcement, or a policy that allows pods to be created with one or more security sensitive attributes
 
-## The badPods line-up
 
-Type | Usage and Post Exploitation | Pod Manifest
--- | -- | -- 
-Everything allowed | [readme](manifests/everything-allowed/) | [manifest](manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml) 
-Privileged and hostPid | [readme](manifests/priv-and-hostpid/) | [manifest](manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml) 
-Privileged only | [readme](manifests/priv/) | [manifest](manifests/priv/pod/priv-exec-pod.yaml) 
-hostPath only | [readme](manifests/hostpath/) | [manifest](manifests/hostpath/pod/hostpath-exec-exec-pod.yaml) 
-hostPid only | [readme](manifests/hostpid/) | [manifest](manifests/hostpid/pod/hostpid-exec-pod.yaml) 
-hostNetwork only | [readme](manifests/hostnetwork/) | [manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
-hostIPC only | [readme](manifests/hostipc/) | [manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
-Nothing allowed | [readme](manifests/nothing-allowed/) | [manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml) 
-
+  
 # Organization
 * 128 self-contained, ready to use manifests. Why so many?
    * 8 badPods (hostpid, hostnetwork, everything-allowed, etc.)
