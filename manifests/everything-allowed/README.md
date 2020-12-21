@@ -7,7 +7,7 @@
    * [Deleting resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
    * [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
-   * [Read secrets from etcd](#Read-secrets-from-etcd)
+     * [Read secrets from etcd](#Read-secrets-from-etcd)
    * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
    * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
    * [Some other ideas](#Some-other-ideas)
@@ -127,7 +127,7 @@ Create your pod
 kubectl apply -f manifests/everything-allowed/job/everything-allowed-exec-job.yaml
 ```
 
-## Read secrets from etcd
+### Read secrets from etcd
 If you can run your pod on a control-plane node using the `nodeName` selector in the pod spec, you might have easy access to the `etcd` database, which contains all of the configuration for the cluster, including all secrets. 
 
 Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegent solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
