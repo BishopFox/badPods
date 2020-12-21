@@ -222,7 +222,7 @@ done
 You are looking for a way to access to all resources in all namspaces.
 
 
-## Some other ideas:
+## Some other ideas
 * Add your public key authorized_keys on the node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
