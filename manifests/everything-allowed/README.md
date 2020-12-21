@@ -13,7 +13,7 @@
    * [Some other ideas](#Some-other-ideas)
    * [Attacks that apply to all pods, even without any special permissions](#Attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 * [Demonstrate impact](#Demonstrate-impact)
-* [References](#References)
+* [References and further reading](#References-and-further-reading)
 
 # Pod creation & access
 
