@@ -4,7 +4,6 @@ The everything-allowed pod mounts the host’s filesystem to the pod, and gives 
 
 ## Table of Contents
 - [Bad Pod #1: Everything allowed](#bad-pod-1-everything-allowed)
-  - [Table of Contents](#table-of-contents)
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
