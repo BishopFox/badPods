@@ -1,5 +1,7 @@
 # Bad Pod #1: Everything allowed
 
+The everything-allowed pod mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilites. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
+
 ## Table of Contents
 * [Pod creation & access](#Pod-Creation-&-Access)
    * [Exec pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
@@ -104,8 +106,6 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 ```
 
 # Post exploitation
-
-The pod has you created mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilites. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 
 ## Can you run your pod on a control-plane node
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
