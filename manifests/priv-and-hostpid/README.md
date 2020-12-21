@@ -9,7 +9,7 @@ Why does it work?
   
 Once you are root on the host, the privilege escalation paths are all the same as described in Bad Pod # 1: Everything-allowed
 
-## Contents
+## Table of Contents
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
@@ -19,7 +19,7 @@ Once you are root on the host, the privilege escalation paths are all the same a
     - [Read secrets from etcd](#read-secrets-from-etcd)
   - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
   - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
-  - [Some other ideas:](#some-other-ideas)
+  - [Some other ideas](#some-other-ideas)
   - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 - [Demonstrate impact](#demonstrate-impact)
 - [References and further reading:](#references-and-further-reading)
@@ -228,7 +228,7 @@ done
 You are looking for a way to access to all resources in all namspaces.
 
 
-## Some other ideas:
+## Some other ideas
 * Add your public key authorized_keys on the node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
