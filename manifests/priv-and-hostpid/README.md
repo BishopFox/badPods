@@ -9,10 +9,7 @@ Why does it work?
   
 Once you are root on the host, the privilege escalation paths are all the same as described in Bad Pod # 1: Everything-allowed
 
-
-## Table of Contents
 - [Bad Pod #2: Privileged and hostPID](#bad-pod-2-privileged-and-hostpid)
-  - [Table of Contents](#table-of-contents)
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
