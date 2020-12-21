@@ -245,7 +245,7 @@ If you are performing a penetration test, the end goal is not to gain cluster-ad
 # References and further reading: 
 * [The Most Pointless Kubernetes Command Ever](https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/)
 * [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/)
-* Command and KubeCTL: Real-World Kubernetes Security for Pentesters [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
-* Compromising Kubernetes Cluster by Exploiting RBAC Permissions [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
-* The Path Less Traveled: Abusing Kubernetes Defaults [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) [Repository](https://github.com/mauilion/blackhat-2019)
+* Command and KubeCTL: Real-World Kubernetes Security for Pentesters - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
+* Compromising Kubernetes Cluster by Exploiting RBAC Permissions - [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) / [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
+* The Path Less Traveled: Abusing Kubernetes Defaults - [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
   
