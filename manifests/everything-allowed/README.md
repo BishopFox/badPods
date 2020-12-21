@@ -6,6 +6,8 @@
    * [Reverse shell pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
    * [Deleting resources](#Deleting-Resources)
 * [Post exploitation](#Post-exploitation)
+   * [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+   * [Read secrets from etcd](#Read-secrets-from-etcd)
    * [Look for kubeconfig's in the host filesystem](#Look-for-kubeconfigs-in-the-host-filesystem) 
    * [Grab all tokens from all pods on the system](#Grab-all-tokens-from-all-pods-on-the-system)
    * [Some other ideas](#Some-other-ideas)
@@ -105,8 +107,6 @@ kubectl delete cronjob everything-allowed-exec-cronjob
 
 The pod has you created mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilites. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 
-
-
 ## Can you run your pod on a control-plane node
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. This is not a possible on cloud managed Kuberntes clusters like GKE and EKS - they hide the control-plane. 
 
@@ -126,8 +126,6 @@ Create your pod
 ```
 kubectl apply -f manifests/everything-allowed/job/everything-allowed-exec-job.yaml
 ```
-
-TODO - show how to get secrets from etcd
 
 ## Read secrets from etcd
 If you can run your pod on a control-plane node using the `nodeName` selector in the pod spec, you might have easy access to the `etcd` database, which contains all of the configuration for the cluster, including all secrets. 
@@ -162,7 +160,7 @@ Output:
 ```
 
 
-## Look for kubeconfig's in the host filesystem 
+## Look for kubeconfigs in the host filesystem 
 
 By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privleged credentails on the node. We're not so lucky on this GKE node 
 
