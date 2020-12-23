@@ -5,6 +5,21 @@ If you only have `hostIPC=true`, you most likely can't do much. If any process o
 * **Inspect /dev/shm** - Look for any files in this shared memory location. 
 * **Inspect existing IPC facilities** – You can check to see if any IPC facilities are being used with `/usr/bin/ipcs`. 
 
+
+## Table of Contents
+- [Bad Pod #7: hostIPC](#bad-pod-7-hostipc)
+  - [Table of Contents](#table-of-contents)
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post exploitation](#post-exploitation)
+  - [Inspect /dev/shm - Look for any files in this shared memory location.](#inspect-devshm---look-for-any-files-in-this-shared-memory-location)
+  - [Look for any use of inter-process communication on the host](#look-for-any-use-of-inter-process-communication-on-the-host)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate Impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
+
 # Pod creation & access
 
 ## Exec pods
@@ -98,8 +113,11 @@ secretpassword=BishopFox
 ipcs -a
 ```
 
-#### Attacks that apply to all pods, even without any special permissions
-* Cloud metadata service
+## Attacks that apply to all pods, even without any special permissions
+
+**To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed)** 
+
+* Access the cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
