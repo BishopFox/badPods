@@ -8,6 +8,22 @@ Here are some privileged escalation paths that apply anytime you have access to 
 * Add your SSH key – If you have network access to SSH to the node, you can add your public key to the node and SSH to it for full interactive access
 * Crack hashed passwords – Crack hashes in `/etc/shadow`, see if you can use them to access other nodes
 
+## Table of Contents
+- [Bad Pod #4: Unrestricted hostPath](#bad-pod-4-unrestricted-hostpath)
+  - [Table of Contents](#table-of-contents)
+- [Pod Creation](#pod-creation)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post exploitation](#post-exploitation)
+  - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+    - [Read secrets from etcd](#read-secrets-from-etcd)
+  - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
+  - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
+  - [Some other ideas](#some-other-ideas)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
 
 # Pod Creation
 ## Exec pods

