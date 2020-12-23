@@ -98,7 +98,7 @@ kubectl delete cronjob priv-exec-cronjob
 
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
 
-Get nodes
+**Get nodes**
 ```
 kubectl get nodes
 NAME                STATUS   ROLES    AGE   VERSION
@@ -106,11 +106,11 @@ k8s-control-plane   Ready    master   93d   v1.19.1
 k8s-worker          Ready    <none>   93d   v1.19.1
 ```
 
-Pick your manifest, uncomment and update the nodeName field with the name of the master node
+**Pick your manifest, uncomment and update the nodeName field with the name of the master node**
 ```
 nodeName: k8s-control-plane
 ```
-Create your pod
+**Create your pod**
 ```
 kubectl apply -f manifests/priv/job/priv-exec-job.yaml
 ```
