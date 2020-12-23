@@ -49,7 +49,7 @@ kubectl exec -it priv-and-hostpid-exec-[RESOURCE_TYPE]-[ID] -- bash
 To troubleshoot a case where you don't see pods, use `kubectl describe`
 
 ```
-kubectl describe priv-exec-[RESOURCE_TYPE]
+kubectl describe priv-and-hostpid-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods

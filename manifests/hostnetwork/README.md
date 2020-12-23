@@ -4,7 +4,17 @@ If you only have `hostNetwork=true`, you can't get privileged code execution on 
 * **Sniff traffic** - You can use `tcpdump` to sniff unencrypted traffic on any interface on the host. You might get lucky and find `service account` tokens or other sensitive information that is transmitted over unencrypted channels.
 * **Access services bound to localhost** - You can also reach services that only listen on the host’s loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privilege escalation path.
 
-
+## Table of Contents
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post Exploitation](#post-exploitation)
+  - [Install tcpdump and sniff traffic](#install-tcpdump-and-sniff-traffic)
+  - [Investigate local services](#investigate-local-services)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
 
 
 # Pod creation & access
@@ -32,7 +42,7 @@ kubectl exec -it hostnetwork-exec-[RESOURCE_TYPE]-[ID] -- bash
 To troubleshoot a case where you don't see pods, use `kubectl describe`
 
 ```
-kubectl describe priv-exec-[RESOURCE_TYPE]
+kubectl describe hostnetwork-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods
