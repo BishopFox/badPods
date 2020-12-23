@@ -27,7 +27,7 @@ Once you are root on the host, the privilege escalation paths are all the same a
 # Pod creation & access
 
 ## Exec pods
-Create one or more of these resource types and exec into the pod
+* Create one or more of these resource types and exec into the pod
 
 **Pod**  
 ```bash

