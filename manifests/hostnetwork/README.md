@@ -81,6 +81,6 @@ curl https://localhost:1234/metrics
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
-# Demonstrate Impact
+# Demonstrate impact
 
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.

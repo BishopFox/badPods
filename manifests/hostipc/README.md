@@ -7,8 +7,6 @@ If you only have `hostIPC=true`, you most likely can't do much. If any process o
 
 
 ## Table of Contents
-- [Bad Pod #7: hostIPC](#bad-pod-7-hostipc)
-  - [Table of Contents](#table-of-contents)
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
@@ -17,7 +15,7 @@ If you only have `hostIPC=true`, you most likely can't do much. If any process o
   - [Inspect /dev/shm - Look for any files in this shared memory location.](#inspect-devshm---look-for-any-files-in-this-shared-memory-location)
   - [Look for any use of inter-process communication on the host](#look-for-any-use-of-inter-process-communication-on-the-host)
   - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
-- [Demonstrate Impact](#demonstrate-impact)
+- [Demonstrate impact](#demonstrate-impact)
 - [References and further reading:](#references-and-further-reading)
 
 # Pod creation & access
@@ -84,7 +82,7 @@ kubectl delete cronjob hostipc-exec-cronjob
 
 # Post exploitation 
 
-## Inspect /dev/shm - Look for any files in this shared memory location.
+## Inspect /dev/shm - Look for any files in this shared memory location
 
 For a super simple POC, I have created a secret file in /dev/shm on the worker node"
 ```
@@ -122,7 +120,7 @@ ipcs -a
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
-# Demonstrate Impact
+# Demonstrate impact
 If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
 
 # References and further reading: 
