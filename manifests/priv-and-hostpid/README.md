@@ -79,7 +79,7 @@ kubectl exec -it priv-and-hostpid-exec-daemonset-[ID] -- bash
 ```
 
 ## Reverse shell pods
-Create one or more of these resources and catch reverse shell
+Create one or more of these resources and catch the reverse shell
 
 **Generic resource type creation example***
 Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
