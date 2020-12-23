@@ -62,6 +62,7 @@ kubectl describe priv-exec-[RESOURCE_TYPE]
 Create one or more of these resources and catch the reverse shell
 
 **Generic resource type creation example**
+
 Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 **Step 1: Set up listener**
