@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: hostpath-exec-pod
-    image: busybox
+    image: ubuntu
     volumeMounts:
     - mountPath: /host
       name: noderoot

