@@ -42,8 +42,6 @@ kubectl exec -it priv-exec-pod -- bash
 ```
 **Job, CronJob, Deployment, StatefulSet, ReplicaSet, ReplicationController, DaemonSet**
 
-For the rest of the resource types, there is one added step. Once you create your deployment, cronjob, etc., you need to find the pods that were created by your respective resource. 
-
 Replace [RESOURCE_TYPE] with deployment, statefulset, job, etc. 
 
 ```bash
