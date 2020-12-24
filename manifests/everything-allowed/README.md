@@ -93,7 +93,7 @@ k8s-control-plane   Ready    master   93d   v1.19.1
 k8s-worker          Ready    <none>   93d   v1.19.1
 ```
 
-**Pick your manifest, uncomment and update the nodeName field with the name of the master node**
+**Pick your manifest, uncomment and update the nodeName field with the name of the control-plane node**
 ```
 nodeName: k8s-control-plane
 ```
