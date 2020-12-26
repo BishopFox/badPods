@@ -3,7 +3,7 @@
 If you only have `hostNetwork=true`, you can't get privileged code execution on the host directly, but if your cross your fingers you might still find a path to cluster admin. There are two potential escalation paths: 
 * **Sniff traffic** - You can use `tcpdump` to sniff unencrypted traffic on any interface on the host. You might get lucky and find `service account` tokens or other sensitive information that is transmitted over unencrypted channels.
 * **Access services bound to localhost** - You can also reach services that only listen on the host’s loopback interface or are otherwise blocked by network polices. These services might turn into a fruitful privilege escalation path.
-
+* **Bypass network policy** - If a restrictive network policy is applied to the namespace, deploying a pod with `hostNetwork=true` allows you to bypass the restrictions because you are bound to the host's network interfaces, and not the pod. 
 ## Table of Contents
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
