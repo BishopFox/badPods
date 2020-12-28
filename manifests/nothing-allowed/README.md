@@ -3,10 +3,19 @@
 The pod security policy or admission controller has blocked access to all of the host's namespaces and restricted all capabilities. **Do not despair**, especially if the target cluster is running in a cloud environment. 
 
 ## Table of Contents
+- [Bad Pod #8: Nothing allowed](#bad-pod-8-nothing-allowed)
+  - [Table of Contents](#table-of-contents)
 - [Pod creation & access](#pod-creation--access)
   - [Exec pods](#exec-pods)
   - [Reverse shell pods](#reverse-shell-pods)
 - [Post exploitation](#post-exploitation)
+  - [Cloud metadata](#cloud-metadata)
+    - [AWS](#aws)
+    - [GCP](#gcp)
+  - [Overly permissive service account](#overly-permissive-service-account)
+  - [Anonymous-auth](#anonymous-auth)
+  - [Exploits](#exploits)
+  - [Traditional vulnerability hunting](#traditional-vulnerability-hunting)
 - [Reference(s):](#references)
 
 # Pod creation & access
@@ -79,6 +88,8 @@ curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/'
 default/
 ```
 
+### Azure
+
 
 **See permissions assigned to default service account**
 ```
@@ -104,7 +115,7 @@ metadata:
     app: pentest
 spec:
   containers:
-  - name: nothing-allowed-pod
+  - name: nothing-allowed-gcloud-pod
     image: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
     command: [ "/bin/sh", "-c", "--" ]
     args: [ "while true; do sleep 30; done;" ]

