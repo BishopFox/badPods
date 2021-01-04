@@ -162,7 +162,7 @@ Look for tokens that have permissions to get secrets in kube-system.
 
 **Copy the `can-they.sh` helper script to the pod, download it from github, or manually created it**
 ```
-kubectl cp can-they.sh everything-allowed-exec-pod:/
+kubectl cp scripts/can-they.sh hostpath-exec-pod:/
 ```
 
 
@@ -171,7 +171,7 @@ kubectl cp can-they.sh everything-allowed-exec-pod:/
 kubectl exec -it hostpath-exec-pod -- bash
 ```
 
-**Run `can-they.sh` **
+**Run `can-they.sh`**
 ```
 ./can-they.sh --list
 ./can-they.sh --list -n kube-system

