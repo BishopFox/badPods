@@ -86,7 +86,7 @@ kubectl delete cronjob hostipc-exec-cronjob
 
 ## Inspect /dev/shm - Look for any files in this shared memory location
 
-For a super simple POC, I have created a secret file in /dev/shm on the worker node"
+For a super simple POC, I have created a secret file in /dev/shm on the worker node
 ```
 root@k8s-worker:/# echo "secretpassword=BishopFox" > /dev/shm/secretpassword.txt
 ```

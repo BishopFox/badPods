@@ -90,9 +90,6 @@ curl -H "Metadata-Flavor: Google" 'http://metadata/computeMetadata/v1/instance/'
 default/
 ```
 
-### Azure
-
-
 **See permissions assigned to default service account**
 ```
 curl -H 'Metadata-Flavor:Google' http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/
@@ -137,6 +134,7 @@ root@nothing-allowed-gcloud-pod:/# gsutil cat gs://playground-test123/luggage_co
 
 An awesome GCP privesc reference: https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 
+### Azure
 
 
 ## Overly permissive service account
