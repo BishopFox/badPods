@@ -207,7 +207,7 @@ Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https:/
 ## Traditional vulnerability hunting
 Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
 
-   [This write-up of a CTF challenge](https://keramas.github.io/2020/08/10/Recon-Village-CTF-at-DC28.html) created by Madhu Akula demonstrates a pretty common post exploitation pattern
+
 
 
 
@@ -216,6 +216,7 @@ Your pod will be able to see a different view of the network services running wi
 * https://about.gitlab.com/blog/2020/02/12/plundering-gcp-escalating-privileges-in-google-cloud-platform/
 * https://securekubernetes.com/
 * https://madhuakula.com/kubernetes-goat/
+* https://keramas.github.io/2020/08/10/Recon-Village-CTF-at-DC28.html
 * https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/
 * https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/
 * https://github.com/tabbysable/POC-2020-8558
