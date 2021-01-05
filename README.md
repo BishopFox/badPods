@@ -2,7 +2,7 @@
 
 A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. 
 
-Check out blog post here
+**Blog post placeholder**
 
 ## Contents
 
@@ -268,8 +268,8 @@ Pull requests and issues welcome.
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), [Eviatar Gerzi](https://twitter.com/g3rzi), and [Madhu Akula](https://twitter.com/madhuakula) for publicly sharing so much knowledge about Kubernetes offensive security. 
 
 # References and further reading
-
 Each Bad Pod has it's own specific references and further reading section, but here are some more general resources that will help you ramp up your Kubernetes security assessments and penetration tests skills.
+
 ## New kids on the block - 2020
 * [Container Security Site](https://www.container-security.site/) by @raesene
 * [CloudSecDocs - Container Security](https://cloudsecdocs.com/container_security/offensive/attacks/compromised_container/) by @lancinimarco
@@ -277,8 +277,8 @@ Each Bad Pod has it's own specific references and further reading section, but h
 * Compromising Kubernetes Cluster by Exploiting RBAC Permissions by @g3rzi - [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) / [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
 * Command and KubeCTL: Real-World Kubernetes Security for Pentesters by @antitree - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
 * Kubernetes Goat by @madhuakula - [Repo](https://github.com/madhuakula/kubernetes-goat) / [Guide](https://madhuakula.com/kubernetes-goat/)
-## The classics - Way back in 2019
 
+## The classics - way back in 2019
 * [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/) by @tabbysable, @petermbenjamin, @jimmesta, and @BradGeesaman
 * [The Most Pointless Kubernetes Command Ever](https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/) by @raesene 
 * The Path Less Traveled: Abusing Kubernetes Defaults by @IanColdwater and @mauilion- [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
