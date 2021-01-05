@@ -4,14 +4,14 @@ A collection of manifests that create pods with different elevated privileges. Q
 
 Check out blog post here
 
-## Documentation
+# Documentation
 
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
    * [High level approach](#High-level-approach)
    * [Usage examples](#Usage-examples)
-   * [Acknowledgements](#Acknowledgements)
+* [Acknowledgements](#Acknowledgements)
 * [The badPods line-up](#The-badPods-line-up)
   * [Bad Pod #1: Everything allowed - Usage and Post Exploitation](manifests/everything-allowed/) 
   * [Bad Pod #2: Privileged and hostPid - Usage and Post Exploitation](manifests/priv-and-hostpid/) 
@@ -22,7 +22,7 @@ Check out blog post here
   * [Bad Pod #7: hostIPC only - Usage and Post Exploitation](manifests/hostipc/) 
   * [Bad Pod #8: Nothing allowed - Usage and Post Exploitation](manifests/nothing-allowed/) 
   
-## Prerequisites
+# Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
    * CronJob, DeamonSet, Deployment, Job, Pod, ReplicaSet, ReplicationController, StatefulSet
@@ -256,5 +256,6 @@ Connection received on 10.0.0.162 42035
 
 # Contributing
 Pull requests and issue welcome.
+
 # Acknowledgements 
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), and [Eviatar Gerzi](https://twitter.com/g3rzi) for publicly sharing so much knowledge about Kubernetes offensive security. 
