@@ -2,12 +2,19 @@
 
 A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. 
 
-## Background 
 Check out blog post here
 
-## Table of Contents
+## Documentation
 
 * [The badPods line-up](#The-badPods-line-up)
+  * Bad Pod #1: Everything allowed - [Usage and Post Exploitation](manifests/everything-allowed/) | [Pod manifest](manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml) 
+  * Bad Pod #2: Privileged and hostPid - [Usage and Post Exploitation](manifests/priv-and-hostpid/) | [Pod manifest](manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml) 
+  * Bad Pod #3: Privileged only - [Usage and Post Exploitation](manifests/priv/) | [Pod manifest](manifests/priv/pod/priv-exec-pod.yaml) 
+  * Bad Pod #4: hostPath only - [Usage and Post Exploitation](manifests/hostpath/) | [Pod manifest](manifests/hostpath/pod/hostpath-exec-exec-pod.yaml) 
+  * Bad Pod #5: hostPid only - [Usage and Post Exploitation](manifests/hostpid/) | [Pod manifest](manifests/hostpid/pod/hostpid-exec-pod.yaml) 
+  * Bad Pod #6: hostNetwork only - [Usage and Post Exploitation](manifests/hostnetwork/) | [Pod manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
+  * Bad Pod #7: hostIPC only - [Usage and Post Exploitation](manifests/hostipc/) | [Pod manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
+  * Bad Pod #8: Nothing allowed - [Usage and Post Exploitation](manifests/nothing-allowed/) | [Pod manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
@@ -15,18 +22,6 @@ Check out blog post here
    * [Usage examples](#Usage-examples)
    * [Acknowledgements](#Acknowledgements)
    
-## The badPods line-up
-
-  * Bad Pod #1: [Everything allowed - Usage and Post Exploitation](manifests/everything-allowed/) | [Pod manifest](manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml) 
-  * Bad Pod #2: [Privileged and hostPid - Usage and Post Exploitation](manifests/priv-and-hostpid/) | [Pod manifest](manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml) 
-  * Bad Pod #3: [Privileged only - Usage and Post Exploitation](manifests/priv/) | [Pod manifest](manifests/priv/pod/priv-exec-pod.yaml) 
-  * Bad Pod #4: [hostPath only - Usage and Post Exploitation](manifests/hostpath/) | [Pod manifest](manifests/hostpath/pod/hostpath-exec-exec-pod.yaml) 
-  * Bad Pod #5: [hostPid only - Usage and Post Exploitation](manifests/hostpid/) | [Pod manifest](manifests/hostpid/pod/hostpid-exec-pod.yaml) 
-  * Bad Pod #6: [hostNetwork only - Usage and Post Exploitation](manifests/hostnetwork/) | [Pod manifest](manifests/hostnetwork/pod/hostnetwork-exec-pod.yaml) 
-  * Bad Pod #7: [hostIPC only - Usage and Post Exploitation](manifests/hostipc/) | [Pod manifest](manifests/hostipc/pod/hostipc-exec-pod.yaml) 
-  * Bad Pod #8: [Nothing allowed - Usage and Post Exploitation](manifests/nothing-allowed/) | [Pod manifest](manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml)
-
-
 ## Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
