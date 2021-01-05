@@ -16,7 +16,7 @@ Check out blog post here
 
 
 ## The badPods line-up
-Each of these links provide detailed Usage and post exploitation recomondations
+Each link below provides detailed usage information and post exploitation recomondations
 
 * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
 * [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
