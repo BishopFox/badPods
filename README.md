@@ -4,6 +4,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 
 Check out blog post here
 
+## Contents
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
