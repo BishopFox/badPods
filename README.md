@@ -278,7 +278,7 @@ Each Bad Pod has it's own specific references and further reading section, but h
 * Command and KubeCTL: Real-World Kubernetes Security for Pentesters by @antitree - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
 * Kubernetes Goat by @madhuakula - [Repo](https://github.com/madhuakula/kubernetes-goat) / [Guide](https://madhuakula.com/kubernetes-goat/)
 
-## The classics - way back in 2019
+## The classics, way back from 2019
 * [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/) by @tabbysable, @petermbenjamin, @jimmesta, and @BradGeesaman
 * [The Most Pointless Kubernetes Command Ever](https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/) by @raesene 
 * The Path Less Traveled: Abusing Kubernetes Defaults by @IanColdwater and @mauilion- [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
