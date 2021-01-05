@@ -13,7 +13,7 @@ Check out blog post here
    * [High level approach](#High-level-approach)
    * [Usage examples](#Usage-examples)
 * [Acknowledgements](#Acknowledgements)
-
+* [References and further reading](#References-and-further-reading)
 
 ## The badPods line-up
 Each link below provides detailed usage information and post exploitation recomondations
@@ -271,18 +271,18 @@ Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://tw
 
 Each Bad Pod has it's own specific references and further reading section, but here are some more general resources that will help you ramp up your Kubernetes security assessments and penetration tests skills.
 ## New kids on the block - 2020
-* [Container Security Site](https://www.container-security.site/)
-* [CloudSecDocs - Container Security](https://cloudsecdocs.com/container_security/offensive/attacks/compromised_container/)
-* [Risk8s Business: Risk Analysis of Kubernetes Clusters](https://tldrsec.com/guides/kubernetes/)
-* Compromising Kubernetes Cluster by Exploiting RBAC Permissions - [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) / [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
-* Command and KubeCTL: Real-World Kubernetes Security for Pentesters - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
-* Kubernetes Goat - [Repo](https://github.com/madhuakula/kubernetes-goat) / [Guide](https://madhuakula.com/kubernetes-goat/)
+* [Container Security Site](https://www.container-security.site/) by @raesene
+* [CloudSecDocs - Container Security](https://cloudsecdocs.com/container_security/offensive/attacks/compromised_container/) by @lancinimarco
+* [Risk8s Business: Risk Analysis of Kubernetes Clusters](https://tldrsec.com/guides/kubernetes/) by @antitree
+* Compromising Kubernetes Cluster by Exploiting RBAC Permissions by @g3rzi - [Talk](https://www.youtube.com/watch?v=1LMo0CftVC4) / [Slides](https://published-prd.lanyonevents.com/published/rsaus20/sessionsFiles/18100/2020_USA20_DSO-W01_01_Compromising%20Kubernetes%20Cluster%20by%20Exploiting%20RBAC%20Permissions.pdf)
+* Command and KubeCTL: Real-World Kubernetes Security for Pentesters by @antitree - [Talk](https://www.youtube.com/watch?v=cRbHILH4f0A) / [Blog](https://research.nccgroup.com/2020/02/12/command-and-kubectl-talk-follow-up/)
+* Kubernetes Goat by @madhuakula - [Repo](https://github.com/madhuakula/kubernetes-goat) / [Guide](https://madhuakula.com/kubernetes-goat/)
 ## The classics - Way back in 2019
 
-* [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/)
-* [The Most Pointless Kubernetes Command Ever](https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/)
-* The Path Less Traveled: Abusing Kubernetes Defaults - [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
-* [Understanding Docker container escapes](https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/)
-* [A Compendium of Container Escapes](https://www.youtube.com/watch?v=BQlqita2D2s)
+* [Secure Kubernetes - KubeCon NA 2019 CTF](https://securekubernetes.com/) by @tabbysable, @petermbenjamin, @jimmesta, and @BradGeesaman
+* [The Most Pointless Kubernetes Command Ever](https://raesene.github.io/blog/2019/04/01/The-most-pointless-kubernetes-command-ever/) by @raesene 
+* The Path Less Traveled: Abusing Kubernetes Defaults by @IanColdwater and @mauilion- [Talk](https://www.youtube.com/watch?v=HmoVSmTIOxM) / [Repository](https://github.com/mauilion/blackhat-2019)
+* [Understanding Docker container escapes](https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/) by @disconnect3d_pl
+* [A Compendium of Container Escapes](https://www.youtube.com/watch?v=BQlqita2D2s) by @drraid and @0x7674
 * [Attacking Kubernetes through Kubelet](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/)
 
