@@ -109,6 +109,8 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 #### Option 2: Shotgun approach
 1. **Create Resources** - Just start applying different manifests and see what works
+   * [Create all eight badPods from Github](#Create-all-eight-badPods-from-Github)
+   * [Create all eight resource types using the everything-allowed pod](#create-all-eight-resource-types-using-the-everything-allowed-pod)
 1. **Post Exploitation** - For any created pods, evaluate post exploitation steps outlined in the README for that type
    * [Everything allowed](manifests/everything-allowed/) 
    * [Privileged and hostPid](manifests/priv-and-hostpid/)
