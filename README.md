@@ -5,21 +5,27 @@ A collection of manifests that create pods with different elevated privileges. Q
 Check out blog post here
 
 ## Contents
+
+* [The badPods line-up](#The-badPods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
    * [High level approach](#High-level-approach)
    * [Usage examples](#Usage-examples)
 * [Acknowledgements](#Acknowledgements)
-* **The badPods line-up**
-  * [Bad Pod #1: Everything allowed - Usage and Post Exploitation](manifests/everything-allowed/) 
-  * [Bad Pod #2: Privileged and hostPid - Usage and Post Exploitation](manifests/priv-and-hostpid/) 
-  * [Bad Pod #3: Privileged only - Usage and Post Exploitation](manifests/priv/) 
-  * [Bad Pod #4: hostPath only - Usage and Post Exploitation](manifests/hostpath/) 
-  * [Bad Pod #5: hostPid only - Usage and Post Exploitation](manifests/hostpid/) 
-  * [Bad Pod #6: hostNetwork only - Usage and Post Exploitation](manifests/hostnetwork/) 
-  * [Bad Pod #7: hostIPC only - Usage and Post Exploitation](manifests/hostipc/) 
-  * [Bad Pod #8: Nothing allowed - Usage and Post Exploitation](manifests/nothing-allowed/) 
+
+
+## The badPods line-up
+Each of these links provide detailed Usage and post exploitation recomondations
+
+* [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
+* [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
+* [Bad Pod #3: Privileged only](manifests/priv/) 
+* [Bad Pod #4: hostPath only](manifests/hostpath/) 
+* [Bad Pod #5: hostPid only](manifests/hostpid/) 
+* [Bad Pod #6: hostNetwork only](manifests/hostnetwork/) 
+* [Bad Pod #7: hostIPC only](manifests/hostipc/) 
+* [Bad Pod #8: Nothing allowed](manifests/nothing-allowed/) 
   
 # Prerequisites
 1. Access to a cluster 
