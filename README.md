@@ -6,6 +6,12 @@ Check out blog post here
 
 ## Documentation
 
+* [Prerequisites](#Prerequisites)
+* [Organization](#Organization)
+* [Usage](#Usage)
+   * [High level approach](#High-level-approach)
+   * [Usage examples](#Usage-examples)
+   * [Acknowledgements](#Acknowledgements)
 * [The badPods line-up](#The-badPods-line-up)
   * [Bad Pod #1: Everything allowed - Usage and Post Exploitation](manifests/everything-allowed/) 
   * [Bad Pod #2: Privileged and hostPid - Usage and Post Exploitation](manifests/priv-and-hostpid/) 
@@ -15,13 +21,7 @@ Check out blog post here
   * [Bad Pod #6: hostNetwork only - Usage and Post Exploitation](manifests/hostnetwork/) 
   * [Bad Pod #7: hostIPC only - Usage and Post Exploitation](manifests/hostipc/) 
   * [Bad Pod #8: Nothing allowed - Usage and Post Exploitation](manifests/nothing-allowed/) 
-* [Prerequisites](#Prerequisites)
-* [Organization](#Organization)
-* [Usage](#Usage)
-   * [High level approach](#High-level-approach)
-   * [Usage examples](#Usage-examples)
-   * [Acknowledgements](#Acknowledgements)
-   
+  
 ## Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
