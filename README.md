@@ -268,7 +268,7 @@ Pull requests and issues welcome.
 Thank you [Rory McCune](https://twitter.com/raesene), [Duffie Cooley](https://twitter.com/mauilion), [Brad Geesaman](https://twitter.com/bradgeesaman), [Tabitha Sable](https://twitter.com/tabbysable), [Ian Coldwater](https://twitter.com/IanColdwater), [Mark Manning](https://twitter.com/antitree), [Eviatar Gerzi](https://twitter.com/g3rzi), and [Madhu Akula](https://twitter.com/madhuakula) for publicly sharing so much knowledge about Kubernetes offensive security. 
 
 # References and further reading
-Each Bad Pod has it's own specific references and further reading section, but here are some more general resources that will help you ramp up your Kubernetes security assessments and penetration tests skills.
+Each Bad Pod has it's own references and further reading section, but here are some more general resources that will help you ramp up your Kubernetes security assessments and penetration tests skills.
 
 ## New kids on the block - 2020
 * [Container Security Site](https://www.container-security.site/) by @raesene
