@@ -85,7 +85,7 @@ As [Eviatar Gerzi (@g3rzi)](https://twitter.com/g3rzi) points out in the post [E
 But wait, it gets worse! In addition to the eight current Kubernetes controllers that can create pods, there are third party controllers that can also create pods if they are applied to the cluster. Keep an eye out for them by looking at `kubectl api-resources`. 
 
 ### Reverse shells
-While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that uses [Rory McCune's (@raesene)](https://twitter.com/raesene) ncat dockerhub image and will make an encrypted call back to your listener as soon as the pod is created. 
+While common, it is not always the case that you can exec into pods that you can create. To help in those situations, a version of each manifest is included that uses [Rory McCune's (@raesene)](https://twitter.com/raesene) ncat dockerhub image. When created, the pod will make an encrypted call back to your listener. 
 
 # Usage
 Each resource in the `manifests` directory targets a specific attribute or a combination of attributes that expose the cluster to risk when allowed. 
