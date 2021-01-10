@@ -1,6 +1,23 @@
 #!/bin/bash
 # Run this on a pod that has access to the node's filesystem.
 # It will find the token/secret for each pod running on the node, and tell you what each token is authorized to do.
+#
+# Usage
+#
+# Copy the can-they.sh helper script to the pod, download it from github, or manually created it
+#     kubectl cp scripts/can-they.sh podname:/
+#
+# Exec into pod (Don't chroot)
+#     kubectl exec -it pod-name  -- bash
+#
+# Run can-they.sh
+#    ./can-they.sh --list
+#    ./can-they.sh --list -n kube-system
+#    ./can-they.sh --list -n default
+#    ./can-they.sh list secrets -n kube-system
+#    ./can-they.sh create pods -n kube-system
+#    ./can-they.sh create clusterrolebindings
+
 
 if [ $# -gt 0 ]; then
   user_input="$@"

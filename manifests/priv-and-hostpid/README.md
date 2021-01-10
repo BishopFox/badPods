@@ -4,8 +4,8 @@ In this scenario, the only thing that changes from the everything-allowed pod is
 
 Why does it work? 
 
-* **Privileged** - The `privileged: true`  container-level security context breaks down almost all of walls that containers are supposed to provide. The PID namespace is one of the few walls that stands, however. Without `hostPID`, `nsenter` would only work to enter the namespaces of a process running within the container. For more examples on what you can do if you only have privileged: true, refer to the next example Bad Pod #3: Privileged Only. 
-* **Privileged + HostPID** - When both `hostPID: true` and `privileged: true` are set, the pod can see all of the processes on the host, and you can enter the init system (PID 1) on the host, and execute your shell on the node. 
+* **Privileged** - The `privileged: true`  container-level security context breaks down almost all the walls that containers are supposed to provide. The PID namespace is one of the few walls that stands, however. Without `hostPID`, `nsenter` would only work to enter the namespaces of a process running within the container. For more examples on what you can do if you only have privileged: true, refer to the next example Bad Pod #3: Privileged Only. 
+* **Privileged + hostPID** - When both `hostPID: true` and `privileged: true` are set, the pod can see all of the processes on the host, and you can enter the init system (PID 1) on the host, and execute your shell on the node. 
   
 Once you are root on the host, the privilege escalation paths are all the same as described in Bad Pod # 1: Everything-allowed
 

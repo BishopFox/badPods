@@ -150,7 +150,7 @@ grep -R "current-context" /root/
 ```
 
 ## Grab all tokens from all pods on the system
-You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, that gives you access to do things like create pods or view secrets in all namespaces. 
+You can access any secret mounted within any pod on the node you are on. In a production cluster, even on a worker node, there is usually at least one pod that has a mounted *token* that is bound to a *service account* that is bound to a *clusterrolebinding*, which gives you access to do things like create pods or view secrets in all namespaces. 
 
 Look for tokens that have permissions to get secrets in kube-system. 
 
