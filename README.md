@@ -1,10 +1,11 @@
 # Bad Pods
 
-A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. This repository contains ready to use manifests that help illustrate the risks outlined in our post, [Bad Pods: Kubernetes Pod Privilege Escalation](https://labs.bishopfox.com).    
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. 
+
+This repository contains ready to use manifests that help illustrate the risks outlined in our post, [Bad Pods: Kubernetes Pod Privilege Escalation](https://labs.bishopfox.com).    
 
 ## Contents
 
-* [Quick start](#quick-start)
 * [The Bad pods line-up](#The-bad-pods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
@@ -14,14 +15,6 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [Acknowledgements](#Acknowledgements)
 * [References and further reading](#References-and-further-reading)
 
-## Quick start
-**Create a pod, find the pod, exec into pod:**  
-   ```
-   kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[BAD_POD_TYPE]-exec-[RESOURCE_TYPE].yaml 
-   kubectl get pods | grep [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]      
-   kubectl exec -it [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]-[ID] -- bash
-   ```
-**Navigate to the Bad Pod README below and proceed with post exploitation**  
 ## The Bad Pods line-up
 Each link below provides detailed usage information and post exploitation recommendations
 
