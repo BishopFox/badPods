@@ -1,11 +1,11 @@
-# badPods
+# Bad Pods
 
 A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. This repository contains ready to use manifests that help illustrate the risks outlined in our post, [Bad Pods: Kubernetes Pod Privilege Escalation](https://labs.bishopfox.com).    
 
 ## Contents
 
 * [Quick start](#quick-start)
-* [The badPods line-up](#The-badPods-line-up)
+* [The Bad Pods line-up](#The-bad-pods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
@@ -22,7 +22,7 @@ A collection of manifests that create pods with different elevated privileges. Q
    kubectl exec -it [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]-[ID] -- bash
    ```
 **Navigate to the Bad Pod README below and proceed with post exploitation**  
-## The badPods line-up
+## The Bad Pods line-up
 Each link below provides detailed usage information and post exploitation recommendations
 
 * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
@@ -45,7 +45,7 @@ Each link below provides detailed usage information and post exploitation recomm
   
 # Organization
 * 128 self-contained, ready to use manifests. Why so many?
-   * 8 badPods (hostpid, hostnetwork, everything-allowed, etc.)
+   * 8 Bad Pods (hostpid, hostnetwork, everything-allowed, etc.)
    * 8 resource types that can create pods (pod, deployment, replicaset, statefulset, etc.)
    * 2 ways to access the created pods (exec & reverse shell)
 
@@ -101,7 +101,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 #### Option 1: Methodical approach
 1. **Evaluate RBAC** - Determine which resource types you can create 
-1. **Evaluate Admission Policy** - Determine which of the badPods you will be able to create
+1. **Evaluate Admission Policy** - Determine which of the Bad Pods you will be able to create
 1. **Create Resources** - Based on what is allowed, use the specific badPod type and resource type and create your resources
 1. **Post Exploitation** - Evaluate post exploitation steps outlined in the README for that type
    * [Everything allowed](manifests/everything-allowed/) 
@@ -116,7 +116,7 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 #### Option 2: Shotgun approach
 1. **Create Resources** - Just start applying different manifests and see what works
-   * [Create all eight badPods from Github](#Create-all-eight-badPods-from-Github)
+   * [Create all eight Bad Pods from Github](#Create-all-eight-Bad-Pods-from-Github)
    * [Create all eight resource types using the everything-allowed pod](#create-all-eight-resource-types-using-the-everything-allowed-pod)
 1. **Post Exploitation** - For any created pods, evaluate post exploitation steps outlined in the README for that type
    * [Everything allowed](manifests/everything-allowed/) 
@@ -130,16 +130,16 @@ Each resource in the `manifests` directory targets a specific attribute or a com
 
 ## Usage Examples
 
-* [Create all eight badPods from cloned local repo](#Create-all-eight-badPods-from-cloned-local-repo)
-* [Create all eight badPods from github](#Create-all-eight-badPods-from-Github)
-* [Create all eight revsere shell badPods](#Create-all-eight-revsere-shell-badPods)
+* [Create all eight Bad Pods from cloned local repo](#Create-all-eight-Bad-Pods-from-cloned-local-repo)
+* [Create all eight Bad Pods from github](#Create-all-eight-Bad-Pods-from-Github)
+* [Create all eight reverse shell Bad Pods](#Create-all-eight-revsere-shell-Bad-Pods)
 * [Create all eight resource types using the everything-allowed pod](#Create-all-eight-resource-types-using-the-everything-allowed-pod)
 * [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
 * [Create a deployment with the priv-and-hostpid pod](#Create-a-deployment-with-the-priv-and-hostpid-pod)
 * [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod)
 
 
-### Create all eight badPods from cloned local repo
+### Create all eight Bad Pods from cloned local repo
 ```
 kubectl apply -f ./manifests/everything-allowed/pod/everything-allowed-exec-pod.yaml
 kubectl apply -f ./manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
@@ -151,7 +151,7 @@ kubectl apply -f ./manifests/hostipc/pod/hostipc-exec-pod.yaml
 kubectl apply -f ./manifests/nothing-allowed/pod/nothing-allowed-exec-pod.yaml
 ```
 
-### Create all eight badPods from Github
+### Create all eight Bad Pods from Github
 ```
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/everything-allowed/everything-exec-pod-allowed.yaml 
 kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/priv-and-hostpid/pod/priv-and-hostpid-exec-pod.yaml
