@@ -6,6 +6,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 
 ## Contents
 
+* [Quick Start](#quick-start)
 * [The badPods line-up](#The-badPods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
@@ -18,23 +19,21 @@ A collection of manifests that create pods with different elevated privileges. Q
 ## Quick Start
 1. Create a pod, find the pod, exec into pod:  
    ```
-   kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[BAD_POD_TYPE]-exec-[RESOURCE_TYPE].yaml 
+   kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[FILENAME].yaml 
    kubectl get pods | grep nothing-allowed-exec-[RESOURCE_TYPE]      
    kubectl exec -it [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]-[ID] -- bash
    ```
-1. Navigate to the Bad Pod README below and proceed with post exploitation  
-## The badPods line-up
-Each link below provides detailed usage information and post exploitation recommendations
+1. Navigate to the Bad Pod README below which provides detailed usage information and post exploitation recommendations
 
-* [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
-* [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
-* [Bad Pod #3: Privileged only](manifests/priv/) 
-* [Bad Pod #4: hostPath only](manifests/hostpath/) 
-* [Bad Pod #5: hostPid only](manifests/hostpid/) 
-* [Bad Pod #6: hostNetwork only](manifests/hostnetwork/) 
-* [Bad Pod #7: hostIPC only](manifests/hostipc/) 
-* [Bad Pod #8: Nothing allowed](manifests/nothing-allowed/) 
-  
+   * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
+   * [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
+   * [Bad Pod #3: Privileged only](manifests/priv/) 
+   * [Bad Pod #4: hostPath only](manifests/hostpath/) 
+   * [Bad Pod #5: hostPid only](manifests/hostpid/) 
+   * [Bad Pod #6: hostNetwork only](manifests/hostnetwork/) 
+   * [Bad Pod #7: hostIPC only](manifests/hostipc/) 
+   * [Bad Pod #8: Nothing allowed](manifests/nothing-allowed/) 
+     
 # Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
