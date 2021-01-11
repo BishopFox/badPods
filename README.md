@@ -1,12 +1,10 @@
 # badPods
 
-A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. 
-
-**Blog post placeholder**
+A collection of manifests that create pods with different elevated privileges. Quickly demonstrate the impact of allowing security sensitive pod attributes like `hostNetwork`, `hostPID`, `hostPath`, `hostIPC`, and `privileged`. This repository contains ready to use manifests that help illustrate the risks outlined in our post, [Bad Pods: Kubernetes Pod Privilege Escalation](https://labs.bishopfox.com).    
 
 ## Contents
 
-* [Quick Start](#quick-start)
+* [Quick start](#quick-start)
 * [The badPods line-up](#The-badPods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
@@ -16,7 +14,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [Acknowledgements](#Acknowledgements)
 * [References and further reading](#References-and-further-reading)
 
-## Quick Start
+## Quick start
 **Create a pod, find the pod, exec into pod:**  
    ```
    kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[FILENAME].yaml 
