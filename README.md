@@ -15,8 +15,16 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [Acknowledgements](#Acknowledgements)
 * [References and further reading](#References-and-further-reading)
 
+## Quick Start
+1. Create a pod, find the pod, exec into pod:  
+   ```
+   kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[BAD_POD_TYPE]-exec-[RESOURCE_TYPE].yaml 
+   kubectl get pods | grep nothing-allowed-exec-[RESOURCE_TYPE]      
+   kubectl exec -it [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]-[ID] -- bash
+   ```
+1. Navigate to the Bad Pod README below and proceed with post exploitation  
 ## The badPods line-up
-Each link below provides detailed usage information and post exploitation recomondations
+Each link below provides detailed usage information and post exploitation recommendations
 
 * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
 * [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
