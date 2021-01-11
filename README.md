@@ -17,12 +17,13 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [References and further reading](#References-and-further-reading)
 
 ## Quick Start
-**Create a pod, find the pod, exec into pod:**
+**Create a pod, find the pod, exec into pod:**  
    ```
    kubectl apply -f https://raw.githubusercontent.com/BishopFox/badPods/main/manifests/[BAD_POD_TYPE]/[RESOURCE_TYPE]/[FILENAME].yaml 
    kubectl get pods | grep nothing-allowed-exec-[RESOURCE_TYPE]      
    kubectl exec -it [BAD_POD_TYPE]-exec-[RESOURCE_TYPE]-[ID] -- bash
    ```
+## The badPods line-up
 **Each link below provides detailed usage information and post exploitation recommendations**
 
 * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
@@ -33,7 +34,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [Bad Pod #6: hostNetwork only](manifests/hostnetwork/) 
 * [Bad Pod #7: hostIPC only](manifests/hostipc/) 
 * [Bad Pod #8: Nothing allowed](manifests/nothing-allowed/) 
-     
+  
 # Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
