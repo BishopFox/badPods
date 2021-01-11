@@ -5,7 +5,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 ## Contents
 
 * [Quick start](#quick-start)
-* [The Bad Pods line-up](#The-bad-pods-line-up)
+* [The Bad pods line-up](#The-bad-pods-line-up)
 * [Prerequisites](#Prerequisites)
 * [Organization](#Organization)
 * [Usage](#Usage)
