@@ -1,4 +1,5 @@
 # Bad Pod #2: Privileged and hostPID
+![](../../.github/images/Pod2.jpg)
 
 In this scenario, the only thing that changes from the everything-allowed pod is how you gain root access to the host. Rather than chrooting to the host’s filesystem, you can use `nsenter` to get a root shell on the node running your pod.  
 
