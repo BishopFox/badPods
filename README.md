@@ -16,7 +16,7 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [References and further reading](#References-and-further-reading)
 
 ## The Bad Pods line-up
-Each link below provides detailed usage information and post exploitation recommendations
+Each link below provides detailed usage information and post exploitation recommendations. 
 
 * [Bad Pod #1: Everything allowed](manifests/everything-allowed/) 
 * [Bad Pod #2: Privileged and hostPid](manifests/priv-and-hostpid/) 
@@ -27,6 +27,7 @@ Each link below provides detailed usage information and post exploitation recomm
 * [Bad Pod #7: hostIPC only](manifests/hostipc/) 
 * [Bad Pod #8: Nothing allowed](manifests/nothing-allowed/) 
   
+ For more general information about prerequisites, repository organization, and common usage patterns, see the sections below.  
 # Prerequisites
 1. Access to a cluster 
 1. RBAC permission to create one of the following resource types in at least one namespace: 
