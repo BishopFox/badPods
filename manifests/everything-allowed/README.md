@@ -1,5 +1,7 @@
 # Bad Pod #1: Everything allowed
+
 ![](images/BadPods1.png)
+
 The everything-allowed pod mounts the host’s filesystem to the pod, and gives you access to all of the host's namespaces and capabilities. You then exec into your pod and chroot to the directory where you mounted the host’s filesystem. You now have root on the node running your pod. 
 
 ## Table of Contents
