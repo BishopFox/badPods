@@ -1,4 +1,5 @@
 # Bad Pod #8: Nothing allowed
+![](../../.github/images/Pod8.jpg)
 
 The pod security policy or admission controller has blocked access to all of the host's namespaces and restricted all capabilities. **Do not despair**, especially if the target cluster is running in a cloud environment. 
 
