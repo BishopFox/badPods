@@ -1,4 +1,5 @@
 # Bad Pod #5: hostPID 
+![](../../.github/images/Pod5.jpg)
 
 There’s no clear path to get root on the node with only `hostPID`, but there are still some good post exploitation opportunities.  
 *	**View processes on the host** – When you run ps from within a pod that has hostPID: true, you see all the processes running on the host, including processes running within each pod. 
