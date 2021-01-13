@@ -1,4 +1,5 @@
 # Bad Pod #6: hostNetwork
+![](../../.github/images/Pod6.jpg)
 
 If you only have `hostNetwork=true`, you can't get privileged code execution on the host directly, but if your cross your fingers you might still find a path to cluster admin. There are two potential escalation paths: 
 * **Sniff traffic** - You can use `tcpdump` to sniff unencrypted traffic on any interface on the host. You might get lucky and find `service account` tokens or other sensitive information that is transmitted over unencrypted channels.

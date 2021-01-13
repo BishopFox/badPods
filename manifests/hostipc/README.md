@@ -1,4 +1,5 @@
 # Bad Pod #7: hostIPC
+![](../../.github/images/Pod7.jpg)
 
 If you only have `hostIPC=true`, you most likely can't do much. If any process on the host or any processes within another pod is using the host’s inter-process communication mechanisms (shared memory, semaphore arrays, message queues, etc.), you'll be able to read/write to those same mechanisms. The first place you'll want to look is `/dev/shm`, as it is shared between any pod with `hostIPC=true` and the host. You'll also want to check out the other IPC mechanisms with `ipcs`.
 
