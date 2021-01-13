@@ -1,5 +1,5 @@
 # Bad Pod #4: Unrestricted hostPath 
-![](../../.github/images/Pod1.jpg)
+![](../../.github/images/Pod4.jpg)
 
 In this case, even if you don’t have access to the host’s process or network namespaces, if the administrators have not limited what you can mount, you can mount / on the host into your pod, giving you read/write access on the host’s filesystem. This allows you to execute most of the same privilege escalation paths outlined above. There are so many paths available that Ian Coldwater and Duffie Cooley gave an awesome Blackhat 2019 talk about it titled The Path Less Traveled: Abusing Kubernetes Defaults! 
 
