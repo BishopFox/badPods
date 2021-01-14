@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hostipc-exec-replicationcontroller
+  labels:
+    app: pentest
+    type: replicationcontroller
+spec:
+  replicas: 2
+  selector:
+    app: pentest
+    type: replicationcontroller
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: replicationcontroller
+    spec:
+      hostIPC: true
+      containers:
+      - name: hostipc-exec-replicationcontroller
+        image: ubuntu
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+
+      

