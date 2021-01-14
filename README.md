@@ -245,7 +245,7 @@ everything-allowed-exec-statefulset-1                 1/1     Running   0       
 ```
 Delete all everything-allowed resources
 ```
-find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl delete -f {} \;
+find manifests/everything-allowed/ -name "*-exec-*.yaml" -exec kubectl delete -f {} \;
 ```
 
 ### Create a reverse shell using the privileged pod
