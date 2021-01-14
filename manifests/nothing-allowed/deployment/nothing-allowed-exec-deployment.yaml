@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nothing-allowed-exec-deployment
+  labels:
+    app: pentest
+    type: deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pentest
+      type: deployment
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: deployment
+    spec:
+      containers:
+      - name: nothing-allowed-exec-deployment
+        image: ubuntu
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      

@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: hostnetwork-exec-cronjob
+  labels:
+    app: pentest
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          hostNetwork: true
+          containers:
+          - name: hostnetwork-exec-cronjob
+            image: ubuntu
+            command: [ "/bin/sh", "-c", "--" ]
+            args: [ "while true; do sleep 30; done;" ]
+          #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+          restartPolicy: OnFailure
+

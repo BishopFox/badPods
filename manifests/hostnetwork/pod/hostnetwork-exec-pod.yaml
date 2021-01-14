@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostnetwork-exec-pod
+  labels:
+    app: pentest
+spec:
+  hostNetwork: true
+  containers:
+  - name: hostnetwork-pod
+    image: ubuntu
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+  

