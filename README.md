@@ -213,7 +213,7 @@ kubectl exec -it priv-and-hostpid-exec-deployment-65dbfbf947-qwpz9 -- bash
 
 ### Create all eight resource types using the everything-allowed pod
 ```
-find manifests/everything-allowed/ -name \*-exec-*.yaml -exec kubectl apply -f {} \;
+find manifests/everything-allowed/ -name "*-exec-*.yaml" -exec kubectl apply -f {} \;
 
 cronjob.batch/everything-allowed-exec-cronjob created
 daemonset.apps/everything-allowed-exec-daemonset created
