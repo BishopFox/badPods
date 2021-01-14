@@ -12,6 +12,13 @@ A collection of manifests that create pods with different elevated privileges. Q
 * [Usage](#Usage)
    * [High level approach](#High-level-approach)
    * [Usage examples](#Usage-examples)
+      * [Create all eight Bad Pods from cloned local repo](#Create-all-eight-Bad-Pods-from-cloned-local-repo)
+      * [Create all eight Bad Pods from github](#Create-all-eight-Bad-Pods-from-Github)
+      * [Create all eight reverse shell Bad Pods](#Create-all-eight-revsere-shell-Bad-Pods)
+      * [Create all eight resource types using the everything-allowed pod](#Create-all-eight-resource-types-using-the-everything-allowed-pod)
+      * [Create a cronjob with the hostNetwork pod](#Create-a-cronjob-with-the-hostNetwork-pod)
+      * [Create a deployment with the priv-and-hostpid pod](#Create-a-deployment-with-the-priv-and-hostpid-pod)
+      * [Create a reverse shell using the privileged pod](#Create-a-reverse-shell-using-the-privileged-pod)
 * [Acknowledgements](#Acknowledgements)
 * [References and further reading](#References-and-further-reading)
 
