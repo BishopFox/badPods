@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: priv
+  name: priv-exec-cronjob
   labels:
     app: pentest
 spec:
@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           containers:
-          - name: priv
+          - name: priv-exec-cronjob
             image: ubuntu
             securityContext:
               privileged: true

