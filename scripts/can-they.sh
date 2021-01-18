@@ -1,11 +1,10 @@
 #!/bin/bash
-
+###############################################################################
 # Purpose: 
 # 
 # This script will find the token/secret for each pod running on the node and 
 # tell you what each token is authorized to do. It can be run from within a pod 
 # that has the host's filesystem mounted to /host, or from outside the pod.
-
 #
 # Usage:
 #
@@ -41,7 +40,8 @@
 #    ./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "--list"
 #    ./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "-n kube-system"
 #    ./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "get secrets -n kube-system"
-
+#
+###############################################################################
 function check-can-exec-pod {
 check=$(kubectl --kubeconfig=seth-kubeconfig auth can-i create pods/exec -n $namespace)
 #echo $check
