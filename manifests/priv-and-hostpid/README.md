@@ -178,12 +178,8 @@ done | sort
 * Grabs all of the tokens from `/var/lib/kubelet/pods/*` on the host
 * Loops each token against the `selfsubjectaccessreviews` endpoint: `kubectl --token=$token auth can-i [$user-input]`
 
-**Run this where you have kubectl installed, and NOT from within the priv pod.** 
-```
-(⎈ |kubernetes-admin@kubernetes:development)➜  ~ ./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "get secrets -n kube-system"
-```
 
-**Run `can-they.sh`**
+**Run `can-they.sh` where you have kubectl installed, and NOT from within the priv pod**
 ```
 ./can-they.sh
 ./can-they.sh -i "--list -n kube-system"
@@ -195,6 +191,7 @@ done | sort
 
 **Example Run on kubeadm cluster showing that the kubevol-token can list secrets in kube-system**
 ```
+./can-they.sh -n development -p priv-and-hostpid-exec-pod -i "get secrets -n kube-system"
 --------------------------------------------------------
 Token Location: /var/lib/kubelet/pods/21b0eb3f-b99e-40ed-bedf-198c77dfc101/volumes/kubernetes.io~secret/kubevol-token-xfjgv/token
 Can I get secrets -n kube-system?
