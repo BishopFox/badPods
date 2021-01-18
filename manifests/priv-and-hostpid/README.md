@@ -179,7 +179,7 @@ done | sort
 * Loops each token against the `selfsubjectaccessreviews` endpoint: `kubectl --token=$token auth can-i [$user-input]`
 
 
-**Run `can-they.sh` where you have kubectl installed, and NOT from within the priv pod**
+**Run `can-they.sh` where you have kubectl installed and NOT from within the priv pod**
 ```
 ./can-they.sh
 ./can-they.sh -i "--list -n kube-system"
@@ -207,7 +207,7 @@ no
 
 
 
-*Run this where you have kubectl installed, and NOT from within the priv pod.*
+*Run this where you have kubectl installed and NOT from within the priv pod.*
 ```
 tokens=`kubectl exec -it priv-and-hostpid-exec-pod -- find /var/lib/kubelet/pods/ -name token -type l`; \
 for filename in $tokens; \

@@ -43,7 +43,7 @@
 #
 ###############################################################################
 function check-can-exec-pod {
-check=$(kubectl --kubeconfig=seth-kubeconfig auth can-i create pods/exec -n $namespace)
+check=$(kubectl auth can-i create pods/exec -n $namespace)
 #echo $check
 if [[ $check == "no" ]]; then
   echo "Are you sure you have access to exec into $pod in the $namespace namespace?"
