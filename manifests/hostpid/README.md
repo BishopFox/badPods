@@ -129,7 +129,7 @@ This lists out the file descriptors for each PID that we have access to.
 for fd in `find /proc/*/fd`; do ls -al $fd/* 2>/dev/null | grep \>; done > fds.txt
 ```
 
-Now it's time to look for interesting files. Oh look, an vim swp file!
+Now it's time to look for interesting files. Oh look, a vim swp file!
 ```bash
 less fds.txt
 ...omitted for brevity...
