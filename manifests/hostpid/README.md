@@ -106,7 +106,7 @@ for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1 -a $e; done > envs
 ```
 Now it's time to look for interesting environment variables. 
 ```bash
-root@hostpid-exec-pod:/# less procs.txt
+root@hostpid-exec-pod:/# less envs.txt
 ...omitted for brevity...
 
 /proc/578808/environ
