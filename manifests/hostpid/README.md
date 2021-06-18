@@ -146,7 +146,7 @@ root@hostpid-exec-pod:/# ps auxn | awk '{print $1}' | sort | uniq -c | sort -rn
       1 100
       1 1
 ```
-You can see that most processes on my cluster are running as root, but there are 9 PIDs running as UID 999. The only way I know to get the environment variables from those processes is to run a new pod with the runAsUser set to the desired UID. Here's an example:
+You can see that most processes on my cluster are running as root, but there are 9 PIDs running as UID 999. The only way I know to get the environment variables from those processes is to run a new pod with the runAsUser set to the desired UID. Thanks to @rkervella for figuring that one out! Here's an example:
 
 ```bash
  cat hostpid-exec-pod-999.yaml
