@@ -100,7 +100,7 @@ root     2123072  0.0  0.0   3732  2868 ?        Ss   21:00   0:00 /bin/bash -c 
 Check out that clear text password in the ps output below! 
 
 ## View the environment variables for each pod on the host
-This lists the environ file for each process, and then uses `xargs` to split it up so that each environment variable is on it's own line:
+The following command lists the environ file for each process if the process is running as UID 0. See the note below on how to access PIDs running as a non-root UID. The command then uses `xargs` to split up the output so that each environment variable is on it's own line:
 
 ```bash
 for e in `ls /proc/*/environ`; do echo; echo $e; xargs -0 -L1 -a $e; done > envs.txt
@@ -124,11 +124,11 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 ```
 Oh look, an AWS IAM user key and secret! 
 
-**This only works on containers, not the host**
+**Note: This only works on containers, not the host**
 
 As far as I know, there is no way to get the environment variables from the host processes. This only works for other containers. 
 
-**To get environment variables for processes owned by a non-root user, you need to do some extra work**
+**Note: To get environment variables for processes owned by a non-root user, you need to do some extra work**
 
 The for loop shown above only grabs environment variables from processes running within pods that share same UID as your hostPID pod. By default, the badPods run as UID 0. Using our current `hostpid` pod, let's see what other pids are running:
 
@@ -187,7 +187,7 @@ ARGOCD_SERVER_PORT_80_TCP_PORT=80
 There we go! At some point I'll probably automate this so that I can spin up a new pod for each UID on the host. 
 
 ## View the file descriptors for each pod on the host
-This lists out the file descriptors for each PID that we have access to.
+The following command lists out the file descriptors for each PID that we have access to. See the note below on how to access FDs for non-root PIDs.
 
 ```bash
 for fd in `find /proc/*/fd`; do ls -al $fd/* 2>/dev/null | grep \>; done > fds.txt
@@ -209,7 +209,7 @@ Let's see what's in `/.secret.txt.swp`. This file exists within a container, but
 cat /proc/635813/fd/4
 3210#"! UtadBnnmAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLEAWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEYI'm going to keep my secrets in this file!
 ```
-More secrets!
+More secrets! 
 
 **To access the FDs for PIDs owned by a non-root user, you need to do some extra work**
 
