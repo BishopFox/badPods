@@ -94,7 +94,7 @@ curl http://169.254.169.254/latest/user-data
 
 **If an IAM role is assigned to the node, you can access the node's identify token**
 ```
-curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ #List's role name
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ #Lists the role name
 curl http://169.254.169.254/latest/meta-data/iam/security-credentials/[ROLE NAME] # Get creds
 ```
 
